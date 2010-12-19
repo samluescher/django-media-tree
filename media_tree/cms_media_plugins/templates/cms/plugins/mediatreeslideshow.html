@@ -1,0 +1,25 @@
+{{ width }}
+<div id="{{ plugin.id_attr }}" class="slideshow">
+{% for image_node in nodes %}
+{% include "cms/plugins/mediatreeimage.html" %}
+{% endfor %}
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+    var containerHeight = 0;
+    $('#{{ plugin.id_attr }} p').each(function() {
+        if ($(this).outerHeight(true) > containerHeight) {
+            containerHeight = $(this).outerHeight(true);
+        }
+    }); 
+    $('#{{ plugin.id_attr }}').css('height', containerHeight+'px');
+    $('#{{ plugin.id_attr }}').cycle({
+		fx: '{{ fx }}'
+		{% ifnotequal speed "normal" %},speed: '{{ speed }}'{% endifnotequal %}
+		,timeout: {{ timeout }} 
+	});
+});
+//]]>
+</script>

@@ -1,0 +1,89 @@
+{% load i18n media_tree_thumbnail %}
+
+<div id="{{ plugin.id_attr }}" class="gallery">
+
+{{ nodes }}
+
+<ul class="folders">
+    {{ folders|unordered_list }}
+</ul>
+
+{% if nodes %}
+
+<div class="slideshow">
+{% for image_node in nodes %}
+{% include "cms/plugins/mediatreeimage.html" %}
+{% endfor %}
+</div>
+
+{% ifnotequal nodes|length 1 %}
+<div class="nav">
+<ul>
+    <li class="button"><a class="prev" href="javascript:void(0);">{% trans "Previous" %}</a></li>
+    <li><ul class="pager"></ul></li>
+    <li class="button"><a class="next" href="javascript:void(0);">{% trans "Next" %}</a></li>
+    <li class="button"><a class="play" href="javascript:void(0);">{% trans "Play" %}</a></li>
+    <li class="button"><a class="pause" href="javascript:void(0);">{% trans "Pause" %}</a></li>
+</ul>
+</div>
+{% endifnotequal %}
+
+<script type="text/javascript">
+//<![CDATA[
+$(document).ready(function() {
+    
+    {% ifnotequal nodes|length 1 %}
+    var thumbs = [
+    {% for node in nodes %}
+        {% if not forloop.first %},{% endif %}'<li><a href="#">{% if pager_thumbnails %}<img src="{% node_thumbnail node pager_thumbnail_size %}" alt="{{ node.get_alt }}"/>{% else %}{{ forloop.counter}}{% endif %}</a></li>'
+    {% endfor %}
+    ]
+    {% endifnotequal %}
+    
+    var containerHeight = 0;
+    $('#{{ plugin.id_attr }} .slideshow p').each(function() {
+        if ($(this).outerHeight(true) > containerHeight) {
+            containerHeight = $(this).outerHeight(true);
+        }
+    }); 
+    $('#{{ plugin.id_attr }} .slideshow').css('height', containerHeight+'px');
+    $('#{{ plugin.id_attr }} .slideshow').cycle({
+		fx: '{{ fx }}'
+		{% ifnotequal speed "normal" %},speed: '{{ speed }}'{% endifnotequal %}
+		,timeout: {{ timeout }} 
+        {% ifnotequal nodes|length 1 %}
+	    ,prev: '#{{ plugin.id_attr }} .prev'
+	    ,next: '#{{ plugin.id_attr }} .next'
+	    ,pager: '#{{ plugin.id_attr }} .pager'
+        ,pagerAnchorBuilder: function(idx, slide) { 
+            return thumbs[idx]; 
+        }        
+        {% endifnotequal %}
+	});
+	
+	{% ifnotequal nodes|length 1 %}
+    {% if auto_play %}
+    $('#{{ plugin.id_attr }} .play').closest('li').hide();
+    {% else %}
+    $('#{{ plugin.id_attr }} .pause').closest('li').hide();
+	$('#{{ plugin.id_attr }} .slideshow').cycle('pause');
+    {% endif %}
+
+    $('#{{ plugin.id_attr }} .play').click(function(e) {
+        $('#{{ plugin.id_attr }} .play').closest('li').hide();
+        $('#{{ plugin.id_attr }} .pause').closest('li').show();
+    	$('#{{ plugin.id_attr }} .slideshow').cycle();
+    });
+    $('#{{ plugin.id_attr }} .pause').click(function(e) {
+        $('#{{ plugin.id_attr }} .play').closest('li').show();
+        $('#{{ plugin.id_attr }} .pause').closest('li').hide();
+    	$('#{{ plugin.id_attr }} .slideshow').cycle('pause');
+    });
+    {% endifnotequal %}
+
+});
+//]]>
+</script>
+{% endif %}
+
+</div>

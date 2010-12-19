@@ -1,0 +1,697 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-26 18:59+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: __init__.py:2
+msgid "Media_tree"
+msgstr "Medien-Ordner"
+
+#: __init__.py:3
+msgid "Media_Tree"
+msgstr "Medien-Ordner"
+
+#: admin.py:116 models.py:66
+msgid "size"
+msgstr "Grösse"
+
+#: admin.py:222
+msgid "Search results"
+msgstr "Suchresultate"
+
+#: admin.py:230
+#, python-format
+msgid "You need to put %s in your MIDDLEWARE_CLASSES setting to use SWFUpload."
+msgstr ""
+
+#: cms_app.py:6
+msgid "Media Tree"
+msgstr "Medien-Baum"
+
+#: cms_models.py:27 models.py:46
+msgid "file"
+msgstr "Datei"
+
+#: cms_models.py:28
+msgid "link type"
+msgstr "Link-Typ"
+
+#: cms_models.py:28
+msgid "Makes the image a clickable link."
+msgstr "Macht das Bild zu einem anklickbaren Link."
+
+#: cms_models.py:29
+msgid "page"
+msgstr "Seite"
+
+#: cms_models.py:29
+msgid "For link to page. Select any page from the list."
+msgstr "Für Link zu Seite. Bitte eine beliebige Seite aus der Liste wählen."
+
+#: cms_models.py:30
+msgid "web address"
+msgstr "Web-Adresse"
+
+#: cms_models.py:30
+msgid ""
+"For link to web address. Example: Enter \"http://www.domain.com\" to create "
+"an absolute link to an external site, or enter a relative URL like \"/about/"
+"contact\"."
+msgstr ""
+"Für Link zu Web-Adresse. Beispiel: \"http://www.domain.com\" eingeben, um "
+"einen absoluten Link auf eine externe Site zu erstellen, oder eine relative "
+"URL wie \"/info/kontakt\" eingeben."
+
+#: cms_models.py:31
+msgid "link target"
+msgstr "Link-Ziel"
+
+#: cms_models.py:31
+msgid "same window"
+msgstr "selbes Fenster"
+
+#: cms_models.py:31
+msgid "new window"
+msgstr "neues Fenster"
+
+#: cms_models.py:32 cms_models.py:62
+msgid "max. width"
+msgstr "max. Breite"
+
+#: cms_models.py:32 cms_models.py:62
+msgid ""
+"You can leave this empty to use an automatically determined image width."
+msgstr "Falls leer, wird eine automatisch bestimmte Bildbreite verwendet."
+
+#: cms_models.py:33 cms_models.py:63
+msgid "max. height"
+msgstr "max. Höhe"
+
+#: cms_models.py:33 cms_models.py:63
+msgid ""
+"You can leave this empty to use an automatically determined image height."
+msgstr "Falls leer, wird eine automatisch bestimmte Bildhöhe verwendet."
+
+#: cms_models.py:34 cms_models.py:44
+msgid "template"
+msgstr "Vorlage"
+
+#: cms_models.py:34
+msgid "Template used to render the image."
+msgstr "Vorlage für die Darstellung des Bildes"
+
+#: cms_models.py:44
+msgid "Template used to render the plugin."
+msgstr "Vorlage für die Darstellung des Plugins."
+
+#: cms_models.py:45
+msgid "filter file and folder names"
+msgstr "Datei- und Ordnernamen filtern"
+
+#: cms_models.py:45
+msgid "Example: *.jpg; Documents.*;"
+msgstr "Beispiel: *.jpg; Dokumente.*"
+
+#: cms_models.py:46
+msgid "include all subfolders"
+msgstr "Alle Unterordner einschliessen"
+
+#: cms_models.py:56
+msgid "List type"
+msgstr "Listen-Typ"
+
+#: cms_models.py:56 cms_models.py:72
+msgid "merged"
+msgstr "zusammengefügt"
+
+#: cms_models.py:56 cms_models.py:72
+msgid "nested"
+msgstr "verschachtelt"
+
+#: cms_models.py:59
+msgid "pause between images"
+msgstr "Pause zwischen Bildern"
+
+#: cms_models.py:59
+msgid "Milliseconds"
+msgstr "Millisekunden"
+
+#: cms_models.py:60
+msgid "transition"
+msgstr "Übergang"
+
+#: cms_models.py:61
+msgid "transition speed"
+msgstr "Geschwindigkeit des Übergangs"
+
+#: cms_models.py:61
+msgid "slow"
+msgstr "langsam"
+
+#: cms_models.py:61
+msgid "normal"
+msgstr "normal"
+
+#: cms_models.py:61
+msgid "fast"
+msgstr "schnell"
+
+#: cms_models.py:72
+msgid "gallery type"
+msgstr "Galerie-Typ"
+
+#: cms_models.py:78 models.py:86
+msgid "media object"
+msgstr "Medienobjekt"
+
+#: cms_models.py:79 models.py:87
+msgid "media objects"
+msgstr "Medienobjekte"
+
+#: cms_models.py:83
+msgid "folder/file"
+msgstr "Ordner/Datei"
+
+#: cms_models.py:87 cms_models.py:91
+msgid "folder/image"
+msgstr "Ordner/Bild"
+
+#: cms_plugins.py:30
+msgid ""
+"You need to attach the Media Tree application to a page in order to link to "
+"full size images."
+msgstr ""
+"Die Applikation Medien-Ordner muss an eine Seite angeschlossen sein, um auf "
+"Vollbilder linken zu können."
+
+#: cms_plugins.py:46 cms_plugins.py:53
+msgid "Image"
+msgstr "Bild"
+
+#: cms_plugins.py:54
+msgid "Link"
+msgstr "Link"
+
+#: cms_plugins.py:152
+msgid "File list"
+msgstr "Datei-Liste"
+
+#: cms_plugins.py:258
+msgid "Slideshow"
+msgstr "Diashow"
+
+#: cms_plugins.py:288
+msgid "Gallery"
+msgstr "Galerie"
+
+#: defaults.py:59
+msgid "folder"
+msgstr "Ordner"
+
+#: defaults.py:60
+msgid "archive"
+msgstr "Archiv"
+
+#: defaults.py:61
+msgid "audio"
+msgstr "Audio"
+
+#: defaults.py:62
+msgid "document"
+msgstr "Dokument"
+
+#: defaults.py:63
+msgid "image"
+msgstr "Bild"
+
+#: defaults.py:64
+msgid "web image"
+msgstr "Web-Bild"
+
+#: defaults.py:65
+msgid "text"
+msgstr "Text"
+
+#: defaults.py:66
+msgid "video"
+msgstr "Video"
+
+#: defaults.py:67
+msgid "other"
+msgstr "Sonstiges"
+
+#: defaults.py:90
+msgid "Link to page"
+msgstr "Link zu Seite"
+
+#: defaults.py:91
+msgid "Link to web address"
+msgstr "Link zu Web-Adresse"
+
+#: defaults.py:92
+msgid "Link to full size image"
+msgstr "Link zu Vollbild"
+
+#: fields.py:36 fields.py:39
+msgid "Change:"
+msgstr "Ändern:"
+
+#: fields.py:132
+msgid "Please select a file."
+msgstr "Bitte eine Datei auswählen."
+
+#: fields.py:134
+msgid "Please select a folder."
+msgstr "Bitte einen Ordner auswählen."
+
+#: fields.py:136
+msgid "You cannot select this node type."
+msgstr "Dieser Objekttyp kann nicht ausgewählt werden."
+
+#: fields.py:140
+#, python-format
+msgid "The required media type is %s."
+msgstr "Der benötige Medientyp ist %s."
+
+#: fields.py:142
+msgid "You cannot select this media type."
+msgstr "Dieser Medientyp kann nicht ausgewählt werden."
+
+#: fields.py:145
+#, python-format
+msgid "The required file type is %s."
+msgstr "Der benötige Dateityp ist %s."
+
+#: fields.py:147
+msgid "You cannot select this file type."
+msgstr "Dieser Dateityp kann nicht ausgewählt werden."
+
+#: forms.py:13 models.py:72
+msgid "Folder"
+msgstr "Ordner"
+
+#: forms.py:16 forms.py:41
+msgid "Metadata"
+msgstr "Metadaten"
+
+#: forms.py:19 forms.py:44
+msgid "Extended metadata"
+msgstr "Erweiterte Metadaten"
+
+#: forms.py:30
+#, python-format
+msgid "A %s with this name already exists."
+msgstr "Ein %s mit diesem Namen existiert bereits."
+
+#: forms.py:38
+msgid "File"
+msgstr "Datei"
+
+#: forms.py:53
+msgid "This file type is not allowed."
+msgstr "Dieser Dateityp ist nicht erlaubt."
+
+#: forms.py:56
+#, python-format
+msgid "Maximum file size is %s."
+msgstr "Die maximale Grösse ist %s."
+
+#: models.py:44
+msgid "node type"
+msgstr "Objekttyp"
+
+#: models.py:45
+msgid "media type"
+msgstr "Medientyp"
+
+#: models.py:47
+msgid "preview"
+msgstr "Vorschau"
+
+#: models.py:48
+msgid "is published"
+msgstr "publiziert"
+
+#: models.py:50
+msgid "name"
+msgstr "Name"
+
+#: models.py:51
+msgid "title"
+msgstr "Titel"
+
+#: models.py:52
+msgid "description"
+msgstr "Beschreibung"
+
+#: models.py:53
+msgid "keywords"
+msgstr "Schlüsselwörter"
+
+#: models.py:54
+msgid "author"
+msgstr "Autor"
+
+#: models.py:55
+msgid "copyright"
+msgstr "Copyright"
+
+#: models.py:56
+msgid "date/time"
+msgstr "Datum/Zeit"
+
+#: models.py:57
+msgid "publish author"
+msgstr "Autor publizieren"
+
+#: models.py:58
+msgid "publish copyright"
+msgstr "Copyright publizieren"
+
+#: models.py:59
+msgid "publish date/time"
+msgstr "Datum/Zeit publizieren"
+
+#: models.py:60
+msgid "alternative text"
+msgstr "Alternativer Text"
+
+#: models.py:60
+msgid ""
+"If you leave this blank, the alternative text will be compiled automatically "
+"from the available metadata."
+msgstr ""
+"Falls leer, wird der alternative Text automatisch aus den verfügbaren "
+"Metadaten zusammengestellt."
+
+#: models.py:61
+msgid "caption"
+msgstr "Beschriftung"
+
+#: models.py:61
+msgid ""
+"If you leave this blank, the caption will be compiled automatically from the "
+"available metadata."
+msgstr ""
+"Falls leer, wird die Beschriftung automatisch aus den verfügbaren Metadaten "
+"zusammengestellt."
+
+#: models.py:63
+msgid "metadata entered"
+msgstr "Metadaten erfasst"
+
+#: models.py:65
+msgid "type"
+msgstr "Typ"
+
+#: models.py:67
+msgid "width"
+msgstr "Breite"
+
+#: models.py:68
+msgid "height"
+msgstr "Höhe"
+
+#: models.py:69
+msgid "created"
+msgstr "Erstellt"
+
+#: models.py:70
+msgid "modified"
+msgstr "Geändert"
+
+#: models.py:73
+msgid "slug"
+msgstr "Slug"
+
+#: models.py:74
+msgid "use as default file for folder"
+msgstr "Als Standard-Datei für den Ordner verwenden"
+
+#: models.py:76
+msgid "created by"
+msgstr "Erstellt von"
+
+#: models.py:77
+msgid "modified by"
+msgstr "Geändert von"
+
+#: models.py:82
+msgid "extra metadata"
+msgstr "Zusätzliche Metadaten"
+
+#: models.py:91
+msgid "Media Objects"
+msgstr "Medienobjekte"
+
+#: models.py:216
+msgid "Items"
+msgstr "Objekte"
+
+#: models.py:224
+msgid "Ready"
+msgstr "Bereit"
+
+#: models.py:281
+#, python-format
+msgid "%(width)i×%(height)i"
+msgstr "%(width)i×%(height)i"
+
+#: models.py:284
+msgid "Resolution"
+msgstr "Auflösung"
+
+#: models.py:364
+msgid ": "
+msgstr ": "
+
+#: models.py:366
+msgid " – "
+msgstr " – "
+
+#: models.py:366
+#, python-format
+msgid "Author: %s"
+msgstr "Autor: %s"
+
+#: models.py:368
+msgid ", "
+msgstr ", "
+
+#: models.py:381
+msgid "displayed metadata"
+msgstr "Angezeigte Metadaten"
+
+#: mptt_admin.py:27
+#, python-format
+msgid "Delete selected %(verbose_name_plural)s"
+msgstr "Markierte %(verbose_name_plural)s löschen"
+
+#: views.py:15
+#, python-format
+msgid "Back to %s"
+msgstr "Zurück zu %s"
+
+#: admin_actions/core_actions.py:52
+msgid "Move media objects"
+msgstr "Medienobjekte verschieben"
+
+#: admin_actions/core_actions.py:53
+msgid "Move"
+msgstr "Verschieben"
+
+#: admin_actions/core_actions.py:56
+#, python-format
+msgid "Move selected %(verbose_name_plural)s"
+msgstr "Markierte %(verbose_name_plural)s verschieben"
+
+#: admin_actions/core_actions.py:61
+msgid "Copy media objects"
+msgstr "Medienobjekte kopieren"
+
+#: admin_actions/core_actions.py:62
+msgid "Copy"
+msgstr "Kopieren"
+
+#: admin_actions/core_actions.py:65
+#, python-format
+msgid "Copy selected %(verbose_name_plural)s"
+msgstr "Markierte %(verbose_name_plural)s kopieren"
+
+#: admin_actions/core_actions.py:70
+msgid "Change metadata for several media objects"
+msgstr "Metadaten für mehrere Objekte ändern"
+
+#: admin_actions/core_actions.py:71
+msgid "Overwrite selected fields"
+msgstr "Ausgewählte Felder überschreiben"
+
+#: admin_actions/core_actions.py:74
+#, python-format
+msgid "Change metadata for selected %(verbose_name_plural)s"
+msgstr "Metadaten für markierte %(verbose_name_plural)s ändern"
+
+#: admin_actions/forms.py:33
+msgid "to"
+msgstr "nach"
+
+#: admin_actions/maintenance_actions.py:30
+msgid "The following files exist on disk, but are not found in the database"
+msgstr ""
+"Die folgenden Dateien existieren auf dem Datenträger, aber sind nicht in der "
+"Datenbank enthalten"
+
+#: admin_actions/maintenance_actions.py:34
+msgid "Yes, I am sure that I want to delete the selected files from disk:"
+msgstr ""
+"Ja, ich bin sicher, dass ich die markierten Dateien vom Datenträger löschen "
+"will:"
+
+#: admin_actions/maintenance_actions.py:75
+msgid "There are no orphaned files."
+msgstr "Es gibt keine verwaisten Dateien."
+
+#: admin_actions/maintenance_actions.py:83
+#, python-format
+msgid "%i file deleted from disk."
+msgid_plural "%i files deleted from disk."
+msgstr[0] "%i Datei vom Datenträger gelöscht."
+msgstr[1] "%i Dateien vom Datenträger gelöscht."
+
+#: admin_actions/maintenance_actions.py:85
+msgid "The following files could not be deleted from disk:"
+msgstr "Die folgenden Dateien konnten nicht vom Datenträger gelöscht werden:"
+
+#: admin_actions/maintenance_actions.py:96
+msgid "Orphaned files"
+msgstr "Verwaiste Dateien"
+
+#: admin_actions/maintenance_actions.py:97
+msgid "Delete selected files"
+msgstr "Markierte Dateien löschen"
+
+#: admin_actions/maintenance_actions.py:100
+msgid ""
+"The following files in the database do not exist on disk. You should fix "
+"these media objects:"
+msgstr ""
+"Die folgenden Dateien in der Datenbank existieren nicht auf dem Datenträger. "
+"Folgende Medienobjekte sollten repariert werden:"
+
+#: admin_actions/maintenance_actions.py:104
+msgid "Find orphaned files"
+msgstr "Verwaiste Dateien finden"
+
+#: admin_actions/maintenance_actions.py:112
+msgid "The full tree was rebuilt."
+msgstr "Der komplette Baum wurde repariert."
+
+#: admin_actions/maintenance_actions.py:114
+msgid "Rebuild tree"
+msgstr "Baum reparieren"
+
+#: templates/admin/media_tree/filenode/actions_form.html:43
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] "Bitte den untenstehenden Fehler korrigieren."
+msgstr[1] "Bitte die untenstehenden Fehler korrigieren."
+
+#: templates/admin/media_tree/filenode/actions_form.html:48
+msgid "Select all"
+msgstr "Alle markieren"
+
+#: templates/admin/media_tree/filenode/actions_form.html:49
+msgid "Select none"
+msgstr "Nichts markieren"
+
+#: templates/admin/media_tree/filenode/actions_form.html:81
+msgid "Selected media objects:"
+msgstr "Markierte Medienobjekte:"
+
+#: templates/admin/media_tree/filenode/change_list.html:28
+msgid "Up one level"
+msgstr "Eine Ebene nach oben"
+
+#: templates/admin/media_tree/filenode/change_list.html:35
+msgid "Upload files"
+msgstr "Dateien hochladen"
+
+#: templates/admin/media_tree/filenode/change_list.html:57
+msgid "Add file"
+msgstr "Datei hinzufügen"
+
+#: templates/admin/media_tree/filenode/change_list.html:63
+msgid "Add folder"
+msgstr "Ordner hinzufügen"
+
+#: templates/admin/media_tree/filenode/change_list.html:68
+msgid "Change folder"
+msgstr "Ordner ändern"
+
+#: templates/admin/media_tree/filenode/change_list.html:80
+msgid "Folders"
+msgstr "Ordner"
+
+#: templates/admin/media_tree/filenode/change_list.html:93
+msgid "Filter"
+msgstr "Filter"
+
+#: templates/admin/media_tree/filenode/includes/breadcrumbs.html:6
+msgid "Home"
+msgstr "Start"
+
+#: templates/cms/plugins/mediatreegallery.html:22
+msgid "Previous"
+msgstr "Zurück"
+
+#: templates/cms/plugins/mediatreegallery.html:24
+msgid "Next"
+msgstr "Weiter"
+
+#: templates/cms/plugins/mediatreegallery.html:25
+msgid "Play"
+msgstr "Play"
+
+#: templates/cms/plugins/mediatreegallery.html:26
+msgid "Pause"
+msgstr "Pause"
+
+#~ msgid "%(count)i %(verbose_name)s moved."
+#~ msgid_plural "%(count)i %(verbose_name_plural)s moved."
+#~ msgstr[0] "%(count)i %(verbose_name)s verschoben."
+#~ msgstr[1] "%(count)i %(verbose_name_plural)s verschoben."
+
+#~ msgid "%(count)i %(verbose_name)s copied."
+#~ msgid_plural "%(count)i %(verbose_name_plural)s copied."
+#~ msgstr[0] "%(count)i %(verbose_name)s kopiert."
+#~ msgstr[1] "%(count)i %(verbose_name_plural)s kopiert."
+
+#~ msgid "Upload"
+#~ msgstr "Upload"
+
+#~ msgid "flat"
+#~ msgstr "flach"
+
+#~ msgid "to folder"
+#~ msgstr "in den Ordner"
+
+#~ msgid "Image Column"
+#~ msgstr "Bildspalte"
+
+#~ msgid "Column"
+#~ msgstr "Spalte"
+
+#~ msgid "For link to page, select any page from the list."
+#~ msgstr "Für Link zu Seite. Bitte eine beliebige Seite aus der Liste wählen."

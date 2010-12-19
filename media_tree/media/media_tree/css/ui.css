@@ -1,0 +1,27 @@
+.ui-slider-handle {
+    cursor: default;
+    height: 1.2em;
+    position: absolute;
+    width: 1.2em;
+    z-index: 2;
+    background: #CCC;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+    margin-left: -0.6em;
+    top: -0.3em;
+}
+
+.ui-slider-horizontal {
+    height: 0.6em;
+    width: 20em;
+    top: .2em;
+}
+
+.ui-slider {
+    position:relative;
+    text-align:left;
+    
+    border: 1px #CCC solid;
+    display: inline-block;
+}

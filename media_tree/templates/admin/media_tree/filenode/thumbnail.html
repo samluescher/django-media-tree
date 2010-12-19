@@ -1,0 +1,8 @@
+{% load i18n media_tree_thumbnail %}
+{% spaceless %}
+
+{% if url %}<a href="{{ url }}">{% endif %}
+<img src="{% node_thumbnail node 80x80 upscale sharpen %}" alt="{{ node.alt|escape }}" />
+{% if url %}</a>{% endif %}
+
+{% endspaceless %}

@@ -1,0 +1,7 @@
+{% load i18n thumbnail %}
+{% spaceless %}
+
+{% if url %}<a href="{{ url }}">{% endif %}
+<img src="{{ MEDIA_URL }}{{ node.file }}" alt="{{ node.alt|escape }}" />
+{% if url %}</a>{% endif %}
+{% endspaceless %}

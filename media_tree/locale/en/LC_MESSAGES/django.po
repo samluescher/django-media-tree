@@ -1,0 +1,655 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-26 18:59+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: __init__.py:2
+msgid "Media_tree"
+msgstr ""
+
+#: __init__.py:3
+msgid "Media_Tree"
+msgstr ""
+
+#: admin.py:116 models.py:66
+msgid "size"
+msgstr ""
+
+#: admin.py:222
+msgid "Search results"
+msgstr ""
+
+#: admin.py:230
+#, python-format
+msgid "You need to put %s in your MIDDLEWARE_CLASSES setting to use SWFUpload."
+msgstr ""
+
+#: cms_app.py:6
+msgid "Media Tree"
+msgstr ""
+
+#: cms_models.py:27 models.py:46
+msgid "file"
+msgstr ""
+
+#: cms_models.py:28
+msgid "link type"
+msgstr ""
+
+#: cms_models.py:28
+msgid "Makes the image a clickable link."
+msgstr ""
+
+#: cms_models.py:29
+msgid "page"
+msgstr ""
+
+#: cms_models.py:29
+msgid "For link to page. Select any page from the list."
+msgstr ""
+
+#: cms_models.py:30
+msgid "web address"
+msgstr ""
+
+#: cms_models.py:30
+msgid ""
+"For link to web address. Example: Enter \"http://www.domain.com\" to create "
+"an absolute link to an external site, or enter a relative URL like \"/about/"
+"contact\"."
+msgstr ""
+
+#: cms_models.py:31
+msgid "link target"
+msgstr ""
+
+#: cms_models.py:31
+msgid "same window"
+msgstr ""
+
+#: cms_models.py:31
+msgid "new window"
+msgstr ""
+
+#: cms_models.py:32 cms_models.py:62
+msgid "max. width"
+msgstr ""
+
+#: cms_models.py:32 cms_models.py:62
+msgid ""
+"You can leave this empty to use an automatically determined image width."
+msgstr ""
+
+#: cms_models.py:33 cms_models.py:63
+msgid "max. height"
+msgstr ""
+
+#: cms_models.py:33 cms_models.py:63
+msgid ""
+"You can leave this empty to use an automatically determined image height."
+msgstr ""
+
+#: cms_models.py:34 cms_models.py:44
+msgid "template"
+msgstr ""
+
+#: cms_models.py:34
+msgid "Template used to render the image."
+msgstr ""
+
+#: cms_models.py:44
+msgid "Template used to render the plugin."
+msgstr ""
+
+#: cms_models.py:45
+msgid "filter file and folder names"
+msgstr ""
+
+#: cms_models.py:45
+msgid "Example: *.jpg; Documents.*;"
+msgstr ""
+
+#: cms_models.py:46
+msgid "include all subfolders"
+msgstr ""
+
+#: cms_models.py:56
+msgid "List type"
+msgstr ""
+
+#: cms_models.py:56 cms_models.py:72
+msgid "merged"
+msgstr ""
+
+#: cms_models.py:56 cms_models.py:72
+msgid "nested"
+msgstr ""
+
+#: cms_models.py:59
+msgid "pause between images"
+msgstr ""
+
+#: cms_models.py:59
+msgid "Milliseconds"
+msgstr ""
+
+#: cms_models.py:60
+msgid "transition"
+msgstr ""
+
+#: cms_models.py:61
+msgid "transition speed"
+msgstr ""
+
+#: cms_models.py:61
+msgid "slow"
+msgstr ""
+
+#: cms_models.py:61
+msgid "normal"
+msgstr ""
+
+#: cms_models.py:61
+msgid "fast"
+msgstr ""
+
+#: cms_models.py:72
+msgid "gallery type"
+msgstr ""
+
+#: cms_models.py:78 models.py:86
+msgid "media object"
+msgstr ""
+
+#: cms_models.py:79 models.py:87
+msgid "media objects"
+msgstr ""
+
+#: cms_models.py:83
+msgid "folder/file"
+msgstr ""
+
+#: cms_models.py:87 cms_models.py:91
+msgid "folder/image"
+msgstr ""
+
+#: cms_plugins.py:30
+msgid ""
+"You need to attach the Media Tree application to a page in order to link to "
+"full size images."
+msgstr ""
+
+#: cms_plugins.py:46 cms_plugins.py:53
+msgid "Image"
+msgstr ""
+
+#: cms_plugins.py:54
+msgid "Link"
+msgstr ""
+
+#: cms_plugins.py:152
+msgid "File list"
+msgstr ""
+
+#: cms_plugins.py:258
+msgid "Slideshow"
+msgstr ""
+
+#: cms_plugins.py:288
+msgid "Gallery"
+msgstr ""
+
+#: defaults.py:59
+msgid "folder"
+msgstr ""
+
+#: defaults.py:60
+msgid "archive"
+msgstr ""
+
+#: defaults.py:61
+msgid "audio"
+msgstr ""
+
+#: defaults.py:62
+msgid "document"
+msgstr ""
+
+#: defaults.py:63
+msgid "image"
+msgstr ""
+
+#: defaults.py:64
+msgid "web image"
+msgstr ""
+
+#: defaults.py:65
+msgid "text"
+msgstr ""
+
+#: defaults.py:66
+msgid "video"
+msgstr ""
+
+#: defaults.py:67
+msgid "other"
+msgstr ""
+
+#: defaults.py:90
+msgid "Link to page"
+msgstr ""
+
+#: defaults.py:91
+msgid "Link to web address"
+msgstr ""
+
+#: defaults.py:92
+msgid "Link to full size image"
+msgstr ""
+
+#: fields.py:36 fields.py:39
+msgid "Change:"
+msgstr ""
+
+#: fields.py:132
+msgid "Please select a file."
+msgstr ""
+
+#: fields.py:134
+msgid "Please select a folder."
+msgstr ""
+
+#: fields.py:136
+msgid "You cannot select this node type."
+msgstr ""
+
+#: fields.py:140
+#, python-format
+msgid "The required media type is %s."
+msgstr ""
+
+#: fields.py:142
+msgid "You cannot select this media type."
+msgstr ""
+
+#: fields.py:145
+#, python-format
+msgid "The required file type is %s."
+msgstr ""
+
+#: fields.py:147
+msgid "You cannot select this file type."
+msgstr ""
+
+#: forms.py:13 models.py:72
+msgid "Folder"
+msgstr ""
+
+#: forms.py:16 forms.py:41
+msgid "Metadata"
+msgstr ""
+
+#: forms.py:19 forms.py:44
+msgid "Extended metadata"
+msgstr ""
+
+#: forms.py:30
+#, python-format
+msgid "A %s with this name already exists."
+msgstr ""
+
+#: forms.py:38
+msgid "File"
+msgstr ""
+
+#: forms.py:53
+msgid "This file type is not allowed."
+msgstr ""
+
+#: forms.py:56
+#, python-format
+msgid "Maximum file size is %s."
+msgstr ""
+
+#: models.py:44
+msgid "node type"
+msgstr ""
+
+#: models.py:45
+msgid "media type"
+msgstr ""
+
+#: models.py:47
+msgid "preview"
+msgstr ""
+
+#: models.py:48
+msgid "is published"
+msgstr ""
+
+#: models.py:50
+msgid "name"
+msgstr ""
+
+#: models.py:51
+msgid "title"
+msgstr ""
+
+#: models.py:52
+msgid "description"
+msgstr ""
+
+#: models.py:53
+msgid "keywords"
+msgstr ""
+
+#: models.py:54
+msgid "author"
+msgstr ""
+
+#: models.py:55
+msgid "copyright"
+msgstr ""
+
+#: models.py:56
+msgid "Date/time"
+msgstr ""
+
+#: models.py:57
+msgid "publish author"
+msgstr ""
+
+#: models.py:58
+msgid "publish copyright"
+msgstr ""
+
+#: models.py:59
+msgid "publish date/time"
+msgstr ""
+
+#: models.py:60
+msgid "alternative text"
+msgstr ""
+
+#: models.py:60
+msgid ""
+"If you leave this blank, the alternative text will be compiled automatically "
+"from the available metadata."
+msgstr ""
+
+#: models.py:61
+msgid "caption"
+msgstr ""
+
+#: models.py:61
+msgid ""
+"If you leave this blank, the caption will be compiled automatically from the "
+"available metadata."
+msgstr ""
+
+#: models.py:63
+msgid "metadata entered"
+msgstr ""
+
+#: models.py:65
+msgid "type"
+msgstr ""
+
+#: models.py:67
+msgid "width"
+msgstr ""
+
+#: models.py:68
+msgid "height"
+msgstr ""
+
+#: models.py:69
+msgid "created"
+msgstr ""
+
+#: models.py:70
+msgid "modified"
+msgstr ""
+
+#: models.py:73
+msgid "slug"
+msgstr ""
+
+#: models.py:74
+msgid "use as default file for folder"
+msgstr ""
+
+#: models.py:76
+msgid "created by"
+msgstr ""
+
+#: models.py:77
+msgid "modified by"
+msgstr ""
+
+#: models.py:82
+msgid "extra metadata"
+msgstr ""
+
+#: models.py:91
+msgid "Media Objects"
+msgstr ""
+
+#: models.py:216
+msgid "Items"
+msgstr ""
+
+#: models.py:224
+msgid "Ready"
+msgstr ""
+
+#: models.py:281
+#, python-format
+msgid "%(width)i×%(height)i"
+msgstr ""
+
+#: models.py:284
+msgid "Resolution"
+msgstr ""
+
+#: models.py:364
+msgid ": "
+msgstr ""
+
+#: models.py:366
+msgid " – "
+msgstr ""
+
+#: models.py:366
+#, python-format
+msgid "Author: %s"
+msgstr ""
+
+#: models.py:368
+msgid ", "
+msgstr ""
+
+#: models.py:381
+msgid "displayed metadata"
+msgstr ""
+
+#: mptt_admin.py:27
+#, python-format
+msgid "Delete selected %(verbose_name_plural)s"
+msgstr ""
+
+#: views.py:15
+#, python-format
+msgid "Back to %s"
+msgstr ""
+
+#: admin_actions/core_actions.py:52
+msgid "Move media objects"
+msgstr ""
+
+#: admin_actions/core_actions.py:53
+msgid "Move"
+msgstr ""
+
+#: admin_actions/core_actions.py:56
+#, python-format
+msgid "Move selected %(verbose_name_plural)s"
+msgstr ""
+
+#: admin_actions/core_actions.py:61
+msgid "Copy media objects"
+msgstr ""
+
+#: admin_actions/core_actions.py:62
+msgid "Copy"
+msgstr ""
+
+#: admin_actions/core_actions.py:65
+#, python-format
+msgid "Copy selected %(verbose_name_plural)s"
+msgstr ""
+
+#: admin_actions/core_actions.py:70
+msgid "Change metadata for several media objects"
+msgstr ""
+
+#: admin_actions/core_actions.py:71
+msgid "Overwrite selected fields"
+msgstr ""
+
+#: admin_actions/core_actions.py:74
+#, python-format
+msgid "Change metadata for selected %(verbose_name_plural)s"
+msgstr ""
+
+#: admin_actions/forms.py:33
+msgid "to"
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:30
+msgid "The following files exist on disk, but are not found in the database"
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:34
+msgid "Yes, I am sure that I want to delete the selected files from disk:"
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:75
+msgid "There are no orphaned files."
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:83
+#, python-format
+msgid "%i file deleted from disk."
+msgid_plural "%i files deleted from disk."
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin_actions/maintenance_actions.py:85
+msgid "The following files could not be deleted from disk:"
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:96
+msgid "Orphaned files"
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:97
+msgid "Delete selected files"
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:100
+msgid ""
+"The following files in the database do not exist on disk. You should fix "
+"these media objects:"
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:104
+msgid "Find orphaned files"
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:112
+msgid "The full tree was rebuilt."
+msgstr ""
+
+#: admin_actions/maintenance_actions.py:114
+msgid "Rebuild tree"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/actions_form.html:43
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/admin/media_tree/filenode/actions_form.html:48
+msgid "Select all"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/actions_form.html:49
+msgid "Select none"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/actions_form.html:81
+msgid "Selected media objects:"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/change_list.html:28
+msgid "Up one level"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/change_list.html:35
+msgid "Upload files"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/change_list.html:57
+msgid "Add file"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/change_list.html:63
+msgid "Add folder"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/change_list.html:68
+msgid "Change folder"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/change_list.html:80
+msgid "Folders"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/change_list.html:93
+msgid "Filter"
+msgstr ""
+
+#: templates/admin/media_tree/filenode/includes/breadcrumbs.html:6
+msgid "Home"
+msgstr ""
+
+#: templates/cms/plugins/mediatreegallery.html:22
+msgid "Previous"
+msgstr ""
+
+#: templates/cms/plugins/mediatreegallery.html:24
+msgid "Next"
+msgstr ""
+
+#: templates/cms/plugins/mediatreegallery.html:25
+msgid "Play"
+msgstr ""
+
+#: templates/cms/plugins/mediatreegallery.html:26
+msgid "Pause"
+msgstr ""

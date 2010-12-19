@@ -1,0 +1,22 @@
+{% load i18n string_repeat %}
+
+<div class="breadcrumbs">
+    {% if not is_popup %}
+    <a href="../../{% string_repeat "../" node.level %}">
+        {% trans "Home" %}
+    </a>
+    &rsaquo; 
+    <a href="../{% string_repeat "../" node.level %}">
+        {{ app_label|capfirst }}
+    </a>
+    {% endif %}
+    {% for path_node in node.get_node_path %}
+    &rsaquo; 
+    {% if not forloop.last or breadcrumbs_title %}<a href="{{ path_node.get_admin_url }}">{% endif %}
+    {{ path_node.name }}
+    {% if not forloop.last or breadcrumbs_title %}</a>{% endif %}
+    {% endfor %}
+    {% if breadcrumbs_title %}
+    &rsaquo; {{ breadcrumbs_title }}
+    {% endif %}
+</div>

@@ -1,0 +1,88 @@
+{% extends "admin/base_site.html" %}
+{% load i18n adminmedia %}
+{% block breadcrumbs %}
+    {% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
+{% endblock %}
+{% block extrahead %}
+    {{ block.super }}
+    {{ form.media }}
+{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/forms.css" />{% endblock %}
+{% block content %}
+{% if select_all %}
+<script type="text/javascript">
+//<![CDATA[
+var selectAll = function(field, status) 
+{
+    var i = 0;
+    var input = null;
+    do {
+        var id = 'id_'+field+'_'+i;
+        input = document.getElementById(id)
+        if (input != null) {
+            input.checked = status;
+        }
+        i++;
+    } while (input != null);
+    
+}
+//]]>
+
+(function($) {
+    $(document).ready(function($) {
+        $("tr input.action-select").actions();
+    });
+})(django.jQuery);
+
+</script>
+{% endif %}
+{% if form %}
+<form method="POST" action="">
+    {% if form.errors %} 
+    <ul class="errorlist">
+        <li>{% blocktrans count form.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}</li>
+    </ul>
+    {% endif %}
+    {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
+
+    {% if select_all %}
+    <p><input type="button" value="{% trans "Select all" %}" onclick="selectAll('{{ select_all }}', true);" />&nbsp;
+        <input type="button" value="{% trans "Select none" %}" onclick="selectAll('{{ select_all }}', false);" /></p>
+    {% endif %}
+    
+    <fieldset class="module aligned">
+    {% for field in form %}
+    {% if field.is_hidden %}
+    {{ field }}
+    {% else %}
+    <div class="form-row {% if field.errors %}errors{% endif %}">
+        {{ field.errors }}
+        <div>
+            <label for="{{ field.auto_id }}" class="{% if field.field.required %}required{% endif %}">{% if form.confirm_fields %}<input type="checkbox" name="_confirm_{{ field.name }}" value="1" /> {% endif %}{{ field.label }}</label>
+            {{ field }}
+        </div>
+        {% if field.help_text %}<p class="help">{{ field.help_text|linebreaksbr }}</p>{% endif %}
+    </div>
+    {% endif %}
+    {% endfor %}
+    </fieldset>
+    
+    {% block preview %}
+    {% endblock %}
+    <div class="submit-row">
+    {% block submit %}
+    <input type="submit" value="{{ submit_label }}" class="default" />
+    {% endblock %}
+    </div>
+    {% csrf_token %}
+</form>
+{% endif %}
+{% block selected %}
+{% if node_list %}
+<p>{% if not node_list_title %}{% trans "Selected media objects:" %}{% else %}{{ node_list_title }}{% endif %}</p>
+<ul>
+    {{ node_list|unordered_list }}
+</ul>
+{% endif %}
+{% endblock %}
+{% endblock %}
