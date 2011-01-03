@@ -2,11 +2,11 @@
 
 <div id="{{ plugin.id_attr }}" class="gallery">
 
-{{ nodes }}
-
+{% if folders %}
 <ul class="folders">
     {{ folders|unordered_list }}
 </ul>
+{% endif %}
 
 {% if nodes %}
 

@@ -43,8 +43,6 @@ class MediaTreeThumbnailNode(ThumbnailNode):
             return ''
 
 def node_thumbnail(parser, token):
-    return sorl_thumbnail(parser, token)
-
     node = sorl_thumbnail(parser, token)
     return MediaTreeThumbnailNode(node.source_var, node.size_var, opts=node.opts, context_name=node.context_name)
 

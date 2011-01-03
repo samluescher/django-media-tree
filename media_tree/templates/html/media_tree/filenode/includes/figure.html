@@ -1,5 +1,5 @@
 {% load media_tree_thumbnail %}
-<span class="figure">
+<span class="figure" id="figure-{{ image_node.pk }}">
     <span class="image">{% spaceless %}
     {% if image_node.link %}<a href="{{ image_node.link.href }}"{% if image_node.link.target %} target="{{ image_node.link.target }}{% endif %}"{% if image_node.link.rel %} rel="{{ image_node.link.rel }}{% endif %}">{% endif %}
     {% if thumbnail_size %}

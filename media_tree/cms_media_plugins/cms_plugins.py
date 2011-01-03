@@ -61,7 +61,7 @@ class MediaTreeImagePlugin(CMSPluginBase):
 
     def icon_src(self, instance):
         from sorl.thumbnail.main import DjangoThumbnail
-        thumb = DjangoThumbnail(instance.node.file.name, (200,200), ['sharpen'])
+        thumb = DjangoThumbnail(instance.node.file.name, (200, 200), ['sharpen'])
         return thumb.absolute_url
 
     def icon_alt(self, instance):
@@ -126,8 +126,14 @@ class MediaTreeListPlugin(CMSPluginBase):
             processors = [self.list_str_callback]
         else:
             processors = None
-        return list_method(self.visible_nodes, filter_media_types=self.list_filter_media_types, exclude_media_types=exclude_media_types, 
-            processors=processors, max_depth=max_depth)
+        
+        if instance.filter_supported:
+            filter_media_types = self.list_filter_media_types
+        else:
+            filter_media_types = None
+            
+        return list_method(self.visible_nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
+            processors=processors, max_depth=max_depth, ordering=['position', 'name'])
 
     def init_folder(self, context, instance):
         folder_id = context['request'].GET.get(self.FolderLink.folder_param_name(instance), None)

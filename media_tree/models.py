@@ -20,6 +20,7 @@ from django.utils.formats import get_format
 from copy import copy
 
 MIMETYPE_CONTENT_TYPE_MAP = app_settings.get('MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP')
+EXT_MIMETYPE_MAP = app_settings.get('MEDIA_TREE_EXT_MIMETYPE_MAP')
 
 def join_phrases(text, new_text, prepend=', ', append='', compare_text=None, else_prepend='', else_append='', if_empty=False):
     if new_text != '' or if_empty:
@@ -82,6 +83,7 @@ class FileNode(models.Model):
 
     created_by = models.ForeignKey(User, null=True, blank=True, related_name='created_by', verbose_name = _('created by'), editable=False)
     modified_by = models.ForeignKey(User, null=True, blank=True, related_name='modified_by', verbose_name = _('modified by'), editable=False)
+    position = models.IntegerField(_('position'), default=0)
     
     is_ancestor_being_updated = False
 
@@ -170,7 +172,7 @@ class FileNode(models.Model):
         return is_descendant
 
     @staticmethod
-    def __get_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, processors=None, list_method='append', max_depth=None, max_nodes=None, _depth=1, _node_count=0):
+    def __get_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, list_method='append', max_depth=None, max_nodes=None, _depth=1, _node_count=0):
 
         if isinstance(nodes, models.query.QuerySet):
             # pre-filter() and exclude() on queryset for fewer iterations  
@@ -182,6 +184,8 @@ class FileNode(models.Model):
                         nodes = nodes.exclude(media_type__exact=exclude_media_type)
             if filter:
                 nodes = nodes.filter(**filter)
+            if ordering:
+                nodes = nodes.order_by(*ordering)
 
         result_list = []
         if max_depth is None or _depth <= max_depth: 
@@ -220,7 +224,7 @@ class FileNode(models.Model):
         return result_list
 
     @staticmethod
-    def get_merged_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, processors=None, max_depth=None, max_nodes=None):
+    def get_merged_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
         """
         Returns a nested list of nodes, applying optional filters and processors to each node.
         Nested means that the resulting list will be multi-dimensional, i.e. each item in the list
@@ -245,10 +249,10 @@ class FileNode(models.Model):
         :max_nodes: Can be used to limit the number of items in the list (unlimited by default)
         """
         return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
-            filter=filter, processors=processors, list_method='extend', max_depth=max_depth, max_nodes=max_nodes)
+            filter=filter, ordering=ordering, processors=processors, list_method='extend', max_depth=max_depth, max_nodes=max_nodes)
 
     @staticmethod
-    def get_nested_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, processors=None, max_depth=None, max_nodes=None):
+    def get_nested_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
         """
         Almost the same as `get_merged_list`, but returns a flat or one-dimensional list.
         Using the same queryset as in the example for `get_merged_list`, this method would return:
@@ -262,7 +266,7 @@ class FileNode(models.Model):
             ]
         """
         return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
-            filter=filter, processors=processors, list_method='append', max_depth=max_depth, max_nodes=max_nodes)
+            filter=filter, ordering=ordering, processors=processors, list_method='append', max_depth=max_depth, max_nodes=max_nodes)
                             
     def count_descendants(self):
         if self.node_type == FileNode.FOLDER:
@@ -318,8 +322,12 @@ class FileNode(models.Model):
 
     @staticmethod
     def get_mimetype(filename):
-        type, encoding = mimetypes.guess_type(filename)
-        return type
+        ext = os.path.splitext(filename)[1].lstrip('.').lower()
+        if ext in EXT_MIMETYPE_MAP:
+            return EXT_MIMETYPE_MAP[ext]
+        else:
+            type, encoding = mimetypes.guess_type(filename, strict=False)
+            return type
     
     def mimetype(self):
         return FileNode.get_mimetype(self.name)

@@ -60,6 +60,7 @@ class AbstractMediaTreeSlideshow(AbstractMediaTreeList):
     speed = models.CharField(_('transition speed'), max_length=8, default='normal', choices=(('slow', _('slow')), ('normal', _('normal')), ('fast', _('fast')))) 
     width = DimensionField(_('max. width'), null=True, blank=True, help_text=_('You can leave this empty to use an automatically determined image width.'))
     height = DimensionField(_('max. height'), null=True, blank=True, help_text=_('You can leave this empty to use an automatically determined image height.'))
+    filter_supported = models.BooleanField(_('output supported media types only'), default=True)
 
     class Meta:
         abstract = True

@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from media_tree import media_types
 from media_tree.cms_media_plugins.helpers import PluginLink
 
-MEDIA_TREE_LIST_DISPLAY = ('admin_thumbnail', 'name', 'size_formatted', 'extension', 'resolution_formatted', 'count_descendants', 'modified', 'modified_by', 'has_metadata_including_descendants', 'caption')
+MEDIA_TREE_LIST_DISPLAY = ('admin_thumbnail', 'name', 'size_formatted', 'extension', 'resolution_formatted', 'count_descendants', 'modified', 'modified_by', 'has_metadata_including_descendants', 'caption', 'position')
 
 MEDIA_TREE_LIST_FILTER = ('media_type', 'extension', 'has_metadata')
 
@@ -41,6 +41,14 @@ MEDIA_TREE_THUMBNAIL_SIZE_TINY = '50x50'
 MEDIA_TREE_FILE_SIZE_LIMIT = 1000000000 # 1 GB
 
 MEDIA_TREE_SWFUPLOAD = True
+
+"""
+List of mimetypes not convered by the `mimetypes` Python module (for instance, .flv is not guessed
+by `guess_mimetype`.)
+"""
+MEDIA_TREE_EXT_MIMETYPE_MAP = {
+    'flv': 'video/x-flv',
+}
 
 MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP = {
     'application/octet-stream': media_types.FILE,
