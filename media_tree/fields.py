@@ -10,11 +10,12 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django import template
+from django.contrib.admin.widgets import AdminFileWidget
 import os
 
 THUMBNAIL_EXTENSIONS = app_settings.get('MEDIA_TREE_THUMBNAIL_EXTENSIONS')
 
-class AdminThumbWidget(forms.FileInput):
+class AdminThumbWidget(AdminFileWidget):
     """
     A Image FileField Widget that shows a thumbnail if it has one.
     """

@@ -33,20 +33,25 @@ class FolderForm(forms.ModelForm):
 
 class FileForm(forms.ModelForm):
 
+    #set_manual_dimensions = forms.BooleanField(_('set manual dimensions'), required=False)
+    
     class Meta:
         model = FileNode
         fieldsets = [
             (_('File'), {
-                'fields': ['file', 'is_default']
+                'fields': ['file', 'is_default', 'preview_file']
             }),
             (_('Metadata'), {
                 'fields': ['title', 'description']
             }),
             (_('Extended metadata'), {
-                'fields': ['author', 'publish_author', 'copyright', 'publish_copyright', 'date_time', 'publish_date_time', 'keywords', 'override_caption', 'override_alt'],
+                'fields': ['author', 'publish_author', 'copyright', 'publish_copyright', 'date_time', 'publish_date_time', 'keywords', 'override_caption', 'override_alt', 'width', 'height'],
                 'classes': ['collapse']
             }),
         ]
+
+    def __init__(self, *args, **kwargs):
+        super(FileForm, self).__init__(*args, **kwargs)
 
     @staticmethod
     def upload_clean(uploaded_file):

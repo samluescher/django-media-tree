@@ -52,8 +52,8 @@ class FileNode(models.Model):
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False)
     media_type = models.IntegerField(_('media type'), choices = app_settings.get('MEDIA_TREE_CONTENT_TYPE_CHOICES'), blank=True, null=True, editable=False)
     file = models.FileField(_('file'), upload_to=app_settings.get('MEDIA_TREE_UPLOAD_SUBDIR'), null=True)
-    preview_file = models.FileField(_('preview'), upload_to=app_settings.get('MEDIA_TREE_PREVIEW_SUBDIR'), blank=True, null=True, editable=False)
-    published = models.BooleanField(_("is published"), blank=True, default=True, editable=False)
+    preview_file = models.ImageField(_('preview'), upload_to=app_settings.get('MEDIA_TREE_PREVIEW_SUBDIR'), blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'))
+    published = models.BooleanField(_('is published'), blank=True, default=True, editable=False)
 
     name = models.CharField(_('name'), max_length=255, null=True)
     title = models.CharField(_('title'), max_length=255, default='', null=True, blank=True)
@@ -72,14 +72,14 @@ class FileNode(models.Model):
 
     extension = models.CharField(_('type'), default='', max_length=10, null=True, editable=False)
     size = models.IntegerField(_('size'), null=True, editable=False)
-    width = models.IntegerField(_('width'), null=True, editable=False)
-    height = models.IntegerField(_('height'), null=True, editable=False)
+    width = models.IntegerField(_('width'), null=True, blank=True, help_text=_('Detected automatically for supported images'))
+    height = models.IntegerField(_('height'), null=True, blank=True, help_text=_('Detected automatically for supported images'))
     created = models.DateTimeField(_('created'), auto_now_add=True, editable=False)
     modified = models.DateTimeField(_('modified'), auto_now=True, editable=False)
 
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children_set', verbose_name = _('Folder'), editable=False)
     slug = models.CharField(_('slug'), max_length=255, null=True, editable=False)
-    is_default = models.BooleanField(_('use as default file for folder'), blank=True, default=False)
+    is_default = models.BooleanField(_('use as default object for folder'), blank=True, default=False, help_text=_('The default object of a folder can be used for folder previews etc.'))
 
     created_by = models.ForeignKey(User, null=True, blank=True, related_name='created_by', verbose_name = _('created by'), editable=False)
     modified_by = models.ForeignKey(User, null=True, blank=True, related_name='modified_by', verbose_name = _('modified by'), editable=False)
@@ -154,6 +154,19 @@ class FileNode(models.Model):
                 return None
         else:
             return self
+
+    def get_qualified_file_url(self, field_name='file'):
+        attr = getattr(self, field_name)
+        from django.contrib.sites.models import Site
+        site = Site.objects.get_current()
+        return '%(protocol)s://%(domain)s%(url)s' % {
+            'protocol': 'http',
+            'domain': site.domain.rstrip('/'),
+            'url': attr.url,
+        }
+
+    def get_qualified_preview_url(self):
+        return self.get_qualified_file_url('preview_file')
 
     def is_descendant_of(self, ancestor_nodes):
         if issubclass(ancestor_nodes.__class__, FileNode):
