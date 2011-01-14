@@ -30,17 +30,11 @@ except ImportError:
     from django.contrib.csrf.middleware import csrf_view_exempt
 
 MEDIA_SUBDIR = app_settings.get('MEDIA_TREE_MEDIA_SUBDIR')
-FILE_ICONS = app_settings.get('MEDIA_TREE_FILE_ICONS')
 
 '''
 TODO: For ZIPs in list, click "actions" drop down on the right --> Extract to folder --> Form w/ Extracted files+folder preview, "to folder", "Create subfolder"
 TODO: Delete does not work from change form if in subfolder
 '''
-
-class IconNode:
-    def __init__(self, filename, media_type):
-        self.file = os.path.join(MEDIA_SUBDIR, 'img/icons', filename)
-        self.alt = app_settings.get('MEDIA_TREE_CONTENT_TYPES')[media_type]
 
 class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
     list_display = app_settings.get('MEDIA_TREE_LIST_DISPLAY')
@@ -66,6 +60,7 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
         css = {
             'all': (
                 os.path.join(MEDIA_SUBDIR, 'css', 'swfupload.css'),
+                os.path.join(MEDIA_SUBDIR, 'css', 'ui.css'),
             )
         }
 
@@ -93,21 +88,19 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
     def admin_thumbnail(self, node):
         #url = node.pk
         url = None
-        if node.media_type == media_types.SUPPORTED_IMAGE:
-            thumbNode = node
-            return render_to_string('admin/media_tree/filenode/thumbnail.html', { 'node': thumbNode, 'url': url, 'MEDIA_URL': settings.MEDIA_URL })
+        if node.is_image():
+            return render_to_string('admin/media_tree/filenode/thumbnail.html', { 'node': node, 'url': url, 'MEDIA_URL': settings.MEDIA_URL })
         else:
-            if FILE_ICONS.has_key(node.extension):
-                icon_file = FILE_ICONS[node.extension]
-            else:
-                icon_file = FILE_ICONS[node.media_type]
-            thumbNode = IconNode(icon_file, node.media_type)
-            return render_to_string('admin/media_tree/filenode/icon.html', { 'node': thumbNode, 'url': url, 'MEDIA_URL': settings.MEDIA_URL })
+            icon = node.get_file_icon()
+            return render_to_string('admin/media_tree/filenode/icon.html', { 'icon': icon, 'url': url, 'MEDIA_URL': settings.MEDIA_URL })
     admin_thumbnail.short_description = ' ' # TODO Space due to Django bug http://code.djangoproject.com/ticket/12434
     admin_thumbnail.allow_tags = True
 
-    def size_formatted(self, node):
+    def size_formatted(self, node, descendants=True):
         if node.node_type == FileNode.FOLDER:
+            if descendants: 
+                size = node.get_descendants().aggregate(models.Sum('size'))['size__sum']
+                return format_filesize(size)
             return ''
         else:
             return format_filesize(node.size)
@@ -221,6 +214,25 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
             extra_context = {'node': search}
         else:
             setattr(request, 'filter_by_parent_folder', True)
+
+        display_settings = request.session.get('media_tree_display_settings', {
+            'list_type': None
+        })
+
+        list_type = request.GET.get('list_type', display_settings['list_type'])
+        if list_type != display_settings['list_type']:
+            if list_type == 'thumbs':
+                display_settings['list_type'] = list_type
+            else:
+                display_settings['list_type'] = None
+            request.session['media_tree_display_settings'] = display_settings
+
+        # TODO use current url
+        extra_context['list_url'] = '?list_type='
+        extra_context['thumbs_url'] = '?list_type=thumbs'
+        # TODO only if any values changed
+        extra_context['display_settings'] = display_settings
+        # TODO add thumbnail_size slider
             
         if app_settings.get('MEDIA_TREE_SWFUPLOAD'):
             middleware = 'media_tree.middleware.SessionPostMiddleware'

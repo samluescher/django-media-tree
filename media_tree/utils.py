@@ -1,6 +1,8 @@
 from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings
 import re
+import os
 
 def import_extender(path):
     i = path.rfind('.')
@@ -52,3 +54,28 @@ def multi_splitext(basename):
     if not groups[2]:
         groups[2] = groups[1]
     return groups
+
+
+class FileIcon():
+    def __init__(self, base_path, file_node_instance):
+        self.base_path = base_path
+        self.file_node_instance = file_node_instance
+
+    def __unicode__(self):
+        # TODO not working
+        return self.file_node_instance.get_media_type_name()
+
+    def alt(self):
+        # TODO not working
+        return self.file_node_instance.alt()
+
+    def _get_path(self):
+        #self._require_file()
+        return os.path.join(settings.MEDIA_ROOT, self.base_path)
+    path = property(_get_path)
+
+    def _get_url(self):
+        #self._require_file()
+        return os.path.join(settings.MEDIA_URL, self.base_path)
+    url = property(_get_url)
+

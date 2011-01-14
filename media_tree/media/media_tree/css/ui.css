@@ -1,3 +1,16 @@
+.thumbnails {
+    margin-right: 160px;
+}
+
+.thumbnails li {
+    float: left; 
+    width: 260px; 
+    height: 190px; 
+    list-style-type: none; 
+    text-align: center; 
+    padding: 1em;
+}
+
 .ui-slider-handle {
     cursor: default;
     height: 1.2em;

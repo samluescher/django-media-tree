@@ -1,5 +1,5 @@
 {% extends "admin/change_list.html" %}
-{% load adminmedia admin_list i18n mptt_tags %}
+{% load adminmedia admin_list i18n mptt_tags media_tree_admin %}
 
 {% block extrahead %}
 {{ block.super }}
@@ -76,6 +76,11 @@ it is embedded here.
 {% block filters %}
   {% if cl.has_filters %}
     <div id="changelist-filter">
+      <h2>{% trans 'View as' %}</h2>
+      <ul>
+          <li{% if not display_settings.list_type %} class="selected"{% endif %}><a href="{{ list_url }}">List</a></li>
+          <li{% if display_settings.list_type == "thumbs" %} class="selected"{% endif %}><a href="{{ thumbs_url }}">Thumbnails</a></li>
+      </ul>
       
       <h2>{% trans 'Folders' %}</h2>
       <div>
@@ -98,6 +103,10 @@ it is embedded here.
 
 {% block result_list %}
     {% if action_form and actions_on_top %}{% admin_actions %}{% endif %}
-    {% result_list cl %}
+        {% if display_settings.list_type == "thumbs" %}
+            {% result_list_thumbnails cl %}
+        {% else %}
+            {% result_list cl %}
+        {% endif %}
     {% if action_form and actions_on_bottom %}{% admin_actions %}{% endif %}
 {% endblock %}

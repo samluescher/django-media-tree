@@ -8,7 +8,7 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils import dateformat
 from media_tree import app_settings, media_types
-from media_tree.utils import multi_splitext
+from media_tree.utils import multi_splitext, FileIcon
 import mimetypes
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
@@ -23,6 +23,9 @@ from copy import copy
 
 MIMETYPE_CONTENT_TYPE_MAP = app_settings.get('MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP')
 EXT_MIMETYPE_MAP = app_settings.get('MEDIA_TREE_EXT_MIMETYPE_MAP')
+FILE_ICONS = app_settings.get('MEDIA_TREE_FILE_ICONS')
+MEDIA_SUBDIR = app_settings.get('MEDIA_TREE_MEDIA_SUBDIR')
+MEDIA_TYPE_NAMES = app_settings.get('MEDIA_TREE_CONTENT_TYPES')
 
 def join_phrases(text, new_text, prepend=', ', append='', compare_text=None, else_prepend='', else_append='', if_empty=False):
     if new_text != '' or if_empty:
@@ -181,6 +184,16 @@ class FileNode(models.Model):
 
     def get_qualified_preview_url(self):
         return self.get_qualified_file_url('preview_file')
+
+    def get_file_icon(self):
+        if self.extension in FILE_ICONS:
+            basename = FileIcon(FILE_ICONS[self.extension], self)
+        else:
+            basename = FILE_ICONS[self.media_type]
+        return FileIcon(os.path.join(MEDIA_SUBDIR, 'img/icons', basename), self)
+
+    def get_media_type_name(self):
+        return MEDIA_TYPE_NAMES[self.media_type]
 
     def is_descendant_of(self, ancestor_nodes):
         if issubclass(ancestor_nodes.__class__, FileNode):
@@ -441,6 +454,12 @@ class FileNode(models.Model):
     
     def path(self):
         return self.file.path if self.file else ''
+
+    def is_folder(self):
+        return self.node_type == FileNode.FOLDER
+
+    def is_file(self):
+        return self.node_type == FileNode.FILE
 
     def is_image(self):
         return self.media_type == media_types.SUPPORTED_IMAGE
