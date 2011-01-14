@@ -39,7 +39,11 @@ class FileForm(forms.ModelForm):
         model = FileNode
         fieldsets = [
             (_('File'), {
-                'fields': ['file', 'is_default', 'preview_file']
+                'fields': ['file']
+            }),
+            (_('Display'), {
+                'fields': ['preview_file', 'position', 'is_default'],
+                'classes': ['collapse']
             }),
             (_('Metadata'), {
                 'fields': ['title', 'description']

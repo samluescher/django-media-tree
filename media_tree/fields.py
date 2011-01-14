@@ -11,6 +11,8 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django import template
 from django.contrib.admin.widgets import AdminFileWidget
+from sorl.thumbnail.main import DjangoThumbnail
+from sorl.thumbnail.base import ThumbnailException
 import os
 
 THUMBNAIL_EXTENSIONS = app_settings.get('MEDIA_TREE_THUMBNAIL_EXTENSIONS')
@@ -23,24 +25,17 @@ class AdminThumbWidget(AdminFileWidget):
         super(AdminThumbWidget, self).__init__(attrs)
  
     def render(self, name, value, attrs=None):
-        output = []
+        output = super(AdminThumbWidget, self).render(name, value, attrs)
         if value and hasattr(value, "url"):
             try:
                 thumb_extension = os.path.splitext(value.name)[1].lstrip('.').lower()
                 if not thumb_extension in THUMBNAIL_EXTENSIONS:
                     thumb_extension = None
-                from sorl.thumbnail.main import DjangoThumbnail
-                thumb = '<img src="%s" alt="%s" />' % (DjangoThumbnail(value.name, (300, 300), ['sharpen'], extension=thumb_extension).absolute_url, os.path.basename(value.name)) 
+                thumb = u'<img src="%s" alt="%s" />' % (DjangoThumbnail(value.name, (300, 300), ['sharpen'], extension=thumb_extension).absolute_url, os.path.basename(value.name)) 
+                output = u'<div><p><span class="thumbnail"><a href="%s">%s</a></span></p><p>%s</p></div>' % (value.url, thumb, output)
             except:
-                # just act like a normal file
-                output.append('<p><a target="_blank" href="%s">%s</a></p><label>%s</label> ' %
-                    (value.url, os.path.basename(value.path), _('Change:')))
-            else:
-                output.append('<p class="thumbnail"><a target="_blank" href="%s">%s</a></p><p><a target="_blank" href="%s">%s</a></p><label>%s</label> ' %
-                    (value.url, thumb, value.url, os.path.basename(value.path), _('Change:')))
-
-        output.append(super(AdminThumbWidget, self).render(name, value, attrs))
-        return mark_safe(u''.join(output))
+                pass
+        return mark_safe(output)
 
 
 LEVEL_INDICATOR = app_settings.get('MEDIA_TREE_LEVEL_INDICATOR')
