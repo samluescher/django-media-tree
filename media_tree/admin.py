@@ -45,6 +45,7 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
 
     formfield_overrides = {
         models.FileField: {'widget': AdminThumbWidget},
+        models.ImageField: {'widget': AdminThumbWidget},
     }
 
     actions = []
@@ -88,7 +89,7 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
     def admin_thumbnail(self, node):
         #url = node.pk
         url = None
-        if node.is_image():
+        if node.is_image() or node.preview_file:
             return render_to_string('admin/media_tree/filenode/thumbnail.html', { 'node': node, 'url': url, 'MEDIA_URL': settings.MEDIA_URL })
         else:
             icon = node.get_file_icon()
