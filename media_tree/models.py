@@ -161,7 +161,6 @@ class FileNode(models.Model):
             return self
 
     def get_qualified_file_url(self, field_name='file'):
-<<<<<<< HEAD
         """
         Returns a fully qualified URL for a file field, including protocol, domain and port.
         In most cases, you can just use `file_field.url` instead, which (depending on your 
@@ -181,21 +180,11 @@ class FileNode(models.Model):
             'domain': domain.rstrip('/'),
             'port': ':'+port if port else '',
             'url': url,
-=======
-        attr = getattr(self, field_name)
-        from django.contrib.sites.models import Site
-        site = Site.objects.get_current()
-        return '%(protocol)s://%(domain)s%(url)s' % {
-            'protocol': 'http',
-            'domain': site.domain.rstrip('/'),
-            'url': attr.url,
->>>>>>> 4cc296318fee153cf13a4ea36e1a1f7dc6433e3a
-        }
+    }
 
     def get_qualified_preview_url(self):
         return self.get_qualified_file_url('preview_file')
 
-<<<<<<< HEAD
     def get_file_icon(self):
         if self.extension in FILE_ICONS:
             basename = FileIcon(FILE_ICONS[self.extension], self)
@@ -206,8 +195,6 @@ class FileNode(models.Model):
     def get_media_type_name(self):
         return MEDIA_TYPE_NAMES[self.media_type]
 
-=======
->>>>>>> 4cc296318fee153cf13a4ea36e1a1f7dc6433e3a
     def is_descendant_of(self, ancestor_nodes):
         if issubclass(ancestor_nodes.__class__, FileNode):
             ancestor_nodes = (ancestor_nodes,)
