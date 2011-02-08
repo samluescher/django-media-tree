@@ -1,10 +1,11 @@
-from cms.plugin_base import CMSPluginBase
-from cms.plugin_pool import plugin_pool
-from django.utils.translation import ugettext_lazy as _
 from media_tree.models import FileNode
 from media_tree.cms_media_plugins.helpers import PluginLink, FolderLinkBase
 from media_tree.cms_media_plugins.models import MediaTreeImage, MediaTreeList, MediaTreeListItem, MediaTreeSlideshow, MediaTreeSlideshowItem, MediaTreeGallery, MediaTreeGalleryItem
 from media_tree import media_types
+from media_tree.media_backends import get_media_backend
+from cms.plugin_base import CMSPluginBase
+from cms.plugin_pool import plugin_pool
+from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from media_tree.cms_media_plugins.forms import MediaTreeImagePluginForm, MediaTreeListPluginForm, MediaTreeSlideshowPluginForm, MediaTreeGalleryPluginForm, MediaTreeSlideshowItemInlineForm, MediaTreeGalleryItemInlineForm, MediaTreeListItemInline, MediaTreeSlideshowItemInline, MediaTreeGalleryItemInline
 from django.core.urlresolvers import reverse
@@ -18,9 +19,10 @@ import os
 
 MEDIA_SUBDIR = app_settings.get('MEDIA_TREE_MEDIA_SUBDIR')
 
-# TODO: Disentangle settings
+# TODO: Disentangle settings with media_tree
 # TODO: Solve image_detail with get_absolute_url()?
 # TODO: Rework gallery plugin
+# TODO: Slideshow/Gallery/Filelist ordering and drag/drop
 
 class MediaTreeImagePlugin(CMSPluginBase):
 
@@ -60,9 +62,8 @@ class MediaTreeImagePlugin(CMSPluginBase):
 
 
     def icon_src(self, instance):
-        from sorl.thumbnail.main import DjangoThumbnail
-        thumb = DjangoThumbnail(instance.node.file.name, (200, 200), ['sharpen'])
-        return thumb.absolute_url
+        thumb = get_media_backend().get_thumbnail(instance.node.file, {'size': (200, 200), 'sharpen': True})
+        return thumb.url
 
     def icon_alt(self, instance):
         return instance.node.alt

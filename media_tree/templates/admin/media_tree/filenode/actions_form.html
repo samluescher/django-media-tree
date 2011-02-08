@@ -1,7 +1,9 @@
 {% extends "admin/base_site.html" %}
 {% load i18n adminmedia %}
 {% block breadcrumbs %}
+    {% with title as breadcrumbs_title %}
     {% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
+    {% endwith %}
 {% endblock %}
 {% block extrahead %}
     {{ block.super }}
@@ -27,13 +29,6 @@ var selectAll = function(field, status)
     
 }
 //]]>
-
-(function($) {
-    $(document).ready(function($) {
-        $("tr input.action-select").actions();
-    });
-})(django.jQuery);
-
 </script>
 {% endif %}
 {% if form %}

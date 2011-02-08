@@ -38,3 +38,21 @@
     border: 1px #CCC solid;
     display: inline-block;
 }
+
+
+.popup-buttons {
+    position: fixed; 
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 1000;
+    padding: 1em 0 1em 0;
+
+    background: white url(../img/admin/nav-bg.gif) 0 100% repeat-x;
+    border-top: 1px solid #ccc;
+    overflow: hidden;
+}
+
+.popup-buttons input {
+    margin-right: 1em;
+}

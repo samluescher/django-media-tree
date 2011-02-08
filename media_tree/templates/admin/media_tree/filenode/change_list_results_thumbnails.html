@@ -18,12 +18,9 @@
     <a href="{{ result.get_admin_url }}">
     <span class="figure">
         <span class="image">
-            {% if result.is_image %}
-            {% thumbnail result.file "240x160" sharpen as thumb %}
-            <img src="{{ thumb }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
-            {% else %}
-            <img src="{{ result.get_file_icon.url }}" />
-            {% endif %}
+            {% with result as node %}
+            {% include "admin/media_tree/filenode/includes/preview.html" %}
+            {% endwith %}
         </span><br />
         <span class="caption">
         {{ result }}        

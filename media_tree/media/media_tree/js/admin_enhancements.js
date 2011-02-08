@@ -39,4 +39,30 @@ django.jQuery(function($) {
         }
         $('#add-folder-name').select().focus();
     });
+    
+    if (document.location.href.indexOf('pop=1') != -1) {
+        $('#changelist input[type=checkbox]').change(function() {
+            if (this.checked) {
+                console.log('selected '+$(this).val());
+            }
+        });
+        $('#popup-button-select').click(function() {
+            var selectedId = $('#changelist input[type=checkbox]:checked').val();
+            if (selectedId) {
+                opener.dismissRelatedLookupPopup(window, selectedId); 
+            }
+            return false;
+        });
+        $('a[onclick^=opener]').each(function() {
+            this.onclick = false;
+            $(this).click(function() {
+                var href = $(this).attr('href');
+                var querySplit = document.location.href.split('?');
+                querySplit[0] = href;
+                window.location.href = querySplit.join('?');
+                return false;
+            });
+        });
+    }
+
 });

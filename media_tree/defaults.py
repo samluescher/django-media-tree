@@ -3,11 +3,11 @@ from django.utils.translation import ugettext_lazy as _
 from media_tree import media_types
 from media_tree.cms_media_plugins.helpers import PluginLink
 
-MEDIA_TREE_LIST_DISPLAY = ('admin_thumbnail', 'name', 'size_formatted', 'extension', 'resolution_formatted', 'count_descendants', 'modified', 'modified_by', 'has_metadata_including_descendants', 'caption', 'position')
+MEDIA_TREE_LIST_DISPLAY = ('admin_preview', 'name', 'size_formatted', 'extension', 'resolution_formatted', 'count_descendants', 'modified', 'modified_by', 'has_metadata_including_descendants', 'caption', 'position')
 
 MEDIA_TREE_LIST_FILTER = ('media_type', 'extension', 'has_metadata')
 
-MEDIA_TREE_LIST_DISPLAY_LINKS = ('name', 'admin_thumbnail')
+MEDIA_TREE_LIST_DISPLAY_LINKS = ('name', 'admin_preview')
 
 MEDIA_TREE_SEARCH_FIELDS = ('name', 'title', 'description', 'author', 'copyright', 'override_caption', 'override_alt')
 
@@ -18,6 +18,8 @@ MEDIA_TREE_UPLOAD_SUBDIR = 'upload'
 MEDIA_TREE_PREVIEW_SUBDIR = 'upload/_preview'
 
 MEDIA_TREE_MEDIA_SUBDIR = 'media_tree'
+
+MEDIA_TREE_ICONS_DIR = 'media_tree/img/icons'
 
 MEDIA_TREE_ADMIN_ACTIONS = None
 

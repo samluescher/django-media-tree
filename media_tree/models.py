@@ -8,7 +8,7 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils import dateformat
 from media_tree import app_settings, media_types
-from media_tree.utils import multi_splitext, FileIcon
+from media_tree.utils import multi_splitext, IconFile
 import mimetypes
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
@@ -25,6 +25,7 @@ MIMETYPE_CONTENT_TYPE_MAP = app_settings.get('MEDIA_TREE_MIMETYPE_CONTENT_TYPE_M
 EXT_MIMETYPE_MAP = app_settings.get('MEDIA_TREE_EXT_MIMETYPE_MAP')
 FILE_ICONS = app_settings.get('MEDIA_TREE_FILE_ICONS')
 MEDIA_SUBDIR = app_settings.get('MEDIA_TREE_MEDIA_SUBDIR')
+ICONS_DIR = app_settings.get('MEDIA_TREE_ICONS_DIR')
 MEDIA_TYPE_NAMES = app_settings.get('MEDIA_TREE_CONTENT_TYPES')
 
 def join_phrases(text, new_text, prepend=', ', append='', compare_text=None, else_prepend='', else_append='', if_empty=False):
@@ -105,7 +106,7 @@ class FileNode(models.Model):
         return FileNode(name=_('Media Objects'), level=-1)
 
     # Workaround for http://code.djangoproject.com/ticket/11058
-    def admin_thumbnail(self):
+    def admin_preview(self):
         pass
 
     @Property
@@ -185,12 +186,20 @@ class FileNode(models.Model):
     def get_qualified_preview_url(self):
         return self.get_qualified_file_url('preview_file')
 
-    def get_file_icon(self):
+    def get_preview_file(self):
+        if self.preview_file:
+            return self.preview_file
+        elif self.is_image():
+            return self.file
+        else:
+            return self.get_icon_file()
+
+    def get_icon_file(self):
         if self.extension in FILE_ICONS:
-            basename = FileIcon(FILE_ICONS[self.extension], self)
+            basename = FILE_ICONS[self.extension]
         else:
             basename = FILE_ICONS[self.media_type]
-        return FileIcon(os.path.join(MEDIA_SUBDIR, 'img/icons', basename), self)
+        return IconFile(self, os.path.join(ICONS_DIR, basename))
 
     def get_media_type_name(self):
         return MEDIA_TYPE_NAMES[self.media_type]

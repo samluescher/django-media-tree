@@ -1,6 +1,8 @@
 Django Media Tree
 =================
 
+@TODO: installer package with proper dependencies
+
 A Django app for managing your site media (images, audio, video, archives etc.) and organizing it in one central, tree-based location.
 
 __Features__:

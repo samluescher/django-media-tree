@@ -1,7 +1,8 @@
 from media_tree.models import FileNode
 from media_tree.forms import FolderForm, FileForm, UploadForm
-from media_tree.fields import AdminThumbWidget
+from media_tree.widgets import AdminThumbWidget
 from media_tree.admin_actions import core_actions
+from media_tree.admin_actions import maintenance_actions
 from media_tree.admin_actions.utils import execute_empty_queryset_action
 from media_tree.mptt_admin import MPTTModelAdmin
 from media_tree import defaults
@@ -32,10 +33,10 @@ except ImportError:
 MEDIA_SUBDIR = app_settings.get('MEDIA_TREE_MEDIA_SUBDIR')
 
 '''
-TODO: For ZIPs in list, click "actions" drop down on the right --> Extract to folder --> Form w/ Extracted files+folder preview, "to folder", "Create subfolder"
+TODO: REMOVE sorl.thumbnail support. Replace with easy_thumbnails (with an abstraction level, ThumbnailBackend)
+TODO: Copy and move are broken
 TODO: Delete does not work from change form if in subfolder
 '''
-
 class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
     list_display = app_settings.get('MEDIA_TREE_LIST_DISPLAY')
     list_filter = app_settings.get('MEDIA_TREE_LIST_FILTER')
@@ -85,17 +86,10 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
         form.parent_folder = self.get_parent_folder(request)
         return form
 
-    # TODO move to model, with thumbnail() method
-    def admin_thumbnail(self, node):
-        #url = node.pk
-        url = None
-        if node.is_image() or node.preview_file:
-            return render_to_string('admin/media_tree/filenode/thumbnail.html', { 'node': node, 'url': url, 'MEDIA_URL': settings.MEDIA_URL })
-        else:
-            icon = node.get_file_icon()
-            return render_to_string('admin/media_tree/filenode/icon.html', { 'icon': icon, 'url': url, 'MEDIA_URL': settings.MEDIA_URL })
-    admin_thumbnail.short_description = ' ' # TODO Space due to Django bug http://code.djangoproject.com/ticket/12434
-    admin_thumbnail.allow_tags = True
+    def admin_preview(self, node):
+        return render_to_string('admin/media_tree/filenode/includes/preview.html', {'node': node})
+    admin_preview.short_description = ''
+    admin_preview.allow_tags = True
 
     def size_formatted(self, node, descendants=True):
         if node.node_type == FileNode.FOLDER:
@@ -314,6 +308,9 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
 FileNodeAdmin.register_action(core_actions.copy_selected)
 FileNodeAdmin.register_action(core_actions.move_selected)
 FileNodeAdmin.register_action(core_actions.change_metadata_for_selected)
+# TODO Actions with permissions (maintenance_actions should require superuser)
+FileNodeAdmin.register_action(maintenance_actions.delete_orphaned_files)
+FileNodeAdmin.register_action(maintenance_actions.rebuild_tree)
 
 ADMIN_ACTIONS = app_settings.get('MEDIA_TREE_ADMIN_ACTIONS')
 if ADMIN_ACTIONS:
