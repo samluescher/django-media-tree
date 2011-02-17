@@ -21,6 +21,8 @@ from django.conf import settings
 from django.utils.formats import get_format
 from copy import copy
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 MIMETYPE_CONTENT_TYPE_MAP = app_settings.get('MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP')
 EXT_MIMETYPE_MAP = app_settings.get('MEDIA_TREE_EXT_MIMETYPE_MAP')
 FILE_ICONS = app_settings.get('MEDIA_TREE_FILE_ICONS')
@@ -95,6 +97,20 @@ class FileNode(models.Model):
 
     # TODO: PickledField for media extenders
     extra_metadata = models.TextField(_('extra metadata'), editable=None)
+
+    # TODO: Move to media extender
+    focal_x = models.DecimalField(_('Focal point X'), blank=True, null=True, max_digits=5, decimal_places=3, validators=[MinValueValidator(0), MaxValueValidator(1)])
+    focal_y = models.DecimalField(_('Focal point Y'), blank=True, null=True, max_digits=5, decimal_places=3, validators=[MinValueValidator(0), MaxValueValidator(1)])
+
+    # TODO: Move to media extender
+    def get_crop(self):
+        x = ''
+        y = ''
+        if self.focal_x:
+            x = str(int(round(self.focal_x * 100)))
+        if self.focal_y:
+            y = str(int(round(self.focal_y * 100)))
+        return "%s,%s" % (x, y)
 
     class Meta:
         ordering = ['tree_id', 'lft']

@@ -56,6 +56,8 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
             os.path.join(MEDIA_SUBDIR, 'lib/swfupload/swfupload_fp10', 'swfupload.js'),
             os.path.join(MEDIA_SUBDIR, 'lib/swfupload/plugins', 'swfupload.queue.js'),
             os.path.join(MEDIA_SUBDIR, 'lib/swfupload/plugins', 'swfupload.cookies.js'),
+            os.path.join(MEDIA_SUBDIR, 'lib/jquery', 'jquery.js'),
+            os.path.join(MEDIA_SUBDIR, 'lib/jquery', 'jquery.ui.js'),
             os.path.join(MEDIA_SUBDIR, 'js', 'admin_enhancements.js'),
             os.path.join(MEDIA_SUBDIR, 'js', 'jquery.swfupload_manager.js'),
         ]

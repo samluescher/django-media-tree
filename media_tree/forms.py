@@ -45,6 +45,10 @@ class FileForm(forms.ModelForm):
                 'fields': ['preview_file', 'position', 'is_default'],
                 'classes': ['collapse']
             }),
+            (_('Focal point'), {
+                'fields': ['focal_x', 'focal_y'],
+                'classes': ['collapse']
+            }),
             (_('Metadata'), {
                 'fields': ['title', 'description']
             }),

@@ -107,7 +107,7 @@ MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS = {
     'sharpen': None, # None means enabled 
 }
 
-MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_DEFAULT = PluginLink.LINK_IMAGE_DETAIL if getattr(settings, 'CMS_APPLICATIONS_URLS', {}).has_key('media_tree.urls') else None
+MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_DEFAULT = PluginLink.LINK_IMAGE_DETAIL if dict(getattr(settings, 'CMS_APPLICATIONS_URLS', {})).has_key('media_tree.urls') else None
 
 MEDIA_TREE_SLIDESHOW_TRANSITION_FX_CHOICES = (
     ('blindX','blindX',),
