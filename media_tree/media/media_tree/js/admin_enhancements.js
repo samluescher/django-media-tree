@@ -160,8 +160,8 @@ jQuery(function($) {
             return {x: x, y: y};
         }
         focalPoint.setPositionToInput = function() {
-            var x = inputX.val();
-            var y = inputY.val();
+            var x = inputX.val().replace(/[^0-9\.]/g, '');
+            var y = inputY.val().replace(/[^0-9\.]/g, '');
             var emptyX = x == '';
             var emptyY = y == '';
             if (emptyX) x = defaultX; else x = parseFloat(x);
@@ -186,14 +186,14 @@ jQuery(function($) {
         inputY.change(focalPoint.setPositionToInput);
         
         focalPoint.setPositionToInput();
-        
-        /*focalPoint.hide();
-        container.mouseenter(function() { 
-            focalPoint.show();
-        });
-        container.mouseleave(function() { 
+
+        var fieldset = inputX.closest('fieldset');
+        if (fieldset.hasClass('collapsed')) {
             focalPoint.hide();
-        });*/
+        }
+        fieldset.find('.collapse-toggle').click(function() {
+            focalPoint.toggle();
+        });
     }
 
 });

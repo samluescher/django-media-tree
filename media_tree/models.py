@@ -99,7 +99,9 @@ class FileNode(models.Model):
     extra_metadata = models.TextField(_('extra metadata'), editable=None)
 
     # TODO: Move to media extender
-    focal_x = models.DecimalField(_('Focal point X'), blank=True, null=True, max_digits=5, decimal_places=3, validators=[MinValueValidator(0), MaxValueValidator(1)])
+    focal_x = models.DecimalField(_('Focal point X'), blank=True, null=True, 
+        max_digits=5, decimal_places=3, validators=[MinValueValidator(0), MaxValueValidator(1)],
+        help_text=_('To change the focal point, you can drag the marker in the thumbnail above.'))
     focal_y = models.DecimalField(_('Focal point Y'), blank=True, null=True, max_digits=5, decimal_places=3, validators=[MinValueValidator(0), MaxValueValidator(1)])
 
     # TODO: Move to media extender
@@ -145,6 +147,10 @@ class FileNode(models.Model):
         if not change:
             self.created_by = user
         self.modified_by = user
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('media_tree_image_detail', [self.pk])
 
     def get_node_path(self):
         nodes = []
