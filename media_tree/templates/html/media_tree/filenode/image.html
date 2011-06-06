@@ -1,3 +1,4 @@
+{% extends request.current_page.template %}
 {% block content %}{% spaceless %}
     {% if back_link_url %}
         <p><a href="{{ back_link_url }}">{{ back_link_text }}</a></p>
