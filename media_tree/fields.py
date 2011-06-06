@@ -2,6 +2,7 @@ from media_tree import app_settings
 from media_tree.models import FileNode
 from media_tree.widgets import FileNodeForeignKeyRawIdWidget
 from mptt.forms import TreeNodeChoiceField
+from django.forms.widgets import Select
 from django.db import models
 from django import forms
 from django.utils.translation import ugettext as _
@@ -14,7 +15,8 @@ LEVEL_INDICATOR = app_settings.get('MEDIA_TREE_LEVEL_INDICATOR')
 class FileNodeChoiceField(TreeNodeChoiceField):
 
     # TODO: FileNodeForeignKeyRawIdWidget should only be the standard widget when in admin
-    widget = FileNodeForeignKeyRawIdWidget
+    widget = Select
+    #widget = ForeignKeyRawIdWidget
 
     def __init__(self, allowed_node_types=None, allowed_media_types=None, allowed_extensions=None, level_indicator=LEVEL_INDICATOR, rel=None, *args, **kwargs):
         self.allowed_node_types = allowed_node_types
@@ -22,11 +24,13 @@ class FileNodeChoiceField(TreeNodeChoiceField):
         self.allowed_extensions = allowed_extensions
         kwargs['level_indicator'] = level_indicator;
         if not kwargs.has_key('widget'):
-            kwargs['widget'] = self.widget(rel)
+            # For FileNodeForeignKeyRawIdWidget
+            #kwargs['widget'] = self.widget(rel) 
+            kwargs['widget'] = self.widget
         super(FileNodeChoiceField, self).__init__(*args, **kwargs)
         # TODO there should nonetheless be an "empty item", also if not required
         if not self.required:
-            self.empty_label = FileNode.get_root_node().name
+            self.empty_label = FileNode.get_top_node().name
         else:
             self.empty_label = '---------'
 

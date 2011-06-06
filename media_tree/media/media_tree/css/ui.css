@@ -48,11 +48,117 @@
     z-index: 1000;
     padding: 1em 0 1em 0;
 
-    background: white url(../img/admin/nav-bg.gif) 0 100% repeat-x;
+/*    background: white url(../img/admin/nav-bg.gif) 0 100% repeat-x;*/
     border-top: 1px solid #ccc;
     overflow: hidden;
 }
 
 .popup-buttons input {
     margin-right: 1em;
+}
+
+
+/* TODO: Move to media extender */
+
+.focal-point-container {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    z-index: 888;
+}
+
+.focal-point {
+    background: url(../img/focal-point.png) no-repeat;
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    cursor: pointer;
+    z-index: 999;
+}
+
+
+
+
+form .thumbnail {
+    display: block;
+    position: relative;
+    width: auto;
+}
+
+form .caption {
+    display: none;
+}
+
+.filesize {
+    white-space: nowrap;
+}
+
+.browse-controls {
+    font-size: 110%;
+    font-weight: bold;
+    white-space: nowrap;
+    display: block;
+}
+
+.browse-controls a {
+    line-height: 16px;
+    display: inline-block;
+}
+
+.browse-controls a.name {
+    margin-left: .5em;
+}
+
+.folder {
+    width: 16px;
+    height: 16px;
+    background: url(../img/folder.png) no-repeat;
+}
+
+.folder-toggle {
+    width: 16px;
+    height: 16px;
+    background: url(../img/folder-toggle.png) no-repeat;
+    display: inline-block;
+}
+
+.folder span, .folder-toggle span {
+    visibility: hidden;
+}
+
+.folder.collapsed {
+    background-position: 0 0;
+}
+
+.folder.expanded {
+    background-position: 0 100%;
+}
+
+.folder-toggle.collapsed {
+    background-position: 0 0;
+}
+
+.folder-toggle.collapsed:hover {
+    background-position: 0 100%;
+}
+
+.folder-toggle.expanded {
+    background-position: 100% 0;
+}
+
+.folder-toggle.expanded:hover {
+    background-position: 100% 100%;
+}
+
+.folder-toggle.loading {
+    background-image: url(../img/folder-toggle-loading.gif);
+}
+
+.folder-toggle.dummy {
+    background-image: none;
+}
+
+
+.ui-state-highlight {
+    background: red;
 }

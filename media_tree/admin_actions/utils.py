@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 
 def get_actions_context(modeladmin):
     return {
-        'node': FileNode.get_root_node(), # TODO get current folder
+        'node': FileNode.get_top_node(), # TODO get current folder
         "opts": modeladmin.model._meta,
         "root_path": modeladmin.admin_site.root_path,
         "app_label": modeladmin.model._meta.app_label,

@@ -548,13 +548,13 @@ msgid "to"
 msgstr "nach"
 
 #: admin_actions/maintenance_actions.py:30
-msgid "The following files exist on disk, but are not found in the database"
+msgid "The following files exist on storage, but are not found in the database"
 msgstr ""
 "Die folgenden Dateien existieren auf dem Datenträger, aber sind nicht in der "
 "Datenbank enthalten"
 
 #: admin_actions/maintenance_actions.py:34
-msgid "Yes, I am sure that I want to delete the selected files from disk:"
+msgid "Yes, I am sure that I want to delete the selected files from storage:"
 msgstr ""
 "Ja, ich bin sicher, dass ich die markierten Dateien vom Datenträger löschen "
 "will:"
@@ -565,13 +565,13 @@ msgstr "Es gibt keine verwaisten Dateien."
 
 #: admin_actions/maintenance_actions.py:83
 #, python-format
-msgid "%i file deleted from disk."
-msgid_plural "%i files deleted from disk."
+msgid "%i file deleted from storage."
+msgid_plural "%i files deleted from storage."
 msgstr[0] "%i Datei vom Datenträger gelöscht."
 msgstr[1] "%i Dateien vom Datenträger gelöscht."
 
 #: admin_actions/maintenance_actions.py:85
-msgid "The following files could not be deleted from disk:"
+msgid "The following files could not be deleted from storage:"
 msgstr "Die folgenden Dateien konnten nicht vom Datenträger gelöscht werden:"
 
 #: admin_actions/maintenance_actions.py:96
@@ -584,7 +584,7 @@ msgstr "Markierte Dateien löschen"
 
 #: admin_actions/maintenance_actions.py:100
 msgid ""
-"The following files in the database do not exist on disk. You should fix "
+"The following files in the database do not exist on storage. You should fix "
 "these media objects:"
 msgstr ""
 "Die folgenden Dateien in der Datenbank existieren nicht auf dem Datenträger. "

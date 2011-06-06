@@ -1,0 +1,59 @@
+{% extends "admin/mptt_change_list.html" %}
+{% load adminmedia admin_list i18n mptt_tags media_tree_admin %}
+
+{% block extrahead %}
+{{ block.super }}
+{% comment %}
+Since the FileNodeAdmin's Media class can't use reverse to determine the jsi18n URL, 
+it is embedded here.
+{% endcomment %} 
+{% endblock %}
+
+{% block object-tools %}
+    <ul class="object-tools">
+      {% if has_add_permission %}
+      {% if swfupload_upload_url %}
+          <li class="swfupload-button-container">
+            <a href="javascript:void(0)" class="addlink swfupload">
+              <span class="caption">{% trans "Upload files" %}</span></span>
+              <span class="swfupload-button-overlay"><span id="swfupload-button"></span></span>
+            </a>
+          </li>
+
+          <script type="text/javascript">// <![CDATA[
+              jQuery(function($) {
+                  var manager = $.SWFUploadManager({
+                      upload_url: '{{ swfupload_upload_url }}'
+                      ,flash_url: '{{ swfupload_flash_url }}'
+                      ,button_placeholder_id: "swfupload-button"
+                      ,file_post_name : "file"
+                      ,file_types : "{% for ext in file_types %}*.{{ ext }};{% endfor %}"
+                      ,file_size_limit : "{{ file_size_limit }}B"
+                      ,button_width: "200"
+                      ,button_height: "30"
+                  });
+                  $('#changelist input[name=_selected_action]').change(function() {
+                      var targetFolder = $.getSelectedFolder();
+                      var caption = '{% trans "Upload files" %}';
+                      if (targetFolder) {
+                          caption = '{% trans "Upload files to:" %} '+targetFolder.name;
+                      }
+                      $('.addlink.swfupload .caption').text(caption);
+                  });
+              });
+          // ]]></script>
+      {% else %}
+          <li>
+            <a href="add/{% if is_popup %}?_popup=1{% endif %}" class="addlink">
+              {% trans "Add file" %}
+            </a>
+          </li>
+      {% endif %}
+      <li>
+        <a id="object-tool-add-folder" href="add_folder/{% if is_popup %}?_popup=1{% endif %}" class="addlink">
+          {% trans "Add folder" %}
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+{% endblock %}

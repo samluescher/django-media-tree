@@ -102,8 +102,11 @@ class FileNode(models.Model):
         verbose_name_plural = _('media objects')
         
     @staticmethod
-    def get_root_node():
+    def get_top_node():
         return FileNode(name=_('Media Objects'), level=-1)
+
+    def is_top_node(self):
+        return self.level == -1
 
     # Workaround for http://code.djangoproject.com/ticket/11058
     def admin_preview(self):
@@ -135,7 +138,7 @@ class FileNode(models.Model):
         for node in self.get_ancestors():
             nodes.append(node)
         if (self.level != -1):
-            nodes.insert(0, FileNode.get_root_node())
+            nodes.insert(0, FileNode.get_top_node())
         nodes.append(self)
         return nodes
     
@@ -317,16 +320,12 @@ class FileNode(models.Model):
         return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
             filter=filter, ordering=ordering, processors=processors, list_method='append', max_depth=max_depth, max_nodes=max_nodes)
                             
-    def count_descendants(self):
+    def get_descendant_count_display(self):
         if self.node_type == FileNode.FOLDER:
-            count = self.get_descendant_count()
-        else:
-            count = 0
-        if count > 0:
-            return count
+            return self.get_descendant_count()
         else:
             return ''
-    count_descendants.short_description = _('Items')
+    get_descendant_count_display.short_description = _('Items')
 
     def has_metadata_including_descendants(self):
         if self.node_type == FileNode.FOLDER:
@@ -338,11 +337,14 @@ class FileNode(models.Model):
     has_metadata_including_descendants.boolean = True
 
     def get_admin_url(self):
-        url = reverse('admin:media_tree_filenode_changelist');
-        for node in self.get_node_path():
-            if node.level >= 0:
-                url += str(node.pk)+'/'
-        return url
+        return reverse('admin:media_tree_filenode_change', args=(self.pk,));
+        
+        # ID Path no longer necessary 
+        #url = reverse('admin:media_tree_filenode_changelist');
+        #for node in self.get_node_path():
+        #    if node.level >= 0:
+        #        url += str(node.pk)+'/'
+        #return url
 
     def get_admin_link(self):
         return force_unicode(mark_safe(u'%s: <a href="%s">%s</a>' % 

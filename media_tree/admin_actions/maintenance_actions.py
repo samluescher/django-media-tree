@@ -35,7 +35,7 @@ class DeleteOrphanedFilesForm(OrphanedFilesForm):
 
     def save(self):
         """
-        Deletes the selected files from disk
+        Deletes the selected files from storage
         """
         for basename in self.cleaned_data['orphaned_selected']:
             full_path = os.path.join(FILE_DIR, basename)
@@ -79,10 +79,10 @@ def delete_orphaned_files(modeladmin, request, queryset=None):
         form = DeleteOrphanedFilesForm(queryset, orphaned_files_choices, request.POST)
         if form.is_valid():
             form.save()
-            node = FileNode.get_root_node()
-            request.user.message_set.create(message=ungettext('%i file deleted from disk.', '%i files deleted from disk.', len(form.success_files)) % len(form.success_files))
+            node = FileNode.get_top_node()
+            request.user.message_set.create(message=ungettext('%i file deleted from storage.', '%i files deleted from storage.', len(form.success_files)) % len(form.success_files))
             if form.error_files:
-                request.user.message_set.create(message=_('The following files could not be deleted from disk:')+' '+repr(form.error_files))
+                request.user.message_set.create(message=_('The following files could not be deleted from storage:')+' '+repr(form.error_files))
             return HttpResponseRedirect(node.get_admin_url())
 
     if not execute:

@@ -42,8 +42,8 @@ class AdminThumbWidget(AdminFileWidget):
                 if not thumb_extension in THUMBNAIL_EXTENSIONS:
                     thumb_extension = None
                 thumb = get_media_backend().get_thumbnail(value, {'size': (300, 300), 'sharpen': True})
-                thumb_html = u'<img src="%s" alt="%s" />' % (thumb.url, os.path.basename(value.name)) 
-                output = u'<div><p><span class="thumbnail"><a href="%s">%s</a></span></p><p>%s</p></div>' % (value.url, thumb_html, output)
+                thumb_html = u'<img src="%s" alt="%s" width="%i" height="%i" />' % (thumb.url, os.path.basename(value.name), thumb.width, thumb.height) 
+                output = u'<div><p><span class="thumbnail">%s</span></p><p>%s</p></div>' % (thumb_html, output)
             except ThumbnailError as inst:
                 pass
         return mark_safe(output)

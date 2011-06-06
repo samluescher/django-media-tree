@@ -132,7 +132,7 @@ class MediaTreeListPlugin(CMSPluginBase):
             filter_media_types = self.list_filter_media_types
         else:
             filter_media_types = None
-            
+        
         return list_method(self.visible_nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
             processors=processors, max_depth=max_depth, ordering=['position', 'name'])
 

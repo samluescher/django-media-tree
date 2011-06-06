@@ -95,7 +95,7 @@ class CopySelectedForm(FileNodeActionsForm):
         new_node = clone_object(node)
         # Creating an UploadedFile from the original file results in the file being copied on disk on save()
         new_node.file = UploadedFile(node.file, node.file.name, None, node.size)
-        new_node.insert_at(target, commit=True)
+        new_node.insert_at(target, save=True)
         if new_node.node_type == FileNode.FOLDER:
             self.copy_nodes_rec(node.get_children(), new_node)
         return new_node

@@ -1,7 +1,7 @@
 from media_tree.models import FileNode
 from media_tree import app_settings
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from media_tree.templatetags.filesize import filesize as format_filesize
 import os
 
@@ -43,6 +43,10 @@ class FileForm(forms.ModelForm):
             }),
             (_('Display'), {
                 'fields': ['preview_file', 'position', 'is_default'],
+                'classes': ['collapse']
+            }),
+            (_('Focal point'), {
+                'fields': ['focal_x', 'focal_y'],
                 'classes': ['collapse']
             }),
             (_('Metadata'), {

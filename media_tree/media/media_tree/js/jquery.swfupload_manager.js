@@ -1,4 +1,4 @@
-django.jQuery(function($) {
+jQuery(function($) {
     $.SWFUploadManager = function(opts)  
     {
         // Since the event methods in the manager object will be bound to
@@ -70,6 +70,10 @@ django.jQuery(function($) {
             }
 
             ,fileDialogComplete: function(numFilesSelected, numFilesQueued) {
+                var targetFolder = $.getSelectedFolder();
+                if (targetFolder) {
+                    this.addPostParam('folder_id', targetFolder.id);
+                }
                 this.startUpload();
             }
 
@@ -108,7 +112,7 @@ django.jQuery(function($) {
 
             ,uploadSuccess: function(file, serverData) {
                 manager.uploadQueueMessage(this.getStats());
-                if (serverData != 'ok') {
+                if (serverData.indexOf('ok') != 0) {
                     this.__uploadError = true;
                     manager.errorMessage(file, gettext('Upload error'));
                 } else {
@@ -224,9 +228,10 @@ django.jQuery(function($) {
                         stats = _this.getStats();
                         if (stats.files_queued == 0) {
                             // reload changelist contents
-                            $('#changelist').replaceWith($(data).find('#changelist'));
+                            $('#changelist').html($(data).find('#changelist').html());
+                            $.initChangelistFolders();
                             // these would be called when document ready
-                            $("tr input.action-select").actions();
+                            django.jQuery("tr input.action-select").actions();
                             manager.markFirstChangelistRow();
                             // insert success message
                             message = ngettext('%i file was added successfully.', '%i files were added successfully.', stats.successful_uploads).replace('%i', stats.successful_uploads);

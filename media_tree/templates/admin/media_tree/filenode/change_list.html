@@ -84,7 +84,7 @@ it is embedded here.
       
       <h2>{% trans 'Folders' %}</h2>
       <div>
-        {% with node.get_root_node as folder %}
+        {% with node.get_top_node as folder %}
         <ul><li><a href="{{ folder.get_admin_url }}" {% ifequal folder node %} style="font-weight: bold{% endifequal %}">{{ folder.name }}</a>
         {% endwith %}
          {% for folder,structure in node.get_folder_tree|tree_info %}

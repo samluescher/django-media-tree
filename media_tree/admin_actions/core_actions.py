@@ -14,7 +14,7 @@ def get_current_node(form):
     if len(selected_nodes) > 0:
         current_node = selected_nodes[0].parent
     if not current_node:
-        return FileNode.get_root_node()
+        return FileNode.get_top_node()
     else:
         return current_node
 
