@@ -89,6 +89,7 @@ form .caption {
     display: none;
 }
 
+<<<<<<< HEAD
 .filesize {
     white-space: nowrap;
 }
@@ -156,6 +157,36 @@ form .caption {
 
 .folder-toggle.dummy {
     background-image: none;
+=======
+.folder-toggle span {
+    display: none;
+}
+
+.folder-toggle {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+.folder-toggle.collapsed {
+    background: url(../img/folder-toggle-collapsed.png);
+}
+
+.folder-toggle.expanded {
+    background: url(../img/folder-toggle-expanded.png);
+}
+
+.folder-toggle.loading {
+    background: url(../img/folder-toggle-loading.gif);
+}
+
+.folder-toggle.dummy {
+}
+
+
+.browse-controls {
+    white-space: nowrap;
+>>>>>>> e8d0e8eaf90a5877b7261ee3a4a622407221a586
 }
 
 

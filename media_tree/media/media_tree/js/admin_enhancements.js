@@ -1,5 +1,8 @@
 jQuery(function($) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> e8d0e8eaf90a5877b7261ee3a4a622407221a586
     $.makeChangelistRow = function(cols, row)
     {
         if ($('#changelist table').length == 0) {
@@ -85,6 +88,7 @@ jQuery(function($) {
         $(this).each(function() {
             var expandedChildren = $(this).data('expandedChildren');
             if (expandedChildren) {
+<<<<<<< HEAD
                 $(expandedChildren).closeExpandedChildren();
                 $(expandedChildren).remove();
                 $(this).data('expandedChildren', null);
@@ -146,12 +150,38 @@ jQuery(function($) {
                 button.addClass('expanded');
                 folder.removeClass('collapsed');
                 folder.addClass('expanded');
+=======
+                expandedChildren.closeExpandedChildren();
+                expandedChildren.remove();
+                $(this).data('expandedChildren', null);
+            }
+        }); 
+    }
+
+    $('#changelist').delegate('.folder-toggle, a', 'click', function(event) {
+        var button = $(this).closest('tr').find('.folder-toggle');
+        if (!button.length || button.is('.dummy')) return;
+        var parentRow = button.closest('tr');
+        var isExpanded = parentRow.data('isExpanded');
+        if (!isExpanded) {
+            parentRow.data('isExpanded', true);
+            button.removeClass('collapsed');
+            button.addClass('loading');
+            $.get(button.attr('href'), function(data) {
+                if (!parentRow.data('isExpanded')) return;
+                button.removeClass('loading collapsed');
+                button.addClass('expanded');
+>>>>>>> e8d0e8eaf90a5877b7261ee3a4a622407221a586
                 var tbody = $(data).find('#changelist tbody');
                 // TODO: yellow selection is enabled, but elements are not POSTed when executing action
                 django.jQuery("tr input.action-select", django.jQuery(tbody)).actions();
                 var rows =  $('tr', tbody);
                 parentRow.after(rows);
+<<<<<<< HEAD
                 parentRow.addExpandedChildren(rows);
+=======
+                parentRow.data('expandedChildren', rows);
+>>>>>>> e8d0e8eaf90a5877b7261ee3a4a622407221a586
                 $('#changelist tbody tr').each(function(index) {
                     $(this).removeClass('row1 row2');
                     if (index % 2) {
@@ -165,6 +195,7 @@ jQuery(function($) {
             parentRow.data('isExpanded', false);
             button.removeClass('loading expanded');
             button.addClass('collapsed');
+<<<<<<< HEAD
             folder.removeClass('expanded');
             folder.addClass('collapsed');
             parentRow.closeExpandedChildren();
@@ -188,6 +219,9 @@ jQuery(function($) {
                 $.cookie('expanded_folders_pk', newCookie, {path: '/', raw: true});
                 console.log($.cookie('expanded_folders_pk'));
             }
+=======
+            parentRow.closeExpandedChildren();
+>>>>>>> e8d0e8eaf90a5877b7261ee3a4a622407221a586
         }
         return false;
     });
