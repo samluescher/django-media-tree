@@ -32,12 +32,13 @@ it is embedded here.
                       ,button_width: "200"
                       ,button_height: "30"
                   });
-                  $('#changelist input[name=_selected_action]').change(function() {
-                      var targetFolder = $.getSelectedFolder();
+                  $('#changelist').delegate('input[name=_selected_action]', 'change', function() {
+                      var targetFolder = $('#changelist').getFirstSelectedFolder();
                       var caption = '{% trans "Upload files" %}';
                       if (targetFolder) {
                           caption = '{% trans "Upload files to:" %} '+targetFolder.name;
                       }
+                      manager.targetFolder = targetFolder;
                       $('.addlink.swfupload .caption').text(caption);
                   });
               });
@@ -56,4 +57,13 @@ it is embedded here.
       </li>
       {% endif %}
     </ul>
+{% endblock %}
+
+{% block result_list %}
+{{ block.super }}
+{% if select_button %} 
+<div class="popup-buttons submit-row">
+    <input class="default popup-select-button" type="submit" value="Select" disabled="disabled" />
+</div>
+{% endif %}
 {% endblock %}

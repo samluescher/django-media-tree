@@ -48,8 +48,8 @@
     z-index: 1000;
     padding: 1em 0 1em 0;
 
-/*    background: white url(../img/admin/nav-bg.gif) 0 100% repeat-x;*/
-    border-top: 1px solid #ccc;
+    background: #E0E0E0 !important;
+    border-top: 1px solid #ddd !important;
     overflow: hidden;
 }
 
@@ -79,7 +79,7 @@
 
 
 
-form .thumbnail {
+#filenode_form .thumbnail {
     display: block;
     position: relative;
     width: auto;
@@ -161,4 +161,17 @@ form .caption {
 
 .ui-state-highlight {
     background: red;
+}
+
+
+.browse-controls .thumbnail {
+    border: 1px #999 solid;
+    -moz-box-shadow: 0px 1px 3px #999;
+    -webkit-box-shadow: 0px 1px 3px #999;
+    box-shadow: 0px 1px 3px #999;
+    float: none;
+}
+
+#changelist td {
+    text-align: left !important;
 }

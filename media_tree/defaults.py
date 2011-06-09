@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from media_tree import media_types
-from media_tree.cms_media_plugins.helpers import PluginLink
+from media_tree.contrib.media_tree_cms_plugins.helpers import PluginLink
 
 MEDIA_TREE_LIST_DISPLAY = ('browse_controls', 'size_formatted', 'extension', 'resolution_formatted', 'get_descendant_count_display', 'modified', 'modified_by', 'has_metadata_including_descendants', 'caption', 'position')
 
@@ -25,6 +25,8 @@ MEDIA_TREE_ADMIN_ACTIONS = None
 
 MEDIA_TREE_THUMBNAIL_SIZES = {
     'default': (100, 100),
+    'medium': (250, 250),
+    'large': (400, 400),
     'full': None, # None means: use original size
 }
 
@@ -35,8 +37,8 @@ MEDIA_TREE_ALLOWED_FILE_TYPES = (
 MEDIA_TREE_THUMBNAIL_EXTENSIONS = ('jpg', 'png')
 
 MEDIA_TREE_MEDIA_EXTENDERS = (
-    'media_tree.media_extenders.core.images.focal_point.FocalPointExtender',
-#    'media_tree.media_extenders.core.images.metadata.ExifIptcExtender',
+    'media_tree.media_extensions.core.images.focal_point.FocalPointExtender',
+#    'media_tree.media_extensions.core.images.metadata.ExifIptcExtender',
 )
 
 MEDIA_TREE_THUMBNAIL_SIZE_TINY = '50x50'
@@ -80,6 +82,7 @@ MEDIA_TREE_CONTENT_TYPE_CHOICES = (
 
 MEDIA_TREE_CONTENT_TYPES = dict(MEDIA_TREE_CONTENT_TYPE_CHOICES)
 
+"""
 MEDIA_TREE_FILE_ICONS = {
     'pdf': 'mimetypes/pdf.png',
     media_types.FOLDER: 'folder/folder.png',
@@ -91,6 +94,22 @@ MEDIA_TREE_FILE_ICONS = {
     media_types.SUPPORTED_IMAGE: 'mimetypes/image.png',
     media_types.TEXT: 'mimetypes/text.png',
     media_types.VIDEO: 'mimetypes/video.png',
+}
+"""
+
+MEDIA_TREE_FILE_ICONS = {
+    'pdf': 'nuvola/22x22/mimetypes/pdf.png',
+    'html': 'nuvola/22x22/mimetypes/html.png',
+    'swf': 'nuvola/22x22/mimetypes/html.png',
+    media_types.FOLDER: 'folder/folder.png',
+    media_types.FILE: 'nuvola/22x22/mimetypes/binary.png',
+    media_types.ARCHIVE: 'nuvola/22x22/mimetypes/tar.png',
+    media_types.AUDIO: 'nuvola/22x22/mimetypes/sound.png',
+    media_types.DOCUMENT: 'nuvola/22x22/mimetypes/document.png',
+    media_types.IMAGE: 'nuvola/22x22/mimetypes/image.png',
+    media_types.SUPPORTED_IMAGE: 'nuvola/22x22/mimetypes/image.png',
+    media_types.TEXT: 'nuvola/22x22/mimetypes/txt.png',
+    media_types.VIDEO: 'nuvola/22x22/mimetypes/video.png',
 }
 
 MEDIA_TREE_LEVEL_INDICATOR = unichr(0x00A0) * 3;

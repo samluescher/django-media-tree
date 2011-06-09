@@ -4,6 +4,11 @@ from media_tree.forms import MetadataForm
 from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.admin import helpers
+from django.core.files.uploadedfile import UploadedFile
+from django.db.models import FileField
+from mptt.exceptions import InvalidMove
+
+# TODO: mptt currently ignores order_insertion_by when calling insert_at or move_to. Bug report pending.
 
 class FileNodeActionsForm(forms.Form):
 
@@ -57,7 +62,9 @@ class MoveSelectedForm(FileNodeActionsForm):
             # Reload object because tree attributes may be out of date 
             node = node.__class__.objects.get(pk=node.pk)
             descendant_count = node.get_descendants().count()
-            node.move_to(target)
+            node.parent = target
+            node.save()
+            
             self.success_count += 1 + descendant_count
             return node
         except InvalidMove, e:
@@ -85,17 +92,28 @@ class CopySelectedForm(FileNodeActionsForm):
     enable_target_node_field = True
 
     def copy_node(self, node, target):
-        from django.core.files.uploadedfile import UploadedFile
-        def clone_object(from_object):
-            args = dict([(fld.name, getattr(from_object, fld.name))
-                for fld in from_object._meta.fields
-                    if fld is not from_object._meta.pk]);
-            return from_object.__class__(**args)
 
-        new_node = clone_object(node)
-        # Creating an UploadedFile from the original file results in the file being copied on disk on save()
-        new_node.file = UploadedFile(node.file, node.file.name, None, node.size)
-        new_node.insert_at(target, save=True)
+        def clone_node(from_node):
+            copy_additional_fields = ('node_type',)
+            args = dict([(fld.name, getattr(from_node, fld.name))
+                for fld in from_node._meta.fields
+                    if fld.name in copy_additional_fields or fld.editable  \
+                    and fld != from_node._meta.auto_field  \
+                    and not isinstance(fld, FileField)])
+            return from_node.__class__(**args)
+
+        def make_uploaded_files(node, from_node):
+            for fld in node._meta.fields:
+                if isinstance(fld, FileField):
+                    # Creating an UploadedFile from the original file results in the file being copied on disk on save()
+                    existing_file = getattr(from_node, fld.name)
+                    uploaded_file = UploadedFile(existing_file, existing_file.name, None, from_node.size)
+                    setattr(node, fld.name, uploaded_file)
+
+        new_node = clone_node(node)
+        make_uploaded_files(new_node, node)
+        new_node.parent = target
+        new_node.save()
         if new_node.node_type == FileNode.FOLDER:
             self.copy_nodes_rec(node.get_children(), new_node)
         return new_node

@@ -14,19 +14,18 @@ LEVEL_INDICATOR = app_settings.get('MEDIA_TREE_LEVEL_INDICATOR')
 
 class FileNodeChoiceField(TreeNodeChoiceField):
 
-    # TODO: FileNodeForeignKeyRawIdWidget should only be the standard widget when in admin
-    widget = Select
-    #widget = ForeignKeyRawIdWidget
-
     def __init__(self, allowed_node_types=None, allowed_media_types=None, allowed_extensions=None, level_indicator=LEVEL_INDICATOR, rel=None, *args, **kwargs):
         self.allowed_node_types = allowed_node_types
         self.allowed_media_types = allowed_media_types
         self.allowed_extensions = allowed_extensions
         kwargs['level_indicator'] = level_indicator;
         if not kwargs.has_key('widget'):
-            # For FileNodeForeignKeyRawIdWidget
-            #kwargs['widget'] = self.widget(rel) 
             kwargs['widget'] = self.widget
+            
+            # TODO: FileNodeForeignKeyRawIdWidget should only be the standard widget when in admin
+            # TODO: It currently does not work with move/copy form
+            #kwargs['widget'] = FileNodeForeignKeyRawIdWidget(rel)
+
         super(FileNodeChoiceField, self).__init__(*args, **kwargs)
         # TODO there should nonetheless be an "empty item", also if not required
         if not self.required:

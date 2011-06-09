@@ -1,11 +1,10 @@
-# encoding=utf-8
-from media_tree.media_extenders import MediaExtender
-from media_tree import media_types
+from media_tree import extension
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-class FocalPointExtender(MediaExtender):
+
+class FocalPointExtender(extension.ModelExtender):
 
     focal_x = models.DecimalField(_('Focal point X'), blank=True, null=True, max_digits=5, 
         decimal_places=3, validators=[MinValueValidator(0), MaxValueValidator(1)])
@@ -22,3 +21,5 @@ class FocalPointExtender(MediaExtender):
             y = str(int(round(self.focal_y * 100)))
         return "%s,%s" % (x, y)
 
+
+extension.register(FocalPointExtender)

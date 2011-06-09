@@ -20,6 +20,7 @@ from media_tree.templatetags.filesize import filesize as format_filesize
 from django.conf import settings
 from django.utils.formats import get_format
 from copy import copy
+import uuid
 
 MIMETYPE_CONTENT_TYPE_MAP = app_settings.get('MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP')
 EXT_MIMETYPE_MAP = app_settings.get('MEDIA_TREE_EXT_MIMETYPE_MAP')
@@ -414,18 +415,25 @@ class FileNode(models.Model):
             # rename using a number
             self.name = app_settings.get('MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT') % {'name': name, 'number': number, 'ext': ext}
 
+    def prevent_save(self):
+        self.save_prevented = True
+
     def save(self, *args, **kwargs):
+        
+        if getattr(self, 'save_prevented', False):
+            from django.core.exceptions import ValidationError
+            raise ValidationError('Saving was presented for this FileNode object.')
         
         if not self.node_type:
             from django.core.exceptions import ValidationError
-            raise ValidationError('node_type needs to be set before saving FileNode')
+            raise ValidationError('node_type needs to be set before saving FileNode.')
 
         if self.node_type == FileNode.FOLDER:
             self.media_type = FileNode.FOLDER
             # Admin asserts that folder name is unique under parent. For other inserts:
             self.make_name_unique_numbered(self.name)
         else:
-            # TODO If file was not changed, this field will nevertheless be changed to 
+            # TODO: If file was not changed, this field will nevertheless be changed to 
             # the name of the renamed file on disk. Do not do this unless a new file is being saved. 
             file_changed = True
             if self.pk:
@@ -440,12 +448,15 @@ class FileNode(models.Model):
                 # using os.path.splitext(), foo.tar.gz would become foo.tar_2.gz instead of foo_2.tar.gz
                 split = multi_splitext(self.name)  
                 self.make_name_unique_numbered(split[0], split[1])
-                self.file.name = self.name
-
+                
                 # Determine various file parameters
                 self.size = self.file.size
                 self.extension = split[2].lstrip('.').lower()
                 self.width, self.height = (None, None)
+
+                self.file.name = self.name
+                # TODO: A hash would be great, but would be inconvenient for downloadable files
+                #self.file.name = str(uuid.uuid4()) + '.' + self.extension
 
                 # Determine whether file is a supported image:
                 try:
@@ -518,7 +529,14 @@ try:
 except mptt.AlreadyRegistered:
     pass
 
-MEDIA_EXTENDERS = app_settings.get('MEDIA_TREE_MEDIA_EXTENDERS')
+
+from media_tree.utils import autodiscover_media_extensions
+autodiscover_media_extensions()
+
+
+
+MEDIA_EXTENDERS = None
+#MEDIA_EXTENDERS = app_settings.get('MEDIA_TREE_MEDIA_EXTENDERS')
 if MEDIA_EXTENDERS:
     from media_tree.utils import import_extender
     from media_tree import media_extenders

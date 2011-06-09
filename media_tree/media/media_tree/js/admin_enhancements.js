@@ -3,7 +3,7 @@ jQuery(function($) {
     $.makeChangelistRow = function(cols, row)
     {
         if ($('#changelist table').length == 0) {
-            var table = $('<table cellspacing="0"><thead><th>&nbsp;</th><th>&nbsp;</th><th>'+gettext('Name')+'</th><th>'+gettext('Size')+'</th></table>')
+            var table = $('<table cellspacing="0"><thead><th>&nbsp;</th><th>'+gettext('Name')+'</th><th>'+gettext('Size')+'</th></table>')
             var tbody = $('<tbody></tbody>');
             table.append(tbody);
             $('#changelist').append(table);
@@ -25,20 +25,6 @@ jQuery(function($) {
         return row;
     }
     
-    $.getSelectedFolder = function() 
-    {
-        var checked = $('#changelist input[name=_selected_action]:checked');
-        if (checked) {
-            var row = $(checked[0]).closest('tr');
-            if (row.find('.folder').length) {
-                return {
-                    id: checked.val(),
-                    name: $(checked[0]).closest('tr').find('.name').text()
-                };
-            }
-        }
-    }    
-
     $('#object-tool-add-folder').click(function(event) {
         event.preventDefault();
         if ($('#add-folder-name').length == 0) {
@@ -56,13 +42,12 @@ jQuery(function($) {
     });
     
     if (document.location.href.indexOf('pop=1') != -1) {
-        $('#changelist input[type=checkbox]').change(function() {
-            if (this.checked) {
-                //console.log('selected '+$(this).val());
-            }
+        $('#changelist').delegate('input[name=_selected_action]', 'change', function() {
+            $('.popup-select-button')[0].disabled = 
+                $('#changelist input[name=_selected_action]:checked').length == 0;
         });
-        $('#popup-button-select').click(function() {
-            var selectedId = $('#changelist input[type=checkbox]:checked').val();
+        $('.popup-select-button').click(function() {
+            var selectedId = $('#changelist input[name=_selected_action]:checked').val();
             if (selectedId) {
                 opener.dismissRelatedLookupPopup(window, selectedId); 
             }
@@ -80,7 +65,28 @@ jQuery(function($) {
         });
     }
 
-    // Removes all expanded "child" rows of a row, recursively
+    /**
+    Adds child rows after a row (which are actually just indented rows sitting
+    underneath it), and adds keeps track of them for later removal.
+    */
+    $.fn.addExpandedChildren = function(rows, appendAfter) {
+        if (appendAfter == null || appendAfter) {
+            $(this).after(rows);
+        }
+        var expandedChildren = $(this).data('expandedChildren');
+        if (!expandedChildren) {
+            expandedChildren = [];
+        }
+        for (var i = 0; i < rows.length; i++) {
+            expandedChildren.push(rows[i]);
+        }
+        $(this).data('expandedChildren', expandedChildren);
+    };
+
+    /**
+    Recursively removes all of a row's expanded child rows (which are actually
+    just indented rows sitting underneath it).
+    */
     $.fn.closeExpandedChildren = function() {
         $(this).each(function() {
             var expandedChildren = $(this).data('expandedChildren');
@@ -92,39 +98,78 @@ jQuery(function($) {
         }); 
     };
 
-    $.fn.addExpandedChildren = function(rows) {
-        var expandedChildren = $(this).data('expandedChildren');
-        if (!expandedChildren) {
-            expandedChildren = [];
-        }
-        for (var i = 0; i < rows.length; i++) {
-            expandedChildren.push(rows[i]);
-        }
-        $(this).data('expandedChildren', expandedChildren);
+    $.fn.selectChangelistRow = function() {
+        $('input[name=_selected_action]', this)[0].checked = true;
+        $(this).addClass('selected');
     };
 
-    // TODO: Move actions() call, row coloring etc inside this function
-    $.initChangelistFolders = function(scope)
+    $.fn.getFirstSelectedFolder = function() 
     {
+        var checked = $('#changelist input[name=_selected_action]:checked');
+        if (checked) {
+            for (var i = 0; i < checked.length; i++) {
+                var row = $(checked[i]).closest('tr');
+                if (row.find('.folder').length) {
+                    return {
+                        id: checked.val(),
+                        name: $(checked[i]).closest('tr').find('.name').text()
+                    };
+                }
+            }
+        }
+    }    
+    
+    $.fn.updateChangelist = function(html) {
+        // Store checked rows
+        var checked = $('input[name=_selected_action]:checked', this);
+        // Update list
+        $(this).html(html);
+        $(this).trigger('init');
+        // Django calls actions() when document ready. Since the ChangeList is 
+        // updated here, it needs to be called again
+        django.jQuery("tr input.action-select").actions();
+        // Restore checked rows
+        var _this = this;
+        checked.each(function() {
+            $('input[value='+this.value+']', _this).closest('tr').selectChangelistRow();
+        });
+    }
+        
+
+    // TODO: Move actions() call, row coloring etc inside this function
+    $('#changelist').bind('init', function(scope) {
         var rows = [];
-        $('#changelist tr', scope).each(function() {
+        $('tr', this).each(function() {
             var id = $(this).find('input[name=_selected_action]').val();
             rows[parseInt(id)] = $(this);
         });
-
-        $('#changelist', scope).find('a[rel^=parent]').each(function() {
+        
+        $('a[rel^=parent]', this).each(function() {
             var rel = $(this).attr('rel').split(':');
             if (rel.length == 2) {
                 var parentRow = rows[parseInt(rel[1])];
                 var row = $(this).closest('tr')[0];
                 if (parentRow) {
-                    parentRow.addExpandedChildren([row]);
+                    parentRow.addExpandedChildren([row], false);
                 }
             }
         });
-    }
+        
+        $(this).trigger('update');
+    });
+
+    $('#changelist').bind('update', function() {
+        $('tbody tr', this).each(function(index) {
+            $(this).removeClass('row1 row2');
+            if (index % 2) {
+                $(this).addClass('row2');
+            } else {
+                $(this).addClass('row1');
+            }
+        });
+    });
     
-    $.initChangelistFolders();
+    $('#changelist').trigger('init');
     
     $('#changelist').delegate('.folder-toggle, .browse-controls a', 'click', function(event) {
         var button = $(this).closest('tr').find('.folder-toggle');
@@ -150,16 +195,8 @@ jQuery(function($) {
                 // TODO: yellow selection is enabled, but elements are not POSTed when executing action
                 django.jQuery("tr input.action-select", django.jQuery(tbody)).actions();
                 var rows =  $('tr', tbody);
-                parentRow.after(rows);
                 parentRow.addExpandedChildren(rows);
-                $('#changelist tbody tr').each(function(index) {
-                    $(this).removeClass('row1 row2');
-                    if (index % 2) {
-                        $(this).addClass('row2');
-                    } else {
-                        $(this).addClass('row1');
-                    }
-                });
+                $('#changelist').trigger('update');
             });
         } else {
             parentRow.data('isExpanded', false);
@@ -168,9 +205,9 @@ jQuery(function($) {
             folder.removeClass('expanded');
             folder.addClass('collapsed');
             parentRow.closeExpandedChildren();
+            $('#changelist').trigger('update');
             
             var closedFolderId = parseInt(href.split('=')[1]);
-            console.log('closed = '+closedFolderId);
             var cookie = $.cookie('expanded_folders_pk');
             var newCookie = '';
             if (cookie) {
@@ -183,21 +220,11 @@ jQuery(function($) {
                         newCookie += split[i];
                     }
                 }
-                console.log('old cookie = '+cookie);
-                console.log('new cookie = '+newCookie);
                 $.cookie('expanded_folders_pk', newCookie, {path: '/', raw: true});
-                console.log($.cookie('expanded_folders_pk'));
             }
         }
         return false;
     });
-    
-    $('#changelist tbody tr').draggable({
-        //revert: true
-        opacity: .5
-        //,placeholder: "ui-state-highlight"
-    });
-
 
     
     

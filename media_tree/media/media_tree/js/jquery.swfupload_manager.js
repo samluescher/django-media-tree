@@ -48,11 +48,11 @@ jQuery(function($) {
             ,fileQueued: function(file) 
             {
                 cols = [];
-                cols[1] = $('<td><span style="display: none;" class="upload-progress-bar-container">'
+                cols[1] = $('<td class="nowrap"><span style="display: none;" class="upload-progress-bar-container">'
                     + '<span class="upload-progress-bar"></span></span><span class="queue-status">' 
-                    + gettext('queued') + '</span></td>'); 
-                cols[2] = $('<td><a href="javascript:void(0)">'+file.name+'</a></td>');
-                cols[3] = $('<td>'+Math.round(file.size / 1024, 1) + ' KiB'+'</td>');
+                    + gettext('queued') + '</span>' 
+                    + '&nbsp;<a href="javascript:void(0)">'+file.name+'</a></td>');
+                cols[2] = $('<td class="filesize">'+Math.round(file.size / 1024, 1) + ' KiB'+'</td>');
 
                 var row = $.makeChangelistRow(cols, manager.getQueueItem(file, 'row1'));
                 var firstRow = $('.changelist-first-row');
@@ -70,9 +70,10 @@ jQuery(function($) {
             }
 
             ,fileDialogComplete: function(numFilesSelected, numFilesQueued) {
-                var targetFolder = $.getSelectedFolder();
-                if (targetFolder) {
-                    this.addPostParam('folder_id', targetFolder.id);
+                if (manager.targetFolder) {
+                    this.addPostParam('folder_id', manager.targetFolder.id);
+                } else {
+                    this.removePostParam('folder_id');
                 }
                 this.startUpload();
             }
@@ -99,7 +100,7 @@ jQuery(function($) {
                 row = manager.getQueueItem(file);
                 $(row).find('.queue-status').text('');
                 $(row).find('.upload-progress-bar-container').each(function() {
-                    $(this).css('display', 'block');
+                    $(this).css('display', 'inline-block');
                 });
                 $(row).find('.upload-progress-bar').each(function() {
                     $(this).css('width', percent+'%');
@@ -228,13 +229,10 @@ jQuery(function($) {
                         stats = _this.getStats();
                         if (stats.files_queued == 0) {
                             // reload changelist contents
-                            $('#changelist').html($(data).find('#changelist').html());
-                            $.initChangelistFolders();
-                            // these would be called when document ready
-                            django.jQuery("tr input.action-select").actions();
+                            $('#changelist').updateChangelist($(data).find('#changelist').html());
                             manager.markFirstChangelistRow();
                             // insert success message
-                            message = ngettext('%i file was added successfully.', '%i files were added successfully.', stats.successful_uploads).replace('%i', stats.successful_uploads);
+                            message = ngettext('Successfully added %i file.', 'Successfully added %i files.', stats.successful_uploads).replace('%i', stats.successful_uploads);
                             manager.addUserMessage(message, 'swfupload-queue-message');
                             // reset stats
                             stats.successful_uploads = 0;

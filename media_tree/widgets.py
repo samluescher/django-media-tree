@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 import os
 
 THUMBNAIL_EXTENSIONS = app_settings.get('MEDIA_TREE_THUMBNAIL_EXTENSIONS')
+THUMBNAIL_SIZE = app_settings.get('MEDIA_TREE_THUMBNAIL_SIZES')['large']
 
 
 class FileNodeForeignKeyRawIdWidget(ForeignKeyRawIdWidget):
@@ -41,7 +42,7 @@ class AdminThumbWidget(AdminFileWidget):
                 thumb_extension = os.path.splitext(value.name)[1].lstrip('.').lower()
                 if not thumb_extension in THUMBNAIL_EXTENSIONS:
                     thumb_extension = None
-                thumb = get_media_backend().get_thumbnail(value, {'size': (300, 300), 'sharpen': True})
+                thumb = get_media_backend().get_thumbnail(value, {'size': THUMBNAIL_SIZE, 'sharpen': True})
                 thumb_html = u'<img src="%s" alt="%s" width="%i" height="%i" />' % (thumb.url, os.path.basename(value.name), thumb.width, thumb.height) 
                 output = u'<div><p><span class="thumbnail">%s</span></p><p>%s</p></div>' % (thumb_html, output)
             except ThumbnailError as inst:

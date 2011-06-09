@@ -1,13 +1,13 @@
 from media_tree.models import FileNode
-from media_tree.cms_media_plugins.helpers import PluginLink, FolderLinkBase
-from media_tree.cms_media_plugins.models import MediaTreeImage, MediaTreeList, MediaTreeListItem, MediaTreeSlideshow, MediaTreeSlideshowItem, MediaTreeGallery, MediaTreeGalleryItem
+from media_tree.contrib.media_tree_cms_plugins.helpers import PluginLink, FolderLinkBase
+from media_tree.contrib.media_tree_cms_plugins.models import MediaTreeImage, MediaTreeList, MediaTreeListItem, MediaTreeSlideshow, MediaTreeSlideshowItem, MediaTreeGallery, MediaTreeGalleryItem
 from media_tree import media_types
 from media_tree.media_backends import get_media_backend
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from media_tree.cms_media_plugins.forms import MediaTreeImagePluginForm, MediaTreeListPluginForm, MediaTreeSlideshowPluginForm, MediaTreeGalleryPluginForm, MediaTreeSlideshowItemInlineForm, MediaTreeGalleryItemInlineForm, MediaTreeListItemInline, MediaTreeSlideshowItemInline, MediaTreeGalleryItemInline
+from media_tree.contrib.media_tree_cms_plugins.forms import MediaTreeImagePluginForm, MediaTreeListPluginForm, MediaTreeSlideshowPluginForm, MediaTreeGalleryPluginForm, MediaTreeSlideshowItemInlineForm, MediaTreeGalleryItemInlineForm, MediaTreeListItemInline, MediaTreeSlideshowItemInline, MediaTreeGalleryItemInline
 from django.core.urlresolvers import reverse
 from django import forms
 from media_tree import app_settings

@@ -23,13 +23,14 @@
 }
 
 .upload-progress-bar-container {
-    display: block;
+    display: inline-block;
     background: darkgray;
-    width: 100%;
+    width: 200px;
+    margin: 0 1em 0 1em;
 }
 
 .upload-progress-bar {
-    display: block;
+    display: inline-block;
     background: #5B80B2;
     width: 1px;
     padding-left: 2px;
