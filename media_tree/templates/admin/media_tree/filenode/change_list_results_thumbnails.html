@@ -19,7 +19,9 @@
     <span class="figure">
         <span class="image">
             {% with result as node %}
-            {% include "admin/media_tree/filenode/includes/preview.html" %}
+            {% with node.get_preview_file as preview_file %}
+                {% include "admin/media_tree/filenode/includes/preview.html" %}
+            {% endwith %}
             {% endwith %}
         </span><br />
         <span class="caption">

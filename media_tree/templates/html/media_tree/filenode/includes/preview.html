@@ -1,13 +1,14 @@
 {% spaceless %}
 {% load thumbnail %}
 
-{% with node.get_preview_file as preview_file %}
+{% if preview_file %}
+<span class="preview {% if preview_file.is_icon %}icon{% else %}thumbnail{% endif %}{% if class %} {{ class }}{% endif %}">
     {% if not preview_file.is_icon %}
-        {% thumbnail node.get_preview_file "80x80" sharpen as thumb %}
-        <img class="thumbnail" src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
+        {% thumbnail preview_file "80x80" sharpen as thumb %}
+        <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="{{ node.alt }}" />
     {% else %}
-        <img class="icon" src="{{ node.get_icon_file.url }}" />
+        <img src="{{ preview_file.url }}" alt="{{ node.alt }}" />
     {% endif %}
-{% endwith %}
-
+</span>
+{% endif %}
 {% endspaceless %}

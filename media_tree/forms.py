@@ -33,6 +33,7 @@ class FolderForm(forms.ModelForm):
 
 class FileForm(forms.ModelForm):
 
+    # TODO:
     #set_manual_dimensions = forms.BooleanField(_('set manual dimensions'), required=False)
     
     class Meta:
@@ -46,10 +47,6 @@ class FileForm(forms.ModelForm):
                 'fields': ['preview_file', 'position', 'is_default'],
                 'classes': ['collapse']
             }),
-            #(_('Focal point'), {
-            #    'fields': ['focal_x', 'focal_y'],
-            #    'classes': ['collapse']
-            #}),
             (_('Metadata'), {
                 'fields': ['title', 'description']
             }),

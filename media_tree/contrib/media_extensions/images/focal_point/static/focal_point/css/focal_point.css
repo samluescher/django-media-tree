@@ -1,0 +1,15 @@
+.focal-point-container {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    z-index: 888;
+}
+
+.focal-point {
+    background: url(../img/focal_point.png) no-repeat;
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    cursor: pointer;
+    z-index: 999;
+}

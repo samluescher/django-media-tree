@@ -17,9 +17,15 @@ MEDIA_TREE_UPLOAD_SUBDIR = 'upload'
 
 MEDIA_TREE_PREVIEW_SUBDIR = 'upload/_preview'
 
-MEDIA_TREE_MEDIA_SUBDIR = 'media_tree'
+MEDIA_TREE_STATIC_SUBDIR = 'media_tree'
 
-MEDIA_TREE_ICONS_DIR = 'media_tree/img/icons'
+MEDIA_TREE_ICON_DIRS = (
+    'media_tree/img/icons/mimetypes',
+)    
+
+MEDIA_TREE_ICON_FINDERS = (
+    'media_tree.utils.MimetypeFilesystemIconFinder',
+)
 
 MEDIA_TREE_ADMIN_ACTIONS = None
 
@@ -35,11 +41,6 @@ MEDIA_TREE_ALLOWED_FILE_TYPES = (
 )
 
 MEDIA_TREE_THUMBNAIL_EXTENSIONS = ('jpg', 'png')
-
-MEDIA_TREE_MEDIA_EXTENDERS = (
-    'media_tree.media_extensions.core.images.focal_point.FocalPointExtender',
-#    'media_tree.media_extensions.core.images.metadata.ExifIptcExtender',
-)
 
 MEDIA_TREE_THUMBNAIL_SIZE_TINY = '50x50'
 
@@ -82,39 +83,11 @@ MEDIA_TREE_CONTENT_TYPE_CHOICES = (
 
 MEDIA_TREE_CONTENT_TYPES = dict(MEDIA_TREE_CONTENT_TYPE_CHOICES)
 
-"""
-MEDIA_TREE_FILE_ICONS = {
-    'pdf': 'mimetypes/pdf.png',
-    media_types.FOLDER: 'folder/folder.png',
-    media_types.FILE: 'mimetypes/binary.png',
-    media_types.ARCHIVE: 'mimetypes/tar.png',
-    media_types.AUDIO: 'mimetypes/sound.png',
-    media_types.DOCUMENT: 'mimetypes/document.png',
-    media_types.IMAGE: 'mimetypes/image.png',
-    media_types.SUPPORTED_IMAGE: 'mimetypes/image.png',
-    media_types.TEXT: 'mimetypes/text.png',
-    media_types.VIDEO: 'mimetypes/video.png',
-}
-"""
-
-MEDIA_TREE_FILE_ICONS = {
-    'pdf': 'nuvola/22x22/mimetypes/pdf.png',
-    'html': 'nuvola/22x22/mimetypes/html.png',
-    'swf': 'nuvola/22x22/mimetypes/html.png',
-    media_types.FOLDER: 'folder/folder.png',
-    media_types.FILE: 'nuvola/22x22/mimetypes/binary.png',
-    media_types.ARCHIVE: 'nuvola/22x22/mimetypes/tar.png',
-    media_types.AUDIO: 'nuvola/22x22/mimetypes/sound.png',
-    media_types.DOCUMENT: 'nuvola/22x22/mimetypes/document.png',
-    media_types.IMAGE: 'nuvola/22x22/mimetypes/image.png',
-    media_types.SUPPORTED_IMAGE: 'nuvola/22x22/mimetypes/image.png',
-    media_types.TEXT: 'nuvola/22x22/mimetypes/txt.png',
-    media_types.VIDEO: 'nuvola/22x22/mimetypes/video.png',
-}
-
 MEDIA_TREE_LEVEL_INDICATOR = unichr(0x00A0) * 3;
 
 MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT = '%(name)s_%(number)i%(ext)s'
+
+# TODO: move to contrib
 
 MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_CHOICES = (
     (PluginLink.LINK_PAGE, _('Link to page')), 

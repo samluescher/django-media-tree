@@ -1,22 +1,24 @@
+# ** now **
 # TODO: Add rest of admin_old's functionality:
 #   Actions without selection
-#   Folder edit form
+#   Folder rename form
 #   ...
-# TODO: Move external stuff to media_tree.contrib (all image-related stuff! width|height, focal_point etc)
-# TODO: Can I use thread locals directly in here, without middleware?
-# TODO: Fix breadcrumbs from form
-# TODO: Fix search inconsistencies. For example: Opening a folder and then searching for its name presents it with an expanded marker, but no children.
-# TODO: Set new folder icon as preview IconFile
-# TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt" and rename the files to hash.txt on disk
-# TODO: Make renaming of files possible
-# TODO: Renaming files (not extension) should be possible
 # TODO: Fix batch delete method
-# TODO: Detail view of folder presents it fully expanded and with anchor
-# TODO: http://localhost:8000/admin/media_tree/filenode/?folder_id=1 should have zero indent, AJAX-loaded items can be auto-indented
-#   TODO: Opening in new window etc. is currently unclear. Possibly ?folder_id=1 should be replaced with folder-path (real names!)
+# TODO: Can I use thread locals directly in here, without middleware?
+#
+# ** next **
+# TODO: Fix search inconsistencies. For example: Opening a folder and then searching for its name presents it with an expanded marker, but no children.
 # TODO: Search results should be ordered alphabetically
 # TODO: Filter is not working correctly: Should work like search and show a flat list including ALL files, not just those in opened folders
-# TODO: Install media extenders as INSTALLED_APPS and auto-discover their stuff, including static media, form fieldsets and media, changelist modification
+# TODO: http://localhost:8000/admin/media_tree/filenode/?folder_id=1 should have zero indent, AJAX-loaded items can be auto-indented
+#       TODO: Opening in new window etc. is currently unclear. Possibly ?folder_id=1 should be replaced with folder-path (real names!)
+#
+# ** maybe **
+# TODO: Refactor admin actions as AdminExtenders
+# TODO: Make renaming of files possible
+# TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt" and rename the files to hash.txt on disk
+# TODO: Refactor PIL stuff, width|height as extension
+
 
 try:
     from threading import local
@@ -70,7 +72,7 @@ except ImportError:
     # pre 1.2
     from django.contrib.csrf.middleware import csrf_view_exempt
 
-MEDIA_SUBDIR = app_settings.get('MEDIA_TREE_MEDIA_SUBDIR')
+STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
 
 
 class MediaTreeChangeList(MPTTChangeList):
@@ -130,19 +132,19 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     class Media:
         js = [
-            os.path.join(MEDIA_SUBDIR, 'lib/swfupload/swfupload_fp10', 'swfupload.js'),
-            os.path.join(MEDIA_SUBDIR, 'lib/swfupload/plugins', 'swfupload.queue.js'),
-            os.path.join(MEDIA_SUBDIR, 'lib/swfupload/plugins', 'swfupload.cookies.js'),
-            os.path.join(MEDIA_SUBDIR, 'lib/jquery', 'jquery.js'),
-            os.path.join(MEDIA_SUBDIR, 'lib/jquery', 'jquery.ui.js'),
-            os.path.join(MEDIA_SUBDIR, 'lib/jquery', 'jquery.cookie.js'),
-            os.path.join(MEDIA_SUBDIR, 'js', 'admin_enhancements.js'),
-            os.path.join(MEDIA_SUBDIR, 'js', 'jquery.swfupload_manager.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10', 'swfupload.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/swfupload/plugins', 'swfupload.queue.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/swfupload/plugins', 'swfupload.cookies.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js'),
+            os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js'),
+            os.path.join(STATIC_SUBDIR, 'js', 'jquery.swfupload_manager.js'),
         ]
         css = {
             'all': (
-                os.path.join(MEDIA_SUBDIR, 'css', 'swfupload.css'),
-                os.path.join(MEDIA_SUBDIR, 'css', 'ui.css'),
+                os.path.join(STATIC_SUBDIR, 'css', 'swfupload.css'),
+                os.path.join(STATIC_SUBDIR, 'css', 'ui.css'),
             )
         }
 
@@ -178,9 +180,7 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     def queryset(self, request):
         #qs = super(FileNodeAdmin, self).queryset(request)
-        
         qs = FileNode.tree.all()
-        
         parent_folder = self.get_parent_folder(request)
         if parent_folder:
             if parent_folder.is_top_node():
@@ -205,37 +205,43 @@ class FileNodeAdmin(MPTTModelAdmin):
         else:
             actual_level = ''
         if node.is_folder():
-            #if node.get_descendant_count() == 0:
-            #    return '<a class="folder-toggle dummy empty" rel="%s">&nbsp;</a>' % (rel,)
-            #else:
-                state = 'expanded' if self.folder_is_open(request, node) else 'collapsed'
-                return '<a href="?folder_id=%i%s" class="folder-toggle %s" rel="%s"><span>%s</span></a>' %  \
-                    (node.pk, actual_level, state, rel, '+')
+            return '<a href="?folder_id=%i%s" class="folder-toggle" rel="%s"><span>%s</span></a>' %  \
+                (node.pk, actual_level, rel, '+')
         else:
             return '<a class="folder-toggle dummy" rel="%s">&nbsp;</a>' % (rel,)
     expand_collapse.short_description = ''
     expand_collapse.allow_tags = True
             
-    def admin_preview(self, node):
-        return render_to_string('admin/media_tree/filenode/includes/preview.html', {'node': node})
+    def admin_preview(self, node, icons_only=False):
+        preview = render_to_string('admin/media_tree/filenode/includes/preview.html', {
+            'node': node,
+            'preview_file': node.get_icon_file() if icons_only else node.get_preview_file(),
+            'class': 'collapsed' if node.is_folder() else ''
+        })
+        if node.is_folder():
+            preview += render_to_string('admin/media_tree/filenode/includes/preview.html', {
+                'node': node,
+                'preview_file': node.get_preview_file(default_name='_folder_expanded'),
+                'class': 'expanded'
+            })
+        return preview
     admin_preview.short_description = ''
     admin_preview.allow_tags = True
 
-    def admin_preview_link(self, node):
-        if node.is_folder():
-            return '<a href="%s" class="folder"><span>%s</span></a>' % (node.get_admin_url(), _('folder'))
-        else:
-            return '<a href="%s">%s</a>' % (node.get_admin_url(), self.admin_preview(node))
-
-    def admin_link(self, node):
-        return '<a class="name" href="%s">%s</a>' % (node.get_admin_url(), node.name)
+    def admin_link(self, node, include_preview=False):
+        return '<a href="%s">%s<span class="name">%s</span></a>' % (
+            node.get_admin_url(), self.admin_preview(node) if include_preview else '', node.name)
 
     def anchor_name(self, node):
         return 'node-%i' % node.pk
 
     def browse_controls(self, node):
-        return '<span id="%s" class="browse-controls">%s&nbsp;%s&nbsp;%s</span>' %  \
-            (self.anchor_name(node), self.expand_collapse(node), self.admin_preview_link(node), self.admin_link(node))
+        state = ''
+        if node.is_folder():
+            request = get_current_request()
+            state = 'expanded' if self.folder_is_open(request, node) else 'collapsed'
+        return '<span id="%s" class="browse-controls %s %s">%s%s</span>' %  \
+            (self.anchor_name(node), 'folder' if node.is_folder() else 'file', state, self.expand_collapse(node), self.admin_link(node, True))
     browse_controls.short_description = ''
     browse_controls.allow_tags = True
 
@@ -304,7 +310,7 @@ class FileNodeAdmin(MPTTModelAdmin):
             # opened if its parent folders aren't
             for folder in FileNode.objects.filter(pk__in=expanded_folders_pk):
                 for ancestor in folder.get_ancestors():
-                    if not ancestor.pk in expanded_folders_pk:
+                    if not ancestor.pk in expanded_folders_pk and folder.pk in expanded_folders_pk:
                         expanded_folders_pk.remove(folder.pk)
             setattr(request, 'expanded_folders_pk', expanded_folders_pk)
             
@@ -330,7 +336,7 @@ class FileNodeAdmin(MPTTModelAdmin):
                 request.user.message_set.create(message=_('You need to put %s in your MIDDLEWARE_CLASSES setting to use SWFUpload.') % middleware)
             else:
                 swfupload_upload_url = reverse('admin:media_tree_upload')
-                #swfupload_flash_url = os.path.join(settings.MEDIA_URL, MEDIA_SUBDIR, 'lib/swfupload/swfupload_fp10/swfupload.swf')
+                #swfupload_flash_url = os.path.join(settings.MEDIA_URL, STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10/swfupload.swf')
                 swfupload_flash_url = reverse('admin:media_tree_static_swfupload_swf')
                 extra_context.update({
                     'file_types': app_settings.get('MEDIA_TREE_ALLOWED_FILE_TYPES'),
@@ -416,8 +422,12 @@ class FileNodeAdmin(MPTTModelAdmin):
         url_patterns = patterns('',
             # Since Flash Player enforces a same-domain policy, the upload will break if static files 
             # are served from another domain. So the built-in static file view is used for the uploader SWF:
-            url(r'^static/swfupload\.swf$', "django.views.static.serve", 
-                {'document_root': os.path.join(settings.MEDIA_ROOT, MEDIA_SUBDIR), 
+            url(r'^static/swfupload\.swf$', 
+                'django.views.static.serve', 
+                {'document_root': os.path.join(
+                    # Use STATIC_ROOT by default, use MEDIA_ROOT as fallback
+                    getattr(settings, 'STATIC_ROOT', getattr(settings, 'MEDIA_ROOT')), 
+                    STATIC_SUBDIR), 
                 'path': 'lib/swfupload/swfupload_fp10/swfupload.swf'}, name='media_tree_static_swfupload_swf'),
             url(r'^upload/$', self.admin_site.admin_view(self.upload_file_view), name='media_tree_upload'),
         )
@@ -432,11 +442,12 @@ FileNodeAdmin.register_action(core_actions.change_metadata_for_selected)
 FileNodeAdmin.register_action(maintenance_actions.delete_orphaned_files)
 FileNodeAdmin.register_action(maintenance_actions.rebuild_tree)
 
+# TODO: refactor as media extensions
 ADMIN_ACTIONS = app_settings.get('MEDIA_TREE_ADMIN_ACTIONS')
 if ADMIN_ACTIONS:
-    from media_tree.utils import import_extender
+    from media_tree.utils import get_module_attr
     for path in ADMIN_ACTIONS:
-        FileNodeAdmin.register_action(import_extender(path))
+        FileNodeAdmin.register_action(get_module_attr(path))
 
 
 admin.site.register(FileNode, FileNodeAdmin)

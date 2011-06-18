@@ -58,26 +58,6 @@
 }
 
 
-/* TODO: Move to media extender */
-
-.focal-point-container {
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    z-index: 888;
-}
-
-.focal-point {
-    background: url(../img/focal-point.png) no-repeat;
-    width: 22px;
-    height: 22px;
-    position: absolute;
-    cursor: pointer;
-    z-index: 999;
-}
-
-
-
 
 #filenode_form .thumbnail {
     display: block;
@@ -87,6 +67,10 @@
 
 form .caption {
     display: none;
+}
+
+fieldset.hidden {
+    display: none !important;
 }
 
 .filesize {
@@ -105,70 +89,62 @@ form .caption {
     display: inline-block;
 }
 
-.browse-controls a.name {
-    margin-left: .5em;
-}
-
-.folder {
-    width: 16px;
-    height: 16px;
-    background: url(../img/folder.png) no-repeat;
+.browse-controls .folder-toggle, .browse-controls .preview {
+    margin-right: .5em;
 }
 
 .folder-toggle {
     width: 16px;
     height: 16px;
-    background: url(../img/folder-toggle.png) no-repeat;
+    background: url(../img/icons/folder-toggle.png) no-repeat;
     display: inline-block;
 }
 
-.folder span, .folder-toggle span {
+.folder-toggle span {
     visibility: hidden;
 }
 
-.folder.collapsed {
+.collapsed .folder-toggle {
     background-position: 0 0;
 }
 
-.folder.expanded {
+.collapsed .folder-toggle:hover {
     background-position: 0 100%;
 }
 
-.folder-toggle.collapsed {
-    background-position: 0 0;
-}
-
-.folder-toggle.collapsed:hover {
-    background-position: 0 100%;
-}
-
-.folder-toggle.expanded {
+.expanded .folder-toggle {
     background-position: 100% 0;
 }
 
-.folder-toggle.expanded:hover {
+.expanded .folder-toggle:hover {
     background-position: 100% 100%;
 }
 
-.folder-toggle.loading {
-    background-image: url(../img/folder-toggle-loading.gif);
+.loading .folder-toggle {
+    background-image: url(../img/icons/folder-toggle-loading.gif);
 }
 
 .folder-toggle.dummy {
     background-image: none;
 }
 
+.collapsed .icon.expanded {
+    display: none;
+}
+
+.expanded .icon.collapsed {
+    display: none;
+}
 
 .ui-state-highlight {
     background: red;
 }
 
+.browse-controls .thumbnail, .browse-controls .icon, .browse-controls .thumbnail img, .browse-controls .icon img {
+    display: inline-block;
+}
 
 .browse-controls .thumbnail {
-    border: 1px #999 solid;
-    -moz-box-shadow: 0px 1px 3px #999;
-    -webkit-box-shadow: 0px 1px 3px #999;
-    box-shadow: 0px 1px 3px #999;
     float: none;
 }
 

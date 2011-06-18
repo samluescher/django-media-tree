@@ -30,7 +30,7 @@ except ImportError:
     # pre 1.2
     from django.contrib.csrf.middleware import csrf_view_exempt
 
-MEDIA_SUBDIR = app_settings.get('MEDIA_TREE_MEDIA_SUBDIR')
+STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
 
 MEDIA_TREE_LIST_DISPLAY = ('admin_preview', 'name', 'size_formatted', 'extension', 'resolution_formatted', 'count_descendants', 'modified', 'modified_by', 'has_metadata_including_descendants', 'caption', 'position')
 
@@ -56,18 +56,18 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
 
     class Media:
         js = [
-            os.path.join(MEDIA_SUBDIR, 'lib/swfupload/swfupload_fp10', 'swfupload.js'),
-            os.path.join(MEDIA_SUBDIR, 'lib/swfupload/plugins', 'swfupload.queue.js'),
-            os.path.join(MEDIA_SUBDIR, 'lib/swfupload/plugins', 'swfupload.cookies.js'),
-            os.path.join(MEDIA_SUBDIR, 'lib/jquery', 'jquery.js'),
-            os.path.join(MEDIA_SUBDIR, 'lib/jquery', 'jquery.ui.js'),
-            os.path.join(MEDIA_SUBDIR, 'js', 'admin_enhancements.js'),
-            os.path.join(MEDIA_SUBDIR, 'js', 'jquery.swfupload_manager.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10', 'swfupload.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/swfupload/plugins', 'swfupload.queue.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/swfupload/plugins', 'swfupload.cookies.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js'),
+            os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js'),
+            os.path.join(STATIC_SUBDIR, 'js', 'jquery.swfupload_manager.js'),
         ]
         css = {
             'all': (
-                os.path.join(MEDIA_SUBDIR, 'css', 'swfupload.css'),
-                os.path.join(MEDIA_SUBDIR, 'css', 'ui.css'),
+                os.path.join(STATIC_SUBDIR, 'css', 'swfupload.css'),
+                os.path.join(STATIC_SUBDIR, 'css', 'ui.css'),
             )
         }
 
@@ -92,7 +92,10 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
         return form
 
     def admin_preview(self, node):
-        return render_to_string('admin/media_tree/filenode/includes/preview.html', {'node': node})
+        return render_to_string('admin/media_tree/filenode/includes/preview.html', {
+            'node': node,
+            'preview_file': node.get_preview_file()
+        })
     admin_preview.short_description = ''
     admin_preview.allow_tags = True
 
@@ -244,7 +247,7 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
                     swfupload_upload_url = reverse('admin:media_tree_upload', kwargs={'folder_id': parent_folder.pk})
                 else:
                     swfupload_upload_url = reverse('admin:media_tree_upload_root')
-                #swfupload_flash_url = os.path.join(settings.MEDIA_URL, MEDIA_SUBDIR, 'lib/swfupload/swfupload_fp10/swfupload.swf')
+                #swfupload_flash_url = os.path.join(settings.MEDIA_URL, STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10/swfupload.swf')
                 swfupload_flash_url = reverse('admin:media_tree_static_swfupload_swf')
                 extra_context.update({
                     'file_types': app_settings.get('MEDIA_TREE_ALLOWED_FILE_TYPES'),
@@ -279,7 +282,7 @@ class FileNodeAdmin(MPTTModelAdmin, admin.ModelAdmin):
             # Since Flash Player enforces a same-domain policy, the upload will break if static files 
             # are served from another domain. So the built-in static file view is used for the uploader SWF:
             url(r'^static/swfupload\.swf$', "django.views.static.serve", 
-                {'document_root': os.path.join(settings.MEDIA_ROOT, MEDIA_SUBDIR), 
+                {'document_root': os.path.join(settings.MEDIA_ROOT, STATIC_SUBDIR), 
                 'path': 'lib/swfupload/swfupload_fp10/swfupload.swf'}, name='media_tree_static_swfupload_swf'),
 
             url(r'^jsi18n/', self.admin_site.admin_view(self.i18n_javascript), name='media_tree_jsi18n'),
@@ -319,9 +322,9 @@ FileNodeAdmin.register_action(maintenance_actions.rebuild_tree)
 
 ADMIN_ACTIONS = app_settings.get('MEDIA_TREE_ADMIN_ACTIONS')
 if ADMIN_ACTIONS:
-    from media_tree.utils import import_extender
+    from media_tree.utils import get_module_attr
     for path in ADMIN_ACTIONS:
-        FileNodeAdmin.register_action(import_extender(path))
+        FileNodeAdmin.register_action(get_module_attr(path))
 
 admin.site.register(FileNode, FileNodeAdmin)
 

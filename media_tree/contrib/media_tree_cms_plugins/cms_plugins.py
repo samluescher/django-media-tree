@@ -17,7 +17,7 @@ from django.db import models
 from django.core.urlresolvers import NoReverseMatch
 import os
 
-MEDIA_SUBDIR = app_settings.get('MEDIA_TREE_MEDIA_SUBDIR')
+STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
 
 # TODO: Disentangle settings with media_tree
 # TODO: Solve image_detail with get_absolute_url()?
@@ -192,7 +192,7 @@ class MediaTreeSlideshowPlugin(MediaTreeListPlugin):
 
     class PluginMedia:
         js = [
-            os.path.join(MEDIA_SUBDIR, 'lib/jquery.cycle/jquery.cycle.all.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery.cycle/jquery.cycle.all.js'),
         ]
         
     model = MediaTreeSlideshow
@@ -229,7 +229,7 @@ class MediaTreeGalleryPlugin(MediaTreeSlideshowPlugin):
 
     class PluginMedia:
         js = [
-            os.path.join(MEDIA_SUBDIR, 'lib/jquery.cycle/jquery.cycle.all.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery.cycle/jquery.cycle.all.js'),
         ]
 
     model = MediaTreeGallery

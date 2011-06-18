@@ -17,6 +17,7 @@ from django.utils.text import capfirst
 from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
 from media_tree.templatetags.filesize import filesize as format_filesize
+from media_tree.utils import get_icon_finders
 from django.conf import settings
 from django.utils.formats import get_format
 from copy import copy
@@ -24,10 +25,10 @@ import uuid
 
 MIMETYPE_CONTENT_TYPE_MAP = app_settings.get('MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP')
 EXT_MIMETYPE_MAP = app_settings.get('MEDIA_TREE_EXT_MIMETYPE_MAP')
-FILE_ICONS = app_settings.get('MEDIA_TREE_FILE_ICONS')
-MEDIA_SUBDIR = app_settings.get('MEDIA_TREE_MEDIA_SUBDIR')
-ICONS_DIR = app_settings.get('MEDIA_TREE_ICONS_DIR')
+STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
+
 MEDIA_TYPE_NAMES = app_settings.get('MEDIA_TREE_CONTENT_TYPES')
+ICON_FINDERS = get_icon_finders(app_settings.get('MEDIA_TREE_ICON_FINDERS'))
 
 def join_phrases(text, new_text, prepend=', ', append='', compare_text=None, else_prepend='', else_append='', if_empty=False):
     if new_text != '' or if_empty:
@@ -104,7 +105,7 @@ class FileNode(models.Model):
         
     @staticmethod
     def get_top_node():
-        return FileNode(name=_('Media Objects'), level=-1)
+        return FileNode(name=_('Media objects'), level=-1)
 
     def is_top_node(self):
         return self.level == -1
@@ -190,20 +191,21 @@ class FileNode(models.Model):
     def get_qualified_preview_url(self):
         return self.get_qualified_file_url('preview_file')
 
-    def get_preview_file(self):
+    def get_preview_file(self, default_name=None):
         if self.preview_file:
             return self.preview_file
         elif self.is_image():
             return self.file
         else:
-            return self.get_icon_file()
+            return self.get_icon_file(default_name=default_name)
 
-    def get_icon_file(self):
-        if self.extension in FILE_ICONS:
-            basename = FILE_ICONS[self.extension]
-        else:
-            basename = FILE_ICONS[self.media_type]
-        return IconFile(self, os.path.join(ICONS_DIR, basename))
+    def get_icon_file(self, default_name=None):
+        if not default_name:
+            default_name = '_blank' if not self.is_folder() else '_folder'
+        for finder in ICON_FINDERS:
+            icon_file = finder.find(self, default_name=default_name)
+            if icon_file:
+                return icon_file
 
     def get_media_type_name(self):
         return MEDIA_TYPE_NAMES[self.media_type]
@@ -338,8 +340,10 @@ class FileNode(models.Model):
     has_metadata_including_descendants.boolean = True
 
     def get_admin_url(self):
-        return reverse('admin:media_tree_filenode_change', args=(self.pk,));
-        
+        if self.pk:
+            return reverse('admin:media_tree_filenode_change', args=(self.pk,));
+        return ''
+            
         # ID Path no longer necessary 
         #url = reverse('admin:media_tree_filenode_changelist');
         #for node in self.get_node_path():
@@ -379,10 +383,22 @@ class FileNode(models.Model):
             return EXT_MIMETYPE_MAP[ext]
         else:
             type, encoding = mimetypes.guess_type(filename, strict=False)
-            return type
+            if type:
+                return type
+            else:
+                return 'application/x-unknown'
     
+    @property
     def mimetype(self):
         return FileNode.get_mimetype(self.name)
+
+    @property
+    def mime_supertype(self):
+        return self.mimetype.split('/')[0]
+
+    @property
+    def mime_subtype(self):
+        return self.mimetype.split('/')[1]
     
     @staticmethod
     def mimetype_to_media_type(filename):
@@ -523,6 +539,7 @@ class FileNode(models.Model):
         else:
             return self.get_metadata()
 
+
 try:
     # TODO If file name changes, order is not updated. See http://code.google.com/p/django-mptt/issues/detail?id=41
     mptt.register(FileNode, order_insertion_by=['name'])
@@ -532,13 +549,3 @@ except mptt.AlreadyRegistered:
 
 from media_tree.utils import autodiscover_media_extensions
 autodiscover_media_extensions()
-
-
-
-MEDIA_EXTENDERS = None
-#MEDIA_EXTENDERS = app_settings.get('MEDIA_TREE_MEDIA_EXTENDERS')
-if MEDIA_EXTENDERS:
-    from media_tree.utils import import_extender
-    from media_tree import media_extenders
-    for path in MEDIA_EXTENDERS:
-        media_extenders.register(import_extender(path))
