@@ -42,9 +42,9 @@ class FocalPointFormExtender(extension.FormExtender):
                 'classes': ['collapse']
             })
         ]
-        
 
 
 extension.register(FocalPointModelExtender)
 extension.register(FocalPointFormExtender)
+
 

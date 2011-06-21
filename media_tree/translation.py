@@ -1,3 +1,4 @@
+# TODO: move to extension
 from modeltranslation.translator import translator, TranslationOptions
 from media_tree.models import FileNode
 

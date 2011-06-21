@@ -1,24 +1,29 @@
 # ** now **
 # TODO: Add rest of admin_old's functionality:
-#   Actions without selection
-#   Folder rename form
+#   Folder rename form, file add form, folder add form 
+# TODO: Store mimetype in model
+# TODO: Fix order_insertion_by problem on upload 
 #   ...
-# TODO: Fix batch delete method
 # TODO: Can I use thread locals directly in here, without middleware?
+# TODO: Move request and thread locals stuff to utility
+#   admin/utils.py
 #
 # ** next **
+# TODO: Refactor PIL stuff, width|height as extension
+# TODO: Refactor admin actions as AdminExtenders
 # TODO: Fix search inconsistencies. For example: Opening a folder and then searching for its name presents it with an expanded marker, but no children.
 # TODO: Search results should be ordered alphabetically
+# TODO: Folders shouldn't be expandable in search
 # TODO: Filter is not working correctly: Should work like search and show a flat list including ALL files, not just those in opened folders
+#   --> achieved moving open folder filtering to MediaTreeChangeList
 # TODO: http://localhost:8000/admin/media_tree/filenode/?folder_id=1 should have zero indent, AJAX-loaded items can be auto-indented
 #       TODO: Opening in new window etc. is currently unclear. Possibly ?folder_id=1 should be replaced with folder-path (real names!)
+#   --> Actually, /folder_id/ should show zero-indented list and replace ?folder_id --> solves many problems
 #
 # ** maybe **
-# TODO: Refactor admin actions as AdminExtenders
 # TODO: Make renaming of files possible
 # TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt" and rename the files to hash.txt on disk
-# TODO: Refactor PIL stuff, width|height as extension
-
+# TODO: Order by column (within parent) should be possible
 
 try:
     from threading import local
@@ -32,26 +37,28 @@ def get_current_request():
     return getattr(_thread_locals, "request", None)
     
     
-from django.utils.encoding import force_unicode
-from django.contrib import messages
-from django.shortcuts import render_to_response
 from media_tree.fields import FileNodeChoiceField
 from media_tree.models import FileNode
 from media_tree.forms import FolderForm, FileForm, UploadForm
 from media_tree.widgets import AdminThumbWidget
-from media_tree.admin_actions import core_actions
-from media_tree.admin_actions import maintenance_actions
-from media_tree.admin_actions.utils import execute_empty_queryset_action
-from mptt.admin import MPTTModelAdmin
+from media_tree.admin.actions import core_actions
+from media_tree.admin.actions import maintenance_actions
+from media_tree.admin.actions.utils import execute_empty_queryset_action
 from media_tree import defaults
 from media_tree import app_settings, media_types
 from media_tree.templatetags.filesize import filesize as format_filesize
+from mptt.admin import MPTTModelAdmin
 from mptt.forms import TreeNodeChoiceField
 import django
+from django.contrib.admin import actions
+from django.utils.encoding import force_unicode
+from django.contrib import messages
+from django.shortcuts import render_to_response
 from django.contrib import admin
 from django.db import models
 from django.template.loader import render_to_string
 from django.contrib.admin.util import unquote
+from django.contrib.admin.templatetags.admin_list import _boolean_icon
 from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
@@ -72,7 +79,20 @@ except ImportError:
     # pre 1.2
     from django.contrib.csrf.middleware import csrf_view_exempt
 
+
 STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
+
+
+# TODO: Document... since some methods don't have the arguments... thread-safety etc
+def set_request_attr(request, attr, value):
+    if not hasattr(request, 'media_tree'):
+        request.media_tree = {}
+    request.media_tree[attr] = value
+    
+def get_request_attr(request, attr, default=None):
+    if not hasattr(request, 'media_tree'):
+        return default
+    return request.media_tree.get(attr, default)
 
 
 class MediaTreeChangeList(MPTTChangeList):
@@ -80,12 +100,14 @@ class MediaTreeChangeList(MPTTChangeList):
     def is_search_request(self, request):
         return request.GET.get(SEARCH_VAR, '') != '' or self.params
 
+    # TODO: Move filtering by open folders here
     def get_query_set(self, request=None):
         # request arg was added in django r16144 (after 1.3)
         if request is not None and django.VERSION >= (1, 4):
             qs = super(MPTTChangeList, self).get_query_set(request)
         else:
             qs = super(MPTTChangeList, self).get_query_set()
+            request = get_current_request()
 
         if request is not None and self.is_search_request(request):
             return qs.order_by('name')
@@ -101,7 +123,7 @@ class MediaTreeChangeList(MPTTChangeList):
         order to prevent indendation when displaying them.
         """
         super(MediaTreeChangeList, self).get_results(request)
-        reduce_levels = getattr(request, 'media_tree_parent_level', 0)
+        reduce_levels = get_request_attr(request, 'parent_level', 0)
         is_search = self.is_search_request(request)
         if is_search or reduce_levels:
             for item in self.result_list:
@@ -128,7 +150,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         models.ImageField: {'widget': AdminThumbWidget},
     }
 
-    actions = []
+    _registered_actions = []
 
     class Media:
         js = [
@@ -154,8 +176,11 @@ class FileNodeAdmin(MPTTModelAdmin):
         self.list_display_links = (None, )
 
     @staticmethod
-    def register_action(func):
-        FileNodeAdmin.actions.append(func)
+    def register_action(func, required_perms=None):
+        FileNodeAdmin._registered_actions.append({
+            'action': func,
+            'required_perms': required_perms
+        })
 
     def get_actions(self, request):
         is_popup_var = request.GET.get(IS_POPUP_VAR, None)
@@ -170,7 +195,34 @@ class FileNodeAdmin(MPTTModelAdmin):
         # and restore popup var
         if is_popup_var:
             request.GET[IS_POPUP_VAR] = is_popup_var
+
+        # Replaces bulk delete method with method that properly updates tree attributes
+        # when deleting.
+        if 'delete_selected' in actions:
+            actions['delete_selected'] = (self.delete_selected_tree, 'delete_selected', _("Delete selected %(verbose_name_plural)s"))
+
+        for action_def in FileNodeAdmin._registered_actions:
+            if not action_def['required_perms'] or request.user.has_perms(action_def['required_perms']):
+                action = self.get_action(action_def['action'])
+                actions[action[1]] = action
+
         return actions
+
+    def delete_selected_tree(self, modeladmin, request, queryset):
+        """
+        Deletes multiple instances and makes sure the MPTT fields get recalculated properly.
+        (Because merely doing a bulk delete doesn't trigger the post_delete hooks.)
+        """
+        # If the user has not yet confirmed the deletion, call the regular delete 
+        # action that will present a confirmation page
+        if not request.POST.get('post'):
+            return actions.delete_selected(modeladmin, request, queryset)
+        # Otherwise, delete objects one by one
+        n = 0
+        for obj in queryset:
+            obj.delete()
+            n += 1
+        self.message_user(request, _("Successfully deleted %s items." % n))
 
     def get_changelist(self, request, **kwargs):
         """
@@ -193,6 +245,13 @@ class FileNodeAdmin(MPTTModelAdmin):
                 qs = qs.filter(parent=parent_folder)
         
         return qs
+
+    def metadata_check(self, node):
+        icon = _boolean_icon(node.has_metadata_including_descendants())
+        return '<span class="metadata"><span class="metadata-icon">%s</span><span class="displayed-metadata">%s</span></span>' % (
+            icon, node.caption())
+    metadata_check.short_description = _('Metadata')
+    metadata_check.allow_tags = True
 
     def expand_collapse(self, node):
         request = get_current_request()
@@ -289,11 +348,11 @@ class FileNodeAdmin(MPTTModelAdmin):
             except ValueError:
                 parent_level = None
 
-        setattr(request, 'media_tree_parent_folder', parent_folder)
-        setattr(request, 'media_tree_parent_level', parent_level)
+        set_request_attr(request, 'parent_folder', parent_folder)
+        set_request_attr(request, 'parent_level', parent_level)
 
     def get_parent_folder(self, request):
-        return getattr(request, 'media_tree_parent_folder', None)
+        return get_request_attr(request, 'parent_folder', None)
     
     def get_expanded_folders_pk(self, request):
         expanded_folders_pk = getattr(request, 'expanded_folders_pk', None)
@@ -323,6 +382,10 @@ class FileNodeAdmin(MPTTModelAdmin):
         response.set_cookie('expanded_folders_pk', '|'.join([str(pk) for pk in expanded_folders_pk]), path='/')
     
     def changelist_view(self, request, extra_context=None):
+        response = execute_empty_queryset_action(self, request)
+        if response: 
+            return response
+
         if not request.GET.get(SEARCH_VAR, None):
             self.init_parent_folder(request)
         parent_folder = self.get_parent_folder(request)
@@ -438,9 +501,9 @@ class FileNodeAdmin(MPTTModelAdmin):
 FileNodeAdmin.register_action(core_actions.copy_selected)
 FileNodeAdmin.register_action(core_actions.move_selected)
 FileNodeAdmin.register_action(core_actions.change_metadata_for_selected)
-# TODO Actions with permissions (maintenance_actions should require superuser)
-FileNodeAdmin.register_action(maintenance_actions.delete_orphaned_files)
-FileNodeAdmin.register_action(maintenance_actions.rebuild_tree)
+
+FileNodeAdmin.register_action(maintenance_actions.delete_orphaned_files, ('media_tree.manage_filenode',))
+FileNodeAdmin.register_action(maintenance_actions.rebuild_tree, ('media_tree.manage_filenode',))
 
 # TODO: refactor as media extensions
 ADMIN_ACTIONS = app_settings.get('MEDIA_TREE_ADMIN_ACTIONS')

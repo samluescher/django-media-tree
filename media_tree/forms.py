@@ -41,7 +41,7 @@ class FileForm(forms.ModelForm):
         fieldsets = [
             (_('File'), {
                 #'fields': ['name', 'file']
-                'fields': ['name', 'file']
+                'fields': ['file']
             }),
             (_('Display'), {
                 'fields': ['preview_file', 'position', 'is_default'],

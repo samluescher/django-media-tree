@@ -138,6 +138,7 @@ jQuery(function($) {
 
     // TODO: Move actions() call, row coloring etc inside this function
     $('#changelist').bind('init', function(scope) {
+        console.log('init');
         var rows = [];
         $('tr', this).each(function() {
             var id = $(this).find('input[name=_selected_action]').val();
@@ -155,10 +156,10 @@ jQuery(function($) {
             }
         });
         
-        $(this).trigger('update');
+        $(this).trigger('update', [$('tr', this)]);
     });
 
-    $('#changelist').bind('update', function() {
+    $('#changelist').bind('update', function(e, updatedRows) {
         $('tbody tr', this).each(function(index) {
             $(this).removeClass('row1 row2');
             if (index % 2) {
@@ -167,6 +168,17 @@ jQuery(function($) {
                 $(this).addClass('row1');
             }
         });
+        
+        if (updatedRows) {
+            $(updatedRows).each(function() {
+                var _row = this;
+                $('.metadata-icon', _row).bind('click mouseenter mouseleave', function() {
+                    if ($('.displayed-metadata', _row).text() != '') {
+                        $('.displayed-metadata', _row).toggle();
+                    }
+                });
+            });
+        }
     });
     
     $('#changelist').trigger('init');
@@ -195,7 +207,7 @@ jQuery(function($) {
                 django.jQuery("tr input.action-select", django.jQuery(tbody)).actions();
                 var rows =  $('tr', tbody);
                 parentRow.addExpandedChildren(rows);
-                $('#changelist').trigger('update');
+                $('#changelist').trigger('update', [rows]);
             });
         } else {
             parentRow.data('isExpanded', false);

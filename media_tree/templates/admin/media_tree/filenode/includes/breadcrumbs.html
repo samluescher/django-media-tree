@@ -2,17 +2,17 @@
 
 <div class="breadcrumbs">
     {% if not is_popup %}
-    <a href="../../../">
+    <a href="../../{% if not node.is_top_node %}../{% endif %}">
         {% trans "Home" %}
     </a>
     &rsaquo; 
-    <a href="../../">
+    <a href="../{% if not node.is_top_node %}../{% endif %}">
         {{ app_label|capfirst }}
     </a>
     {% endif %}
     {% for path_node in node.get_node_path %}
     &rsaquo; 
-    {% if not forloop.last or breadcrumbs_title %}<a href="{% if not path_node.is_top_node %}{{ path_node.get_admin_url }}{% else %}../{% endif %}">{% endif %}
+    {% if not forloop.last or breadcrumbs_title %}<a href="{{ path_node.get_admin_url }}">{% endif %}
     {{ path_node.name }}
     {% if not forloop.last or breadcrumbs_title %}</a>{% endif %}
     {% endfor %}

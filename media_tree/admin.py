@@ -1,1 +1,0 @@
-from media_tree.admin_new import *

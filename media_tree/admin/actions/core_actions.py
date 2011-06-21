@@ -1,6 +1,6 @@
 from media_tree.models import FileNode
-from media_tree.admin_actions.utils import get_actions_context
-from media_tree.admin_actions.forms import MoveSelectedForm, CopySelectedForm, ChangeMetadataForSelectedForm
+from media_tree.admin.actions.utils import get_actions_context
+from media_tree.admin.actions.forms import MoveSelectedForm, CopySelectedForm, ChangeMetadataForSelectedForm
 from media_tree.forms import MetadataForm
 from django import forms
 from django.utils.translation import ungettext, ugettext as _

@@ -16,8 +16,8 @@ it is embedded here.
 
 {% block content_title %}
 <h1>{{ node.name }}</h1>
-{% if node.get_metadata %}
-<p>{{ node.get_metadata }}
+{% if node.get_metadata_display %}
+<p>{{ node.get_metadata_display }}
 {% endif %}
 {% endblock %}
 

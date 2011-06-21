@@ -1,25 +1,25 @@
 #encoding=utf-8
-from django.db import models
-import mptt
-from PIL import Image
-import os
+from media_tree import app_settings, media_types
+from media_tree.utils import multi_splitext, join_phrases
+from media_tree.utils.staticfiles import get_icon_finders
+from media_tree.templatetags.filesize import filesize as format_filesize
+from mptt.models import MPTTModel
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils import dateformat
-from media_tree import app_settings, media_types
-from media_tree.utils import multi_splitext, IconFile
-import mimetypes
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.text import capfirst
 from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
-from media_tree.templatetags.filesize import filesize as format_filesize
-from media_tree.utils import get_icon_finders
 from django.conf import settings
 from django.utils.formats import get_format
+from django.db import models
+from PIL import Image
+import os
+import mimetypes
 from copy import copy
 import uuid
 
@@ -30,29 +30,13 @@ STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
 MEDIA_TYPE_NAMES = app_settings.get('MEDIA_TREE_CONTENT_TYPES')
 ICON_FINDERS = get_icon_finders(app_settings.get('MEDIA_TREE_ICON_FINDERS'))
 
-def join_phrases(text, new_text, prepend=', ', append='', compare_text=None, else_prepend='', else_append='', if_empty=False):
-    if new_text != '' or if_empty:
-        if compare_text == None:
-            compare_text = text
-        if compare_text != '':
-            text += prepend
-        else:
-            text += else_prepend
-        text += new_text
-        if compare_text != '':
-            text += append
-        else:
-            text += else_append
-    return text
-
 
 # http://adam.gomaa.us/blog/2008/aug/11/the-python-property-builtin/
 def Property(func):
     return property(**func())
 
 
-from django.db.models import permalink
-class FileNode(models.Model):
+class FileNode(MPTTModel):
 
     FOLDER = media_types.FOLDER
     FILE = media_types.FILE
@@ -102,10 +86,13 @@ class FileNode(models.Model):
         ordering = ['tree_id', 'lft']
         verbose_name = _('media object')
         verbose_name_plural = _('media objects')
-        
+        permissions = (
+            ("manage_filenode", "Can perform management tasks"),
+        )
+                        
     @staticmethod
     def get_top_node():
-        return FileNode(name=_('Media objects'), level=-1)
+        return FileNode(name=('Media objects'), level=-1)
 
     def is_top_node(self):
         return self.level == -1
@@ -279,7 +266,7 @@ class FileNode(models.Model):
         return result_list
 
     @staticmethod
-    def get_merged_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
+    def get_nested_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
         """
         Returns a nested list of nodes, applying optional filters and processors to each node.
         Nested means that the resulting list will be multi-dimensional, i.e. each item in the list
@@ -291,11 +278,12 @@ class FileNode(models.Model):
             [
                 <FileNode: Empty folder>, 
                 <FileNode: Photo folder>, 
-                    [<FileNode: photo1.jpg>, <FileNode: photo2.jpg>],
+                    [<FileNode: photo1.jpg>, <FileNode: photo2.jpg>, <FileNode: another subfolder>],
+                        [<FileNode: photo3.jpg>]
                 <FileNode: file.txt>
             ]
         
-        :param nodes: A queryset or list of FileNode objects
+        :nodes: A queryset or list of FileNode objects
         :filter_media_types: A list of media types to include in the resulting list, e.g. [FileNode.DOCUMENT] 
         :exclude_media_types: A list of media types to exclude from the resulting list
         :filter: A dictionary of kwargs for the filter() method if `nodes` is a queryset
@@ -304,25 +292,26 @@ class FileNode(models.Model):
         :max_nodes: Can be used to limit the number of items in the list (unlimited by default)
         """
         return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
-            filter=filter, ordering=ordering, processors=processors, list_method='extend', max_depth=max_depth, max_nodes=max_nodes)
+            filter=filter, ordering=ordering, processors=processors, list_method='append', max_depth=max_depth, max_nodes=max_nodes)
 
     @staticmethod
-    def get_nested_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
+    def get_merged_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
         """
-        Almost the same as `get_merged_list`, but returns a flat or one-dimensional list.
-        Using the same queryset as in the example for `get_merged_list`, this method would return:
-        
+        Almost the same as `get_nested_list`, but returns a flat (one-dimensional) list.
+        Using the same queryset as in the example for `get_nested_list`, this method would return:
+
             [
                 <FileNode: Empty folder>, 
                 <FileNode: Photo folder>, 
                 <FileNode: photo1.jpg>,
                 <FileNode: photo2.jpg>,
+                <FileNode: photo3.jpg>,
                 <FileNode: file.txt>
             ]
         """
         return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
-            filter=filter, ordering=ordering, processors=processors, list_method='append', max_depth=max_depth, max_nodes=max_nodes)
-                            
+            filter=filter, ordering=ordering, processors=processors, list_method='extend', max_depth=max_depth, max_nodes=max_nodes)
+                        
     def get_descendant_count_display(self):
         if self.node_type == FileNode.FOLDER:
             return self.get_descendant_count()
@@ -336,14 +325,15 @@ class FileNode(models.Model):
             return count == 0
         else:
             return self.has_metadata
-    has_metadata_including_descendants.short_description = _('Ready')
+    has_metadata_including_descendants.short_description = _('Metadata')
     has_metadata_including_descendants.boolean = True
 
     def get_admin_url(self):
+        if self.is_top_node():
+            return reverse('admin:media_tree_filenode_changelist');
         if self.pk:
             return reverse('admin:media_tree_filenode_change', args=(self.pk,));
         return ''
-            
         # ID Path no longer necessary 
         #url = reverse('admin:media_tree_filenode_changelist');
         #for node in self.get_node_path():
@@ -355,10 +345,11 @@ class FileNode(models.Model):
         return force_unicode(mark_safe(u'%s: <a href="%s">%s</a>' % 
             (capfirst(self._meta.verbose_name), self.get_admin_url(), self.__unicode__())))
 
+    # TODO: Refactor, move out of model
     def get_file_link(node, use_metadata=False, include_size=False, include_extension=False):
         link_text = None
         if use_metadata:
-            link_text = node.get_metadata()
+            link_text = node.get_metadata_display()
         if not link_text:
             link_text = node.__unicode__()
         if node.node_type == FileNode.FOLDER:
@@ -388,6 +379,7 @@ class FileNode(models.Model):
             else:
                 return 'application/x-unknown'
     
+    # TODO: Store in DB
     @property
     def mimetype(self):
         return FileNode.get_mimetype(self.name)
@@ -412,6 +404,7 @@ class FileNode(models.Model):
                     return MIMETYPE_CONTENT_TYPE_MAP[type]
         return media_types.FILE
 
+    # TODO: Move to extension
     def resolution_formatted(self):
         if self.width and self.height:
             return _(u'%(width)i×%(height)i') % {'width': self.width, 'height': self.height}
@@ -485,6 +478,7 @@ class FileNode(models.Model):
         
         super(FileNode, self).save(*args, **kwargs)
 
+    # TODO: Move to extension
     def pre_save_image(self):
         self.saved_image = Image.open(self.file)
         self.media_type = media_types.SUPPORTED_IMAGE
@@ -506,12 +500,13 @@ class FileNode(models.Model):
         return self.name
 
     def check_minimal_metadata(self):
-        result = (self.node_type == FileNode.FOLDER and self.name != '') or (self.title != '' or self.description != '' or self.override_alt != '')
+        result = (self.node_type == FileNode.FOLDER and self.name != '') or  \
+            (self.title != '' or self.description != '' or self.override_alt != '')
         if result and self.node_type == FileNode.FOLDER and self.pk:
             result = self.has_metadata_including_descendants()
         return result
 
-    def get_metadata(self, title_prepend='', title_append=''):
+    def get_metadata_display(self, title_prepend='', title_append=''):
         t = join_phrases('', self.title, else_prepend=title_prepend, else_append=title_append);
         t = join_phrases(t, self.description, ugettext(': '))
         if self.publish_author:
@@ -523,12 +518,13 @@ class FileNode(models.Model):
             t = join_phrases(t, date_time_formatted, ' (', ')');
         return t
 
-    # TODO Problem: If rendered |safe, all illegal tags in title / description will be output – clean tags on clean()?
+    # TODO: Problem: If rendered |safe, all illegal tags in title / description will be displayed.
+    # escape text before returning?
     def caption(self):
         if self.override_caption != '':
             return self.override_caption
         else:
-            return self.get_metadata('<strong>', '</strong>')
+            return self.get_metadata_display('<strong>', '</strong>')
     caption.allow_tags = True
     caption.short_description = _('displayed metadata')
 
@@ -537,14 +533,7 @@ class FileNode(models.Model):
         if self.override_alt != '':
             return self.override_alt
         else:
-            return self.get_metadata()
-
-
-try:
-    # TODO If file name changes, order is not updated. See http://code.google.com/p/django-mptt/issues/detail?id=41
-    mptt.register(FileNode, order_insertion_by=['name'])
-except mptt.AlreadyRegistered:
-    pass
+            return self.get_metadata_display()
 
 
 from media_tree.utils import autodiscover_media_extensions

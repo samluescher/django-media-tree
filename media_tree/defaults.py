@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from media_tree import media_types
 from media_tree.contrib.media_tree_cms_plugins.helpers import PluginLink
 
-MEDIA_TREE_LIST_DISPLAY = ('browse_controls', 'size_formatted', 'extension', 'resolution_formatted', 'get_descendant_count_display', 'modified', 'modified_by', 'has_metadata_including_descendants', 'caption', 'position')
+MEDIA_TREE_LIST_DISPLAY = ('browse_controls', 'size_formatted', 'extension', 'resolution_formatted', 'get_descendant_count_display', 'modified', 'modified_by', 'metadata_check', 'position')
 
 MEDIA_TREE_LIST_FILTER = ('media_type', 'extension', 'has_metadata')
 
@@ -24,7 +24,7 @@ MEDIA_TREE_ICON_DIRS = (
 )    
 
 MEDIA_TREE_ICON_FINDERS = (
-    'media_tree.utils.MimetypeFilesystemIconFinder',
+    'media_tree.utils.staticfiles.MimetypeStaticIconFileFinder',
 )
 
 MEDIA_TREE_ADMIN_ACTIONS = None
@@ -37,7 +37,11 @@ MEDIA_TREE_THUMBNAIL_SIZES = {
 }
 
 MEDIA_TREE_ALLOWED_FILE_TYPES = (
-    'aac', 'ace', 'ai', 'aiff', 'avi', 'bmp', 'dir', 'doc', 'docx', 'dmg', 'eps', 'fla', 'flv', 'gif', 'gz', 'hqx', 'htm', 'html', 'ico', 'indd', 'inx', 'jpg', 'jar', 'jpeg', 'md', 'mov', 'mp3', 'mp4', 'mpc', 'mkv', 'mpg', 'mpeg', 'ogg', 'odg', 'odf', 'odp', 'ods', 'odt', 'otf', 'pdf', 'png', 'pps', 'ppsx', 'ps', 'psd', 'rar', 'rm', 'rtf', 'sit', 'swf', 'tar', 'tga', 'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma', 'wmv', 'xls', 'xlsx', 'xml', 'zip'
+    'aac', 'ace', 'ai', 'aiff', 'avi', 'bmp', 'dir', 'doc', 'docx', 'dmg', 'eps', 'fla', 'flv', 
+    'gif', 'gz', 'hqx', 'htm', 'html', 'ico', 'indd', 'inx', 'jpg', 'jar', 'jpeg', 'md', 'mov', 
+    'mp3', 'mp4', 'mpc', 'mkv', 'mpg', 'mpeg', 'ogg', 'odg', 'odf', 'odp', 'ods', 'odt', 'otf', 
+    'pdf', 'png', 'pps', 'ppsx', 'ps', 'psd', 'rar', 'rm', 'rtf', 'sit', 'swf', 'tar', 'tga', 
+    'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma', 'wmv', 'xls', 'xlsx', 'xml', 'zip'
 )
 
 MEDIA_TREE_THUMBNAIL_EXTENSIONS = ('jpg', 'png')
