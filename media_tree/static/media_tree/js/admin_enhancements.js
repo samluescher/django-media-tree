@@ -27,17 +27,37 @@ jQuery(function($) {
     
     $('#object-tool-add-folder').click(function(event) {
         event.preventDefault();
-        if ($('#add-folder-name').length == 0) {
-            var cols = []
-            cols[2] = $('<td><form action="add_folder/" method="POST">'
-                +'<span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
-                +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
-                +'<input type="hidden" name="csrfmiddlewaretoken" />'
-                +'</form></td>');
-            cols[2].find('input[name=csrfmiddlewaretoken]').val($('input[name=csrfmiddlewaretoken]').val())
-            var row = $.makeChangelistRow(cols);
+        if ($('#add-folder-row').length) {
+            $('#add-folder-row').remove();
+        }
+        
+        var cols = [];
+        var targetFolder = $('#changelist').getFirstSelectedFolder();
+        
+        cols[1] = $('<td><form action="add_folder/" method="POST">'
+            +'<span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
+            +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
+            +'<input type="hidden" name="csrfmiddlewaretoken" />'
+            +(targetFolder ? '<input type="hidden" name="folder_id" value="' + targetFolder.id + '" />' : '')
+            +'</form></td>');
+        
+        cols[1].find('input[name=csrfmiddlewaretoken]').val($('input[name=csrfmiddlewaretoken]').val())
+        
+        if (targetFolder) {
+            // TODO: Copy padding, but add indent
+            cols[1].css('padding-left', 
+                $($('td', targetFolder.row)[1]).css('padding-left'));
+        }
+        
+        var row = $.makeChangelistRow(cols, null, targetFolder ? targetFolder.row : null);
+        row.attr('id', 'add-folder-row');
+        
+        if (targetFolder) {
+            $(targetFolder.row).after(row);
+        } else {
             $('#changelist table tbody').prepend(row);
         }
+
         $('#add-folder-name').select().focus();
     });
     
@@ -112,7 +132,8 @@ jQuery(function($) {
                 if (row.find('.folder').length) {
                     return {
                         id: checked.val(),
-                        name: $(checked[i]).closest('tr').find('.name').text()
+                        name: $(checked[i]).closest('tr').find('.name').text(),
+                        row: row[0]
                     };
                 }
             }

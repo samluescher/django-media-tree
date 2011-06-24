@@ -2,11 +2,11 @@
 # TODO: Add rest of admin_old's functionality:
 #   Folder rename form, file add form, folder add form 
 # TODO: Store mimetype in model
-# TODO: Fix order_insertion_by problem on upload 
 #   ...
 # TODO: Can I use thread locals directly in here, without middleware?
 # TODO: Move request and thread locals stuff to utility
 #   admin/utils.py
+# TODO: actions checkbox "select all" only selects the recently loaded ones 
 #
 # ** next **
 # TODO: Refactor PIL stuff, width|height as extension
@@ -51,11 +51,12 @@ from mptt.admin import MPTTModelAdmin
 from mptt.forms import TreeNodeChoiceField
 import django
 from django.contrib.admin import actions
+from django.contrib.admin.options import csrf_protect_m
 from django.utils.encoding import force_unicode
 from django.contrib import messages
 from django.shortcuts import render_to_response
 from django.contrib import admin
-from django.db import models
+from django.db import models, transaction
 from django.template.loader import render_to_string
 from django.contrib.admin.util import unquote
 from django.contrib.admin.templatetags.admin_list import _boolean_icon
@@ -246,6 +247,17 @@ class FileNodeAdmin(MPTTModelAdmin):
         
         return qs
 
+    def save_model(self, request, obj, form, change):
+        """
+        Given a model instance save it to the database.
+        """
+        if not change:
+            if not obj.node_type:
+                obj.node_type = get_request_attr(request, 'save_node_type', None)
+            if not obj.parent:
+                obj.parent = get_request_attr(request, 'save_node_parent', None)
+        super(FileNodeAdmin, self).save_model(request, obj, form, change)
+
     def metadata_check(self, node):
         icon = _boolean_icon(node.has_metadata_including_descendants())
         return '<span class="metadata"><span class="metadata-icon">%s</span><span class="displayed-metadata">%s</span></span>' % (
@@ -418,6 +430,26 @@ class FileNodeAdmin(MPTTModelAdmin):
                 self.set_expanded_folders_pk(response, expanded_folders_pk)
         return response
 
+    def _add_node_view(self, request, form_url='', extra_context=None, node_type=FileNode.FILE):
+        self.init_parent_folder(request)
+        parent_folder = self.get_parent_folder(request)
+        if not parent_folder.is_top_node():
+            set_request_attr(request, 'save_node_parent', parent_folder)
+        set_request_attr(request, 'save_node_type', node_type)
+        return super(FileNodeAdmin, self).add_view(request, form_url, extra_context)
+
+    @csrf_protect_m
+    @transaction.commit_on_success
+    def add_view(self, request, form_url='', extra_context=None):
+        return self._add_node_view(request, form_url, extra_context, 
+            node_type=FileNode.FILE)
+
+    @csrf_protect_m
+    @transaction.commit_on_success
+    def add_folder_view(self, request, form_url='', extra_context=None):
+        return self._add_node_view(request, form_url, extra_context, 
+            node_type=FileNode.FOLDER)
+
     def change_view(self, request, object_id, extra_context=None):
         node = FileNode.objects.get(pk=unquote(object_id))
         if node.is_folder():
@@ -430,7 +462,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         return super(FileNodeAdmin, self).change_view(request, object_id, extra_context={'node': node})
 
     def get_form(self, request, *args, **kwargs):
-        if request.GET.get('save_node_type', FileNode.FILE) == FileNode.FOLDER:
+        if get_request_attr(request, 'save_node_type', None) == FileNode.FOLDER:
             self.form = FolderForm
         else:
             self.form = FileForm
@@ -493,6 +525,7 @@ class FileNodeAdmin(MPTTModelAdmin):
                     STATIC_SUBDIR), 
                 'path': 'lib/swfupload/swfupload_fp10/swfupload.swf'}, name='media_tree_static_swfupload_swf'),
             url(r'^upload/$', self.admin_site.admin_view(self.upload_file_view), name='media_tree_upload'),
+            url(r'^add_folder/$', self.admin_site.admin_view(self.add_folder_view)),
         )
         url_patterns.extend(urls)
         return url_patterns

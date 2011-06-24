@@ -2,11 +2,15 @@
 {% load i18n %}
 
 {% block breadcrumbs %}
-    {% if node.node_type == node.FOLDER %}
-    {% with _("Change") as breadcrumbs_title %}
-    {% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
-    {% endwith %}
+    {% if not node %}
+        {{ block.super }}
     {% else %}
-    {% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
+        {% if node.node_type == node.FOLDER %}
+        {% with _("Change") as breadcrumbs_title %}
+        {% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
+        {% endwith %}
+        {% else %}
+        {% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
+        {% endif %}
     {% endif %}
 {% endblock %}

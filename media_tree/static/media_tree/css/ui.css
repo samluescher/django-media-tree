@@ -77,6 +77,11 @@ fieldset.hidden {
     white-space: nowrap;
 }
 
+.object-tools li.target-folder {
+    background: none;
+    margin-right: 1em;
+}
+
 #changelist .metadata {
     position: relative;
     display: inline-block;

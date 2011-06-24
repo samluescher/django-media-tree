@@ -41,7 +41,7 @@ class FileNode(MPTTModel):
     FOLDER = media_types.FOLDER
     FILE = media_types.FILE
 
-    node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False)
+    node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
     media_type = models.IntegerField(_('media type'), choices = app_settings.get('MEDIA_TREE_CONTENT_TYPE_CHOICES'), blank=True, null=True, editable=False)
     file = models.FileField(_('file'), upload_to=app_settings.get('MEDIA_TREE_UPLOAD_SUBDIR'), null=True)
     preview_file = models.ImageField(_('preview'), upload_to=app_settings.get('MEDIA_TREE_PREVIEW_SUBDIR'), blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'))
@@ -89,7 +89,10 @@ class FileNode(MPTTModel):
         permissions = (
             ("manage_filenode", "Can perform management tasks"),
         )
-                        
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+                                        
     @staticmethod
     def get_top_node():
         return FileNode(name=('Media objects'), level=-1)
@@ -433,10 +436,6 @@ class FileNode(MPTTModel):
             from django.core.exceptions import ValidationError
             raise ValidationError('Saving was presented for this FileNode object.')
         
-        if not self.node_type:
-            from django.core.exceptions import ValidationError
-            raise ValidationError('node_type needs to be set before saving FileNode.')
-
         if self.node_type == FileNode.FOLDER:
             self.media_type = FileNode.FOLDER
             # Admin asserts that folder name is unique under parent. For other inserts:
@@ -464,8 +463,9 @@ class FileNode(MPTTModel):
                 self.width, self.height = (None, None)
 
                 self.file.name = self.name
-                # TODO: A hash would be great, but would be inconvenient for downloadable files
-                #self.file.name = str(uuid.uuid4()) + '.' + self.extension
+                # TODO: A hash (created by storage class!) would be great because it would obscure file
+                # names, but it would be inconvenient for downloadable files
+                # self.file.name = str(uuid.uuid4()) + '.' + self.extension
 
                 # Determine whether file is a supported image:
                 try:

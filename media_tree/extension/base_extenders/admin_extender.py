@@ -3,8 +3,17 @@ from media_tree.extension.base_extenders import MediaDefiningExtender
 
 
 class AdminExtender(MediaDefiningExtender):
-
-    # TODO test, and register actions
+    """
+    Subclass this class to extends a ModelAdmin with the following elements:
+    
+        `class Media`
+            Media definitions are merged just like when you inherit from a Form or
+            ModelAdmin class.
+            
+        `actions`
+            The ModelAdmin class will need a method `register_action(func, required_perms)`
+            that takes care of adding the action. 
+    """
     @classmethod
     def contribute(extender, extended_class=FileNodeAdmin):
         super(AdminExtender, extender).contribute(extended_class)
