@@ -9,7 +9,8 @@ MEDIA_TREE_LIST_FILTER = ('media_type', 'extension', 'has_metadata')
 
 #MEDIA_TREE_LIST_DISPLAY_LINKS = ('name',)
 
-MEDIA_TREE_SEARCH_FIELDS = ('name', 'title', 'description', 'author', 'copyright', 'override_caption', 'override_alt')
+MEDIA_TREE_SEARCH_FIELDS = ('name', 'title', 'description', 'author', 'copyright', 
+    'override_caption', 'override_alt')
 
 MEDIA_TREE_ORDERING_DEFAULT = ['name']    
 
@@ -26,8 +27,6 @@ MEDIA_TREE_ICON_DIRS = (
 MEDIA_TREE_ICON_FINDERS = (
     'media_tree.utils.staticfiles.MimetypeStaticIconFileFinder',
 )
-
-MEDIA_TREE_ADMIN_ACTIONS = None
 
 MEDIA_TREE_THUMBNAIL_SIZES = {
     'default': (100, 100),
@@ -104,8 +103,10 @@ MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS = {
     'sharpen': None, # None means enabled 
 }
 
-MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_DEFAULT = PluginLink.LINK_IMAGE_DETAIL if getattr(settings, 'CMS_APPLICATIONS_URLS', {}).has_key('media_tree.urls') else None
+MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_DEFAULT = PluginLink.LINK_IMAGE_DETAIL  \
+    if getattr(settings, 'CMS_APPLICATIONS_URLS', {}).has_key('media_tree.urls') else None
 
+# TODO: Move to cms plugins
 MEDIA_TREE_SLIDESHOW_TRANSITION_FX_CHOICES = (
     ('blindX','blindX',),
     ('blindY','blindY',),

@@ -18,7 +18,7 @@ def get_current_node(form):
     else:
         return current_node
 
-def filenode_admin_action(modeladmin, request, queryset, form_class, extra_context, success_messages):
+def filenode_admin_action(modeladmin, request, queryset, form_class, extra_context, success_messages, form_initial=None):
     execute = request.POST.get('execute')
     current_node = None
     if execute:
@@ -35,7 +35,7 @@ def filenode_admin_action(modeladmin, request, queryset, form_class, extra_conte
             })
             return HttpResponseRedirect(redirect_node.get_admin_url())
     if not execute:
-        form = form_class(queryset)
+        form = form_class(queryset, initial=form_initial)
 
     context = get_actions_context(modeladmin)
     context.update(extra_context)
@@ -66,10 +66,24 @@ copy_selected.short_description = _('Copy selected %(verbose_name_plural)s')
 
 def change_metadata_for_selected(modeladmin, request, queryset):
     # TODO Use AdminDateTimeWidget etc
+    
+    # Compare all nodes in queryset in order to display initial values
+    # in form that have an identical value for all nodes 
+    initial = {}
+    for node in queryset:
+        for field in node._meta.fields:
+            if field.editable:
+                value = getattr(node, field.name)
+                if not field.name in initial:
+                    initial[field.name] = value
+                elif value != initial[field.name]:
+                    initial[field.name] = None
+
     success_messages = ['%(count)i %(verbose_name)s changed.', '%(count)i %(verbose_name_plural)s changed.']
     extra_context = ({
         'title': _('Change metadata for several media objects'),
         'submit_label': _('Overwrite selected fields'),
     })
-    return filenode_admin_action(modeladmin, request, queryset, ChangeMetadataForSelectedForm, extra_context, success_messages)
+    return filenode_admin_action(modeladmin, request, queryset, 
+        ChangeMetadataForSelectedForm, extra_context, success_messages, initial)
 change_metadata_for_selected.short_description = _('Change metadata for selected %(verbose_name_plural)s')

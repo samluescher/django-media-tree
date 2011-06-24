@@ -2,15 +2,10 @@
 # TODO: Add rest of admin_old's functionality:
 #   Folder rename form, file add form, folder add form 
 # TODO: Store mimetype in model
-#   ...
-# TODO: Can I use thread locals directly in here, without middleware?
-# TODO: Move request and thread locals stuff to utility
-#   admin/utils.py
 # TODO: actions checkbox "select all" only selects the recently loaded ones 
 #
 # ** next **
 # TODO: Refactor PIL stuff, width|height as extension
-# TODO: Refactor admin actions as AdminExtenders
 # TODO: Fix search inconsistencies. For example: Opening a folder and then searching for its name presents it with an expanded marker, but no children.
 # TODO: Search results should be ordered alphabetically
 # TODO: Folders shouldn't be expandable in search
@@ -24,19 +19,7 @@
 # TODO: Make renaming of files possible
 # TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt" and rename the files to hash.txt on disk
 # TODO: Order by column (within parent) should be possible
-
-try:
-    from threading import local
-except ImportError:
-    from django.utils._threading_local import local
-
-_thread_locals = local()
-
-def get_current_request():
-    """ returns the request object for this thead """
-    return getattr(_thread_locals, "request", None)
-    
-    
+        
 from media_tree.fields import FileNodeChoiceField
 from media_tree.models import FileNode
 from media_tree.forms import FolderForm, FileForm, UploadForm
@@ -47,6 +30,9 @@ from media_tree.admin.actions.utils import execute_empty_queryset_action
 from media_tree import defaults
 from media_tree import app_settings, media_types
 from media_tree.templatetags.filesize import filesize as format_filesize
+from media_tree.admin.change_list import MediaTreeChangeList
+from media_tree.admin.utils import get_current_request, set_current_request,  \
+    get_request_attr, set_request_attr, is_search_request
 from mptt.admin import MPTTModelAdmin
 from mptt.forms import TreeNodeChoiceField
 import django
@@ -69,8 +55,7 @@ from django import forms
 from django.core.exceptions import ValidationError, ViewDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import Http404
-from django.contrib.admin.views.main import SEARCH_VAR, IS_POPUP_VAR
-from mptt.admin import MPTTChangeList
+from django.contrib.admin.views.main import IS_POPUP_VAR
 import os
 
 try:
@@ -83,58 +68,6 @@ except ImportError:
 
 STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
 
-
-# TODO: Document... since some methods don't have the arguments... thread-safety etc
-def set_request_attr(request, attr, value):
-    if not hasattr(request, 'media_tree'):
-        request.media_tree = {}
-    request.media_tree[attr] = value
-    
-def get_request_attr(request, attr, default=None):
-    if not hasattr(request, 'media_tree'):
-        return default
-    return request.media_tree.get(attr, default)
-
-
-class MediaTreeChangeList(MPTTChangeList):
-
-    def is_search_request(self, request):
-        return request.GET.get(SEARCH_VAR, '') != '' or self.params
-
-    # TODO: Move filtering by open folders here
-    def get_query_set(self, request=None):
-        # request arg was added in django r16144 (after 1.3)
-        if request is not None and django.VERSION >= (1, 4):
-            qs = super(MPTTChangeList, self).get_query_set(request)
-        else:
-            qs = super(MPTTChangeList, self).get_query_set()
-            request = get_current_request()
-
-        if request is not None and self.is_search_request(request):
-            return qs.order_by('name')
-        else:
-            # always order by (tree_id, left)
-            tree_id = qs.model._mptt_meta.tree_id_attr
-            left = qs.model._mptt_meta.left_attr
-            return qs.order_by(tree_id, left)
-
-    def get_results(self, request):
-        """
-        Temporarily decreases the `level` attribute of all search results in
-        order to prevent indendation when displaying them.
-        """
-        super(MediaTreeChangeList, self).get_results(request)
-        reduce_levels = get_request_attr(request, 'parent_level', 0)
-        is_search = self.is_search_request(request)
-        if is_search or reduce_levels:
-            for item in self.result_list:
-                item.prevent_save()
-                item.actual_level = item.level
-                if is_search:
-                    item.level = 0
-                else:
-                    item.level = max(0, item.level - reduce_levels)
-        
 
 class FileNodeAdmin(MPTTModelAdmin):
     change_list_template = 'admin/media_tree/filenode/mptt_change_list.html'
@@ -267,7 +200,7 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     def expand_collapse(self, node):
         request = get_current_request()
-        if not request.GET.get(SEARCH_VAR, None):
+        if not is_search_request(request):
             rel = 'parent:%i' % node.parent_id if node.parent_id else ''
         else:
             rel = ''
@@ -398,10 +331,10 @@ class FileNodeAdmin(MPTTModelAdmin):
         if response: 
             return response
 
-        if not request.GET.get(SEARCH_VAR, None):
+        if not is_search_request(request):
             self.init_parent_folder(request)
         parent_folder = self.get_parent_folder(request)
-        _thread_locals.request = request
+        set_current_request(request)
         
         if not extra_context:
             extra_context = {}
@@ -537,14 +470,6 @@ FileNodeAdmin.register_action(core_actions.change_metadata_for_selected)
 
 FileNodeAdmin.register_action(maintenance_actions.delete_orphaned_files, ('media_tree.manage_filenode',))
 FileNodeAdmin.register_action(maintenance_actions.rebuild_tree, ('media_tree.manage_filenode',))
-
-# TODO: refactor as media extensions
-ADMIN_ACTIONS = app_settings.get('MEDIA_TREE_ADMIN_ACTIONS')
-if ADMIN_ACTIONS:
-    from media_tree.utils import get_module_attr
-    for path in ADMIN_ACTIONS:
-        FileNodeAdmin.register_action(get_module_attr(path))
-
 
 admin.site.register(FileNode, FileNodeAdmin)
 

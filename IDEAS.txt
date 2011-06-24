@@ -1,4 +1,3 @@
 TODO: Add support for default templates (for instance "templates/media_types/image.html", "templates/extensions/flv.html")
 TODO: support for more file alternatives (preview, other streaming format etc) -- solution would probably be ManyToManyField to self with specifying a type
-TODO: ZIP Archive actions: Extract archive to target folder (w/ creating subfolder) | Create archive from nodes
 

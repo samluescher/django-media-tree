@@ -1,0 +1,118 @@
+{% extends "admin/change_list.html" %}
+{% load adminmedia admin_list i18n mptt_tags media_tree_admin %}
+
+{% block extrahead %}
+{{ block.super }}
+{% comment %}
+Since the FileNodeAdmin's Media class can't use reverse to determine the jsi18n URL, 
+it is embedded here.
+{% endcomment %} 
+<script type="text/javascript" src="{% url admin:media_tree_jsi18n %}"></script>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
+{% endblock %}
+
+{% block content_title %}
+<h1>{{ node.name }}</h1>
+{% if node.get_metadata_display %}
+<p>{{ node.get_metadata_display }}
+{% endif %}
+{% endblock %}
+
+{% block object-tools %}
+    <ul class="object-tools">
+      {% ifnotequal node.level -1 %}
+      <li>
+        <a href="..">{% trans "Up one level" %}</a>
+      </li>
+      {% endifnotequal %}
+      {% if has_add_permission %}
+      {% if swfupload_upload_url %}
+          <li class="swfupload-button-container">
+            <a href="javascript:void(0)" class="addlink">
+              {% trans "Upload files" %}
+              <span class="swfupload-button-overlay"><span id="swfupload-button"></span></span>
+            </a>
+          </li>
+
+          <script type="text/javascript">// <![CDATA[
+              django.jQuery(function($) {
+                  var manager = $.SWFUploadManager({
+                      upload_url: '{{ swfupload_upload_url }}'
+                      ,flash_url: '{{ swfupload_flash_url }}'
+                      ,button_placeholder_id: "swfupload-button"
+                      ,file_post_name : "file"
+                      ,file_types : "{% for ext in file_types %}*.{{ ext }};{% endfor %}"
+                      ,file_size_limit : "{{ file_size_limit }}B"
+                      ,button_width: "200"
+                      ,button_height: "30"
+                  });
+              });
+          // ]]></script>
+      {% else %}
+          <li>
+            <a href="add/{% if is_popup %}?_popup=1{% endif %}" class="addlink">
+              {% trans "Add file" %}
+            </a>
+          </li>
+      {% endif %}
+      <li>
+        <a id="object-tool-add-folder" href="add_folder/{% if is_popup %}?_popup=1{% endif %}" class="addlink">
+          {% trans "Add folder" %}
+        </a>
+      </li>
+      {% ifnotequal node.level -1 %}
+      <li>
+        <a href="change/">{% trans "Change folder" %}</a>
+      </li>
+      {% endifnotequal %}
+      {% endif %}
+    </ul>
+{% endblock %}
+
+
+{% block filters %}
+  {% if cl.has_filters %}
+    <div id="changelist-filter">
+      <h2>{% trans 'View as' %}</h2>
+      <ul>
+          <li{% if not display_settings.list_type %} class="selected"{% endif %}><a href="{{ list_url }}">List</a></li>
+          <li{% if display_settings.list_type == "thumbs" %} class="selected"{% endif %}><a href="{{ thumbs_url }}">Thumbnails</a></li>
+      </ul>
+      
+      <h2>{% trans 'Folders' %}</h2>
+      <div>
+        {% with node.get_top_node as folder %}
+        <ul><li><a href="{{ folder.get_admin_url }}" {% ifequal folder node %} style="font-weight: bold{% endifequal %}">{{ folder.name }}</a>
+        {% endwith %}
+         {% for folder,structure in node.get_folder_tree|tree_info %}
+         {% if structure.new_level %}<ul><li>{% else %}</li><li>{% endif %}
+         <a href="{{ folder.get_admin_url }}" {% ifequal folder node %} style="font-weight: bold{% endifequal %}">{{ folder.name }}</a>
+         {% for level in structure.closed_levels %}</li></ul>{% endfor %}
+         {% endfor %}
+        </li></ul>
+      </div>
+
+      <h2>{% trans 'Filter' %}</h2>
+      {% for spec in cl.filter_specs %}{% admin_list_filter cl spec %}{% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block result_list %}
+    {% if action_form and actions_on_top %}{% admin_actions %}{% endif %}
+        {% if display_settings.list_type == "thumbs" %}
+            {% result_list_thumbnails cl %}
+        {% else %}
+            {% result_list cl %}
+        {% endif %}
+    {% if action_form and actions_on_bottom %}{% admin_actions %}{% endif %}
+
+
+    <div class="popup-buttons submit-row">
+        <input id="popup-button-select" type="submit" class="default" value="Select" />
+    </div>
+
+{% endblock %}
