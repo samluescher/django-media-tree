@@ -334,6 +334,8 @@ class FileNode(MPTTModel):
     def get_admin_url(self):
         if self.is_top_node():
             return reverse('admin:media_tree_filenode_changelist');
+        if self.is_folder():
+            return reverse('admin:media_tree_filenode_folder', args=(self.pk,));
         if self.pk:
             return reverse('admin:media_tree_filenode_change', args=(self.pk,));
         return ''

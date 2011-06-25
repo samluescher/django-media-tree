@@ -103,10 +103,13 @@ fieldset.hidden {
 }
 
 .browse-controls {
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.browse-controls .name {
     font-size: 110%;
     font-weight: bold;
-    white-space: nowrap;
-    display: block;
 }
 
 .browse-controls a {
@@ -116,6 +119,15 @@ fieldset.hidden {
 
 .browse-controls .folder-toggle, .browse-controls .preview {
     margin-right: .5em;
+}
+
+.browse-controls .node-menu {
+    margin-left: 1em;
+    display: none;
+}
+
+.browse-controls:hover .node-menu {
+    display: inline-block;
 }
 
 .folder-toggle {

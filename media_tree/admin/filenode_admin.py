@@ -1,11 +1,8 @@
 # ** now **
-# TODO: Add rest of admin_old's functionality:
-#   Folder rename form, file add form, folder add form 
 # TODO: Store mimetype in model
 # TODO: actions checkbox "select all" only selects the recently loaded ones 
 #
 # ** next **
-# TODO: Refactor PIL stuff, width|height as extension
 # TODO: Fix search inconsistencies. For example: Opening a folder and then searching for its name presents it with an expanded marker, but no children.
 # TODO: Search results should be ordered alphabetically
 # TODO: Folders shouldn't be expandable in search
@@ -16,6 +13,7 @@
 #   --> Actually, /folder_id/ should show zero-indented list and replace ?folder_id --> solves many problems
 #
 # ** maybe **
+# TODO: Refactor PIL stuff, width|height as extension
 # TODO: Make renaming of files possible
 # TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt" and rename the files to hash.txt on disk
 # TODO: Order by column (within parent) should be possible
@@ -236,6 +234,11 @@ class FileNodeAdmin(MPTTModelAdmin):
         return '<a href="%s">%s<span class="name">%s</span></a>' % (
             node.get_admin_url(), self.admin_preview(node) if include_preview else '', node.name)
 
+    def node_menu_links(self, node):
+        if node.node_type == FileNode.FOLDER:
+            return '<a href="%s">%s</a>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), _('change')) 
+        return ''
+
     def anchor_name(self, node):
         return 'node-%i' % node.pk
 
@@ -244,8 +247,10 @@ class FileNodeAdmin(MPTTModelAdmin):
         if node.is_folder():
             request = get_current_request()
             state = 'expanded' if self.folder_is_open(request, node) else 'collapsed'
-        return '<span id="%s" class="browse-controls %s %s">%s%s</span>' %  \
-            (self.anchor_name(node), 'folder' if node.is_folder() else 'file', state, self.expand_collapse(node), self.admin_link(node, True))
+        return '<span id="%s" class="browse-controls %s %s">%s%s<span class="node-menu">%s</span></span>' %  \
+            (self.anchor_name(node), 'folder' if node.is_folder() else 'file', 
+            state, self.expand_collapse(node), self.admin_link(node, True),
+            self.node_menu_links(node))
     browse_controls.short_description = ''
     browse_controls.allow_tags = True
 
@@ -343,9 +348,9 @@ class FileNodeAdmin(MPTTModelAdmin):
             if not middleware in settings.MIDDLEWARE_CLASSES:
                 request.user.message_set.create(message=_('You need to put %s in your MIDDLEWARE_CLASSES setting to use SWFUpload.') % middleware)
             else:
-                swfupload_upload_url = reverse('admin:media_tree_upload')
+                swfupload_upload_url = reverse('admin:media_tree_filenode_upload')
                 #swfupload_flash_url = os.path.join(settings.MEDIA_URL, STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10/swfupload.swf')
-                swfupload_flash_url = reverse('admin:media_tree_static_swfupload_swf')
+                swfupload_flash_url = reverse('admin:media_tree_filenode_static_swfupload_swf')
                 extra_context.update({
                     'file_types': app_settings.get('MEDIA_TREE_ALLOWED_FILE_TYPES'),
                     'file_size_limit': app_settings.get('MEDIA_TREE_FILE_SIZE_LIMIT'),
@@ -361,6 +366,14 @@ class FileNodeAdmin(MPTTModelAdmin):
             if not parent_folder.pk in expanded_folders_pk:  
                 expanded_folders_pk.append(parent_folder.pk)
                 self.set_expanded_folders_pk(response, expanded_folders_pk)
+        return response
+
+    def folder_view(self, request, object_id, extra_context=None):
+        node = FileNode.objects.get(pk=unquote(object_id), node_type=FileNode.FOLDER)
+        expand = list(node.get_ancestors())
+        expand.append(node)
+        response = HttpResponseRedirect('%s#%s' % (reverse('admin:media_tree_filenode_changelist'), self.anchor_name(node))); 
+        self.set_expanded_folders_pk(response, [expanded.pk for expanded in expand])
         return response
 
     def _add_node_view(self, request, form_url='', extra_context=None, node_type=FileNode.FILE):
@@ -385,13 +398,8 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     def change_view(self, request, object_id, extra_context=None):
         node = FileNode.objects.get(pk=unquote(object_id))
-        if node.is_folder():
-            expand = list(node.get_ancestors())
-            expand.append(node)
-            response = HttpResponseRedirect('%s#%s' % (reverse('admin:media_tree_filenode_changelist'), self.anchor_name(node))); 
-            self.set_expanded_folders_pk(response, [expanded.pk for expanded in expand])
-            return response
-            
+        set_request_attr(request, 'save_node_type', node.node_type)
+
         return super(FileNodeAdmin, self).change_view(request, object_id, extra_context={'node': node})
 
     def get_form(self, request, *args, **kwargs):
@@ -447,6 +455,7 @@ class FileNodeAdmin(MPTTModelAdmin):
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
         urls = super(FileNodeAdmin, self).get_urls()
+        info = self.model._meta.app_label, self.model._meta.module_name
         url_patterns = patterns('',
             # Since Flash Player enforces a same-domain policy, the upload will break if static files 
             # are served from another domain. So the built-in static file view is used for the uploader SWF:
@@ -456,9 +465,17 @@ class FileNodeAdmin(MPTTModelAdmin):
                     # Use STATIC_ROOT by default, use MEDIA_ROOT as fallback
                     getattr(settings, 'STATIC_ROOT', getattr(settings, 'MEDIA_ROOT')), 
                     STATIC_SUBDIR), 
-                'path': 'lib/swfupload/swfupload_fp10/swfupload.swf'}, name='media_tree_static_swfupload_swf'),
-            url(r'^upload/$', self.admin_site.admin_view(self.upload_file_view), name='media_tree_upload'),
-            url(r'^add_folder/$', self.admin_site.admin_view(self.add_folder_view)),
+                'path': 'lib/swfupload/swfupload_fp10/swfupload.swf'}, 
+                name='%s_%s_static_swfupload_swf' % info),
+            url(r'^upload/$', 
+                self.admin_site.admin_view(self.upload_file_view), 
+                name='%s_%s_upload' % info),
+            url(r'^add_folder/$', 
+                self.admin_site.admin_view(self.add_folder_view),
+                name='%s_%s_add_folder' % info),
+            url(r'^(.+)/view/$',
+                self.admin_site.admin_view(self.folder_view),
+                name='%s_%s_folder' % info),
         )
         url_patterns.extend(urls)
         return url_patterns

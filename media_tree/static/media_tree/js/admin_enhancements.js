@@ -205,6 +205,7 @@ jQuery(function($) {
     $('#changelist').trigger('init');
     
     $('#changelist').delegate('.folder-toggle, .browse-controls a', 'click', function(event) {
+        if ($(this).closest('.node-menu').length) return;
         var button = $(this).closest('tr').find('.folder-toggle');
         var controls = $(this).closest('tr').find('.browse-controls')
         if (button.length && button.is('.dummy.empty')) return false;
