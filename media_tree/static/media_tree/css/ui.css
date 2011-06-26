@@ -82,6 +82,23 @@ fieldset.hidden {
     margin-right: 1em;
 }
 
+ul.node-tools {
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+ul.node-tools li {
+    display: inline-block; 
+    margin: 0 1em 0 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+ul.node-tools li:last-child {
+    margin: 0;
+}
+
 #changelist .metadata {
     position: relative;
     display: inline-block;
@@ -119,15 +136,6 @@ fieldset.hidden {
 
 .browse-controls .folder-toggle, .browse-controls .preview {
     margin-right: .5em;
-}
-
-.browse-controls .node-menu {
-    margin-left: 1em;
-    display: none;
-}
-
-.browse-controls:hover .node-menu {
-    display: inline-block;
 }
 
 .folder-toggle {

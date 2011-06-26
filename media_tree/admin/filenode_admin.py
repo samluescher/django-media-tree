@@ -1,5 +1,4 @@
 # ** now **
-# TODO: Store mimetype in model
 # TODO: actions checkbox "select all" only selects the recently loaded ones 
 #
 # ** next **
@@ -234,10 +233,15 @@ class FileNodeAdmin(MPTTModelAdmin):
         return '<a href="%s">%s<span class="name">%s</span></a>' % (
             node.get_admin_url(), self.admin_preview(node) if include_preview else '', node.name)
 
-    def node_menu_links(self, node):
-        if node.node_type == FileNode.FOLDER:
-            return '<a href="%s">%s</a>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), _('change')) 
-        return ''
+    def node_tools(self, node):
+        tools = ''
+        tools += '<li><a class="change" href="%s">%s</a></li>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), _('change')) 
+        if node.is_folder():
+            tools += '<li><a class="add-folder" href="%s?folder_id=%s">%s</a></li>' % (
+                reverse('admin:media_tree_filenode_add_folder', args=()), str(node.pk), _('add folder')) 
+        return '<ul class="node-tools">%s</ul>' % tools
+    node_tools.short_description = ''
+    node_tools.allow_tags = True
 
     def anchor_name(self, node):
         return 'node-%i' % node.pk
@@ -247,10 +251,9 @@ class FileNodeAdmin(MPTTModelAdmin):
         if node.is_folder():
             request = get_current_request()
             state = 'expanded' if self.folder_is_open(request, node) else 'collapsed'
-        return '<span id="%s" class="browse-controls %s %s">%s%s<span class="node-menu">%s</span></span>' %  \
+        return '<span id="%s" class="browse-controls %s %s">%s%s</span>' %  \
             (self.anchor_name(node), 'folder' if node.is_folder() else 'file', 
-            state, self.expand_collapse(node), self.admin_link(node, True),
-            self.node_menu_links(node))
+            state, self.expand_collapse(node), self.admin_link(node, True))
     browse_controls.short_description = ''
     browse_controls.allow_tags = True
 
@@ -379,6 +382,12 @@ class FileNodeAdmin(MPTTModelAdmin):
     def _add_node_view(self, request, form_url='', extra_context=None, node_type=FileNode.FILE):
         self.init_parent_folder(request)
         parent_folder = self.get_parent_folder(request)
+        if not extra_context: 
+            extra_context = {}
+        extra_context.update({
+            'node': parent_folder,
+            'breadcrumbs_title': _('Add')
+        })
         if not parent_folder.is_top_node():
             set_request_attr(request, 'save_node_parent', parent_folder)
         set_request_attr(request, 'save_node_type', node_type)
@@ -399,8 +408,17 @@ class FileNodeAdmin(MPTTModelAdmin):
     def change_view(self, request, object_id, extra_context=None):
         node = FileNode.objects.get(pk=unquote(object_id))
         set_request_attr(request, 'save_node_type', node.node_type)
+        if not extra_context: 
+            extra_context = {}
+        extra_context.update({
+            'node': node,
+        })
+        if node.is_folder():
+            extra_context.update({
+                'breadcrumbs_title': _('Change')
+            })
 
-        return super(FileNodeAdmin, self).change_view(request, object_id, extra_context={'node': node})
+        return super(FileNodeAdmin, self).change_view(request, object_id, extra_context=extra_context)
 
     def get_form(self, request, *args, **kwargs):
         if get_request_attr(request, 'save_node_type', None) == FileNode.FOLDER:

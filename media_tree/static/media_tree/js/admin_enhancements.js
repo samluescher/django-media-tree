@@ -34,12 +34,14 @@ jQuery(function($) {
         var cols = [];
         var targetFolder = $('#changelist').getFirstSelectedFolder();
         
-        cols[1] = $('<td><form action="add_folder/" method="POST">'
-            +'<span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
-            +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
-            +'<input type="hidden" name="csrfmiddlewaretoken" />'
-            +(targetFolder ? '<input type="hidden" name="folder_id" value="' + targetFolder.id + '" />' : '')
-            +'</form></td>');
+        cols[1] = $(
+            '<td><form action="add_folder/" method="POST">'
+                +'<span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
+                +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
+                +'<input type="hidden" name="csrfmiddlewaretoken" />'
+                +(targetFolder ? '<input type="hidden" name="folder_id" value="' + targetFolder.id + '" />' : '')
+            +'</form></td>'
+        );
         
         cols[1].find('input[name=csrfmiddlewaretoken]').val($('input[name=csrfmiddlewaretoken]').val())
         
@@ -146,16 +148,13 @@ jQuery(function($) {
         // Update list
         $(this).html(html);
         $(this).trigger('init');
-        // Django calls actions() when document ready. Since the ChangeList is 
-        // updated here, it needs to be called again
-        django.jQuery("tr input.action-select").actions();
         // Restore checked rows
         var _this = this;
         checked.each(function() {
-            $('input[value='+this.value+']', _this).closest('tr').selectChangelistRow();
+            var tr = $('input[value='+this.value+']', _this).closest('tr');
+            tr.selectChangelistRow();
         });
     }
-        
 
     // TODO: Move actions() call, row coloring etc inside this function
     $('#changelist').bind('init', function(scope) {
@@ -181,7 +180,14 @@ jQuery(function($) {
     });
 
     $('#changelist').bind('update', function(e, updatedRows) {
+        // Django calls actions() when document ready. Since the ChangeList is 
+        // updated here, it needs to be called again
+        django.jQuery("tr input.action-select").actions();
+
         $('tbody tr', this).each(function(index) {
+            if ($('input.action-select:checked', this).length) {
+                $(this).selectChangelistRow();
+            }
             $(this).removeClass('row1 row2');
             if (index % 2) {
                 $(this).addClass('row2');
@@ -204,8 +210,8 @@ jQuery(function($) {
     
     $('#changelist').trigger('init');
     
-    $('#changelist').delegate('.folder-toggle, .browse-controls a', 'click', function(event) {
-        if ($(this).closest('.node-menu').length) return;
+    $('#changelist').delegate('.folder-toggle, .browse-controls a', 'click', function(event) 
+    {
         var button = $(this).closest('tr').find('.folder-toggle');
         var controls = $(this).closest('tr').find('.browse-controls')
         if (button.length && button.is('.dummy.empty')) return false;
@@ -225,8 +231,6 @@ jQuery(function($) {
                 controls.addClass('expanded');
                 controls.removeClass('collapsed');
                 var tbody = $(data).find('#changelist tbody');
-                // TODO: yellow selection is enabled, but elements are not POSTed when executing action
-                django.jQuery("tr input.action-select", django.jQuery(tbody)).actions();
                 var rows =  $('tr', tbody);
                 parentRow.addExpandedChildren(rows);
                 $('#changelist').trigger('update', [rows]);

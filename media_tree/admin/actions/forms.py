@@ -14,7 +14,7 @@ class FileNodeActionsForm(forms.Form):
 
     enable_target_node_field = False
     success_count = 0
-    confirm_fields = False
+    confirm_fields = None
 
     def __init__(self, queryset, *args, **kwargs):
         super(FileNodeActionsForm, self).__init__(*args, **kwargs)
@@ -47,7 +47,7 @@ class FileNodeActionsForm(forms.Form):
     def clean(self):
         if self.confirm_fields:
             self.confirmed_data = {}
-            for key in self.cleaned_data.keys():
+            for key in self.confirm_fields:
                 if self.data.get('_confirm_'+key, False):
                     self.confirmed_data[key] = self.cleaned_data[key]
         return self.cleaned_data
@@ -132,15 +132,18 @@ class ChangeMetadataForSelectedForm(FileNodeActionsForm):
 
     action_name = 'change_metadata_for_selected'
     enable_target_node_field = False
-    confirm_fields = True
+    confirm_fields = []
+    
+    recursive = forms.BooleanField(label=_('Change metadata of all child objects'), required=False)
 
     def __init__(self, *args, **kwargs):
         super(ChangeMetadataForSelectedForm, self).__init__(*args, **kwargs)
         copy_form = MetadataForm()
         copy_fields = copy_form.fields
-        exclude = ()
+        exclude = MetadataForm.Meta.exclude
         for key in copy_fields.keys():
             if not key in self.fields and not key in exclude:
+                self.confirm_fields.append(key)
                 self.fields[key] = copy_fields[key]
                 model_field = copy_form.instance._meta.get_field(key)
                 if model_field.validators:
@@ -161,7 +164,7 @@ class ChangeMetadataForSelectedForm(FileNodeActionsForm):
         for node in nodes:
             if self.update_node(node, self.confirmed_data):
                 self.success_count += 1
-            if node.node_type == FileNode.FOLDER:
+            if self.cleaned_data['recursive'] and node.is_folder():
                 self.save_nodes_rec(node.get_children())
 
     def save(self):

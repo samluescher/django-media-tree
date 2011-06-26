@@ -53,7 +53,7 @@ var selectAll = function(field, status)
     <div class="form-row {% if field.errors %}errors{% endif %}">
         {{ field.errors }}
         <div>
-            <label for="{{ field.auto_id }}" class="{% if field.field.required %}required{% endif %}">{% if form.confirm_fields %}<input type="checkbox" name="_confirm_{{ field.name }}" value="1" /> {% endif %}{{ field.label }}</label>
+            <label for="{{ field.auto_id }}" class="{% if field.field.required %}required{% endif %}">{% if form.confirm_fields and field.name in form.confirm_fields %}<input type="checkbox" name="_confirm_{{ field.name }}" value="1" /> {% endif %}{{ field.label }}</label>
             {{ field }}
         </div>
         {% if field.help_text %}<p class="help">{{ field.help_text|linebreaksbr }}</p>{% endif %}

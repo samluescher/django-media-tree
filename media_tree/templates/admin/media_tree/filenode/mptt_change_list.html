@@ -53,7 +53,7 @@ it is embedded here.
             $('#changelist').delegate('input[name=_selected_action]', 'change', function() {
                 var targetFolder = $('#changelist').getFirstSelectedFolder();
                 if (targetFolder) {
-                    $('.target-folder').html('{% trans "Target folder:" %} ' + targetFolder.name);
+                    $('.target-folder').html('{% trans "To %(folder)s:" %} '.replace('%(folder)s', targetFolder.name));
                 } else {
                     $('.target-folder').html('');
                 }    

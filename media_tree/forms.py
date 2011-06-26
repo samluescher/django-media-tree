@@ -79,4 +79,4 @@ class UploadForm(forms.Form):
 class MetadataForm(forms.ModelForm):
     class Meta:
         model = FileNode
-        exclude = ('file', 'name', 'is_default')
+        exclude = ('file', 'name', 'is_default', 'preview_file')

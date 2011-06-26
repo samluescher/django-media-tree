@@ -18,7 +18,7 @@ def get_current_node(form):
     else:
         return current_node
 
-def filenode_admin_action(modeladmin, request, queryset, form_class, extra_context, success_messages, form_initial=None):
+def filenode_admin_action(modeladmin, request, queryset, form_class, extra_context, success_messages, form_initial=None, is_recursive=True):
     execute = request.POST.get('execute')
     current_node = None
     if execute:
@@ -39,11 +39,18 @@ def filenode_admin_action(modeladmin, request, queryset, form_class, extra_conte
 
     context = get_actions_context(modeladmin)
     context.update(extra_context)
-    context['breadcrumbs_title'] = context['title']
-    context['form'] = form
-    context['node'] = get_current_node(form)
+    context.update({
+        'breadcrumbs_title': context['title'],
+        'form': form,
+        'node': get_current_node(form)
+    })
     if not 'node_list' in context:
-        context['node_list'] = FileNode.get_nested_list(form.selected_nodes, processors=[FileNode.get_admin_link])
+        if is_recursive:
+            max_depth = None
+        else:
+            max_depth = 1
+        context['node_list'] = FileNode.get_nested_list(form.selected_nodes, 
+            processors=[FileNode.get_admin_link], max_depth=max_depth)
     return render_to_response('admin/media_tree/filenode/actions_form.html', context, context_instance=RequestContext(request))
 
 def move_selected(modeladmin, request, queryset):
@@ -85,5 +92,5 @@ def change_metadata_for_selected(modeladmin, request, queryset):
         'submit_label': _('Overwrite selected fields'),
     })
     return filenode_admin_action(modeladmin, request, queryset, 
-        ChangeMetadataForSelectedForm, extra_context, success_messages, initial)
+        ChangeMetadataForSelectedForm, extra_context, success_messages, form_initial=initial)
 change_metadata_for_selected.short_description = _('Change metadata for selected %(verbose_name_plural)s')
