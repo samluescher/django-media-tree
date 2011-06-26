@@ -1,59 +1,21 @@
 # encoding: utf-8
 import datetime
 from south.db import db
-from south.v2 import SchemaMigration
+from south.v2 import DataMigration
 from django.db import models
+from media_tree.models import FileNode
 
-class Migration(SchemaMigration):
+class Migration(DataMigration):
 
     def forwards(self, orm):
-        
-        # Adding model 'FileNode'
-        db.create_table('media_tree_filenode', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('node_type', self.gf('django.db.models.fields.IntegerField')()),
-            ('media_type', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('file', self.gf('django.db.models.fields.files.FileField')(max_length=100, null=True)),
-            ('preview_file', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True)),
-            ('published', self.gf('django.db.models.fields.BooleanField')(default=True, blank=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(default='', max_length=255, null=True, blank=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(default='', null=True, blank=True)),
-            ('author', self.gf('django.db.models.fields.CharField')(default='', max_length=255, null=True, blank=True)),
-            ('publish_author', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
-            ('copyright', self.gf('django.db.models.fields.CharField')(default='', max_length=255, null=True, blank=True)),
-            ('publish_copyright', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
-            ('date_time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('publish_date_time', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
-            ('keywords', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-            ('override_alt', self.gf('django.db.models.fields.CharField')(default='', max_length=255, null=True, blank=True)),
-            ('override_caption', self.gf('django.db.models.fields.CharField')(default='', max_length=255, null=True, blank=True)),
-            ('has_metadata', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
-            ('extension', self.gf('django.db.models.fields.CharField')(default='', max_length=10, null=True)),
-            ('size', self.gf('django.db.models.fields.IntegerField')(null=True)),
-            ('width', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('height', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('parent', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='children_set', null=True, to=orm['media_tree.FileNode'])),
-            ('slug', self.gf('django.db.models.fields.CharField')(max_length=255, null=True)),
-            ('is_default', self.gf('django.db.models.fields.BooleanField')(default=False, blank=True)),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='created_by', null=True, to=orm['auth.User'])),
-            ('modified_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='modified_by', null=True, to=orm['auth.User'])),
-            ('position', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('extra_metadata', self.gf('django.db.models.fields.TextField')()),
-            ('lft', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
-            ('rght', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
-            ('tree_id', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
-            ('level', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True)),
-        ))
-        db.send_create_signal('media_tree', ['FileNode'])
+        for node in FileNode.objects.all():
+            if not node.is_folder():
+                node.mimetype = FileNode.get_mimetype(node.name, None)
+                node.save()
 
 
     def backwards(self, orm):
-        
-        # Deleting model 'FileNode'
-        db.delete_table('media_tree_filenode')
+        raise RuntimeError("Cannot reverse this migration.")
 
 
     models = {
@@ -112,6 +74,7 @@ class Migration(SchemaMigration):
             'level': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'lft': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'media_type': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'mimetype': ('django.db.models.fields.CharField', [], {'max_length': '64', 'null': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'modified_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'modified_by'", 'null': 'True', 'to': "orm['auth.User']"}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True'}),

@@ -46,6 +46,7 @@ class FileNode(MPTTModel):
     file = models.FileField(_('file'), upload_to=app_settings.get('MEDIA_TREE_UPLOAD_SUBDIR'), null=True)
     preview_file = models.ImageField(_('preview'), upload_to=app_settings.get('MEDIA_TREE_PREVIEW_SUBDIR'), blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'))
     published = models.BooleanField(_('is published'), blank=True, default=True, editable=False)
+    mimetype = models.CharField(_('name'), max_length=64, null=True)
 
     name = models.CharField(_('name'), max_length=255, null=True)
     title = models.CharField(_('title'), max_length=255, default='', null=True, blank=True)
@@ -373,21 +374,21 @@ class FileNode(MPTTModel):
                 (node.file.url, link_text, extra)))
 
     @staticmethod
-    def get_mimetype(filename):
+    def get_mimetype(filename, fallback_type='application/x-unknown'):
         ext = os.path.splitext(filename)[1].lstrip('.').lower()
         if ext in EXT_MIMETYPE_MAP:
             return EXT_MIMETYPE_MAP[ext]
         else:
-            type, encoding = mimetypes.guess_type(filename, strict=False)
-            if type:
-                return type
+            mimetype, encoding = mimetypes.guess_type(filename, strict=False)
+            if mimetype:
+                return mimetype
             else:
-                return 'application/x-unknown'
+                return fallback_type
     
     # TODO: Store in DB
-    @property
-    def mimetype(self):
-        return FileNode.get_mimetype(self.name)
+    #@property
+    #def mimetype(self):
+    #    return FileNode.get_mimetype(self.name)
 
     @property
     def mime_supertype(self):
