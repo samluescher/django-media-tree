@@ -158,7 +158,6 @@ jQuery(function($) {
 
     // TODO: Move actions() call, row coloring etc inside this function
     $('#changelist').bind('init', function(scope) {
-        console.log('init');
         var rows = [];
         $('tr', this).each(function() {
             var id = $(this).find('input[name=_selected_action]').val();
