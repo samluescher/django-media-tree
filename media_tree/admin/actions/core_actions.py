@@ -19,6 +19,8 @@ def get_current_node(form):
         return current_node
 
 def filenode_admin_action(modeladmin, request, queryset, form_class, extra_context, success_messages, form_initial=None, is_recursive=True):
+    """
+    """
     execute = request.POST.get('execute')
     current_node = None
     if execute:

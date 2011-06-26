@@ -1,6 +1,3 @@
-# ** now **
-# TODO: actions checkbox "select all" only selects the recently loaded ones 
-#
 # ** next **
 # TODO: Fix search inconsistencies. For example: Opening a folder and then searching for its name presents it with an expanded marker, but no children.
 # TODO: Search results should be ordered alphabetically
@@ -12,9 +9,11 @@
 #   --> Actually, /folder_id/ should show zero-indented list and replace ?folder_id --> solves many problems
 #
 # ** maybe **
-# TODO: Refactor PIL stuff, width|height as extension
-# TODO: Make renaming of files possible
-# TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt" and rename the files to hash.txt on disk
+# TODO: Refactor PIL stuff, width|height as extension? 
+# TODO: Refactor SWFUpload stuff as extension. This would require signals calls
+#   to be called in the FileNodeAdmin view methods. 
+# TODO: Make renaming of files possible.
+# TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt".
 # TODO: Order by column (within parent) should be possible
         
 from media_tree.fields import FileNodeChoiceField
@@ -505,6 +504,9 @@ FileNodeAdmin.register_action(core_actions.change_metadata_for_selected)
 
 FileNodeAdmin.register_action(maintenance_actions.delete_orphaned_files, ('media_tree.manage_filenode',))
 FileNodeAdmin.register_action(maintenance_actions.rebuild_tree, ('media_tree.manage_filenode',))
+
+# TODO: Add clear_cache action
+#FileNodeAdmin.register_action(maintenance_actions.clear_cache, ('media_tree.manage_filenode',))
 
 admin.site.register(FileNode, FileNodeAdmin)
 

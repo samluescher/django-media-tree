@@ -1,7 +1,8 @@
 from media_tree.utils import get_media_storage
+from media_tree.media_backends import get_media_backend
 from media_tree.models import FileNode
 from media_tree.admin.actions.utils import get_actions_context
-from media_tree.admin.actions.forms import FileNodeActionsForm
+from media_tree.admin.actions.forms import DeleteOrphanedFilesForm
 from media_tree import app_settings
 from django import forms
 from django.utils.translation import ungettext, ugettext as _
@@ -13,38 +14,6 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 import os
 
-FILE_DIR = os.path.join(settings.MEDIA_ROOT, app_settings.get('MEDIA_TREE_UPLOAD_SUBDIR'))
-FILE_URL = os.path.join(settings.MEDIA_URL, app_settings.get('MEDIA_TREE_UPLOAD_SUBDIR'))
-
-class OrphanedFilesForm(FileNodeActionsForm):
-
-    success_files = []
-    error_files = []
-
-    def __init__(self, queryset, orphaned_files_choices, *args, **kwargs):
-        super(OrphanedFilesForm, self).__init__(queryset, *args, **kwargs)
-        self.fields['orphaned_selected'] = forms.MultipleChoiceField(label=self.orphaned_selected_label, choices=orphaned_files_choices, widget=forms.widgets.CheckboxSelectMultiple)
-
-class DeleteOrphanedFilesForm(OrphanedFilesForm):
-
-    action_name = 'delete_orphaned_files'
-    orphaned_selected_label = _('The following files exist in storage, but are not found in the database')
-
-    def __init__(self, *args, **kwargs):
-        super(DeleteOrphanedFilesForm, self).__init__(*args, **kwargs)
-        self.fields['confirm'] = confirm = forms.BooleanField(label=_('Yes, I am sure that I want to delete the selected files from disk:'))  
-
-    def save(self):
-        """
-        Deletes the selected files from storage
-        """
-        for basename in self.cleaned_data['orphaned_selected']:
-            full_path = os.path.join(FILE_DIR, basename)
-            try:
-                os.remove(full_path)
-                self.success_files.append(full_path)
-            except OSError:
-                self.error_files.append(full_path)
 
 def delete_orphaned_files(modeladmin, request, queryset=None):
     from unicodedata import normalize
@@ -77,7 +46,7 @@ def delete_orphaned_files(modeladmin, request, queryset=None):
             storage_name = os.path.join(media_subdir, os.path.basename(file_path))
             link = mark_safe('<a href="%s">%s</a>' % (
                 storage.url(storage_name), file_path))
-            orphaned_files_choices.append((os.path.basename(file_path), link))
+            orphaned_files_choices.append((storage_name, link))
 
     if not len(orphaned_files_choices) and not len(nodes_with_missing_file_links):
         request.user.message_set.create(message=_('There are no orphaned files.'))
@@ -121,3 +90,14 @@ def rebuild_tree(modeladmin, request, queryset=None):
     return HttpResponseRedirect('')
 rebuild_tree.short_description = _('Repair node tree')
 rebuild_tree.allow_empty_queryset = True
+
+
+def clear_cache(modeladmin, request, queryset=None):
+    """
+    """
+    raise Exception(get_media_backend().get_cache_paths())
+    # TODO: confirm and clear
+    request.user.message_set.create(message=_('The cache directories were cleared.'))
+    return HttpResponseRedirect('')
+clear_cache.short_description = _('Clear cache')
+clear_cache.allow_empty_queryset = True

@@ -1,7 +1,7 @@
-from media_tree.media_backends import ThumbnailError
+from media_tree.media_backends import MediaBackend, ThumbnailError
 from sorl.thumbnail import get_thumbnail
 
-class SorlThumbnailsBackend(object):
+class SorlThumbnailsBackend(MediaBackend):
     """
     Media backend for sorl.thumbnails support. 
     Experimental and currently not officially supported.

@@ -1,6 +1,7 @@
 from media_tree.models import FileNode
 from media_tree.fields import FileNodeChoiceField
 from media_tree.forms import MetadataForm
+from media_tree.utils import get_media_storage
 from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.admin import helpers
@@ -13,10 +14,10 @@ from mptt.exceptions import InvalidMove
 class FileNodeActionsForm(forms.Form):
 
     enable_target_node_field = False
-    success_count = 0
     confirm_fields = None
 
     def __init__(self, queryset, *args, **kwargs):
+        self.success_count = 0
         super(FileNodeActionsForm, self).__init__(*args, **kwargs)
         valid_targets = FileNode._tree_manager.filter(node_type=FileNode.FOLDER)
         self.selected_nodes = queryset
@@ -170,3 +171,35 @@ class ChangeMetadataForSelectedForm(FileNodeActionsForm):
     def save(self):
         self.success_count = 0
         self.save_nodes_rec(self.get_selected_nodes())
+
+
+class OrphanedFilesForm(FileNodeActionsForm):
+
+    def __init__(self, queryset, orphaned_files_choices, *args, **kwargs):
+        self.success_files = []
+        self.error_files = []
+        super(OrphanedFilesForm, self).__init__(queryset, *args, **kwargs)
+        self.fields['orphaned_selected'] = forms.MultipleChoiceField(label=self.orphaned_selected_label, choices=orphaned_files_choices, widget=forms.widgets.CheckboxSelectMultiple)
+
+
+class DeleteOrphanedFilesForm(OrphanedFilesForm):
+
+    action_name = 'delete_orphaned_files'
+    orphaned_selected_label = _('The following files exist in storage, but are not found in the database')
+
+    def __init__(self, *args, **kwargs):
+        super(DeleteOrphanedFilesForm, self).__init__(*args, **kwargs)
+        self.fields['confirm'] = confirm = forms.BooleanField(label=_('Yes, I am sure that I want to delete the selected files from disk:'))  
+
+    def save(self):
+        """
+        Deletes the selected files from storage
+        """
+        storage = get_media_storage()
+        for storage_name in self.cleaned_data['orphaned_selected']:
+            full_path = storage.path(storage_name)
+            try:
+                storage.delete(storage_name)
+                self.success_files.append(full_path)
+            except OSError:
+                self.error_files.append(full_path)
