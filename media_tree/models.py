@@ -392,11 +392,13 @@ class FileNode(MPTTModel):
 
     @property
     def mime_supertype(self):
-        return self.mimetype.split('/')[0]
+        if self.mimetype:
+            return self.mimetype.split('/')[0]
 
     @property
     def mime_subtype(self):
-        return self.mimetype.split('/')[1]
+        if self.mimetype:
+            return self.mimetype.split('/')[1]
     
     @staticmethod
     def mimetype_to_media_type(filename):

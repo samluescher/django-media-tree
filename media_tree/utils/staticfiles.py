@@ -84,7 +84,9 @@ class MimetypeStaticIconFileFinder:
         """
         names = []
         for attr_name in ('extension', 'mimetype', 'mime_supertype'):
-            names.append(getattr(file_node, attr_name))
+            attr = getattr(file_node, attr_name)
+            if attr:
+                names.append(attr)
         if default_name:
             names.append(default_name)
         icon_path = StaticFileFinder.find(names, dirs, file_ext)
