@@ -156,7 +156,6 @@ jQuery(function($) {
         });
     }
 
-    // TODO: Move actions() call, row coloring etc inside this function
     $('#changelist').bind('init', function(scope) {
         var rows = [];
         $('tr', this).each(function() {
@@ -179,8 +178,8 @@ jQuery(function($) {
     });
 
     $('#changelist').bind('update', function(e, updatedRows) {
-        // Django calls actions() when document ready. Since the ChangeList is 
-        // updated here, it needs to be called again
+        // Django calls actions() when document ready. Since the ChangeList  
+        // was updated, actions() needs to be called again:
         django.jQuery("tr input.action-select").actions();
 
         $('tbody tr', this).each(function(index) {

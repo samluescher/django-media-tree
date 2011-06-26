@@ -48,7 +48,7 @@ class FileNodeActionsForm(forms.Form):
         if self.confirm_fields:
             self.confirmed_data = {}
             for key in self.confirm_fields:
-                if self.data.get('_confirm_'+key, False):
+                if key in self.cleaned_data and self.data.get('confirm_'+key, False):
                     self.confirmed_data[key] = self.cleaned_data[key]
         return self.cleaned_data
 
