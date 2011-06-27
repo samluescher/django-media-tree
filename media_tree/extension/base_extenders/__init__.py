@@ -6,19 +6,23 @@ class MediaTreeExtender(object):
 
     @classmethod
     def contribute(extender, extended_class=None):
+        """The `contribute` method contributes the defined extender attributes
+        to its `extended_class`. If you need to change the `extended_class` in
+        ways other than what's described here, you can extend this method.  
+        """
         raise NotImplementedError('Class `%s` has not implemented a `contribute()` method.' % extender)
 
 
 class MediaDefiningExtender(MediaTreeExtender):
     __metaclass__ = MediaDefiningClass
-    class Meta:
-        pass
-    
+
     @classmethod
     def contribute(extender, extended_class=FileForm):
         # TODO this should raise a NotImplementedError if class does not
         # define its own contribute()
-        if hasattr(extender, 'Media'):
+        
+        # TODO: Instantiating the FileNodeAdmin like this is invalid
+        if getattr(extender, 'Media', None):
             combined_media = extended_class().media + extender().media
             class NewMediaClass:
                 js = combined_media._js

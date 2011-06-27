@@ -37,6 +37,12 @@ def Property(func):
 
 
 class FileNode(MPTTModel):
+    """
+    Each ``FileNode`` instance represents a node in the media object tree. 
+    Their ``node_type`` can either be ``FileNode.FOLDER``, meaning that they 
+    may have child nodes, or ``FileNode.FILE``, meaning that they are 
+    associated to media files in storage and are storing metadata about those files.      
+    """
 
     FOLDER = media_types.FOLDER
     FILE = media_types.FILE
@@ -272,17 +278,21 @@ class FileNode(MPTTModel):
     @staticmethod
     def get_nested_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
         """
+        .. _get_nested_list:
         Returns a nested list of nodes, applying optional filters and processors to each node.
         Nested means that the resulting list will be multi-dimensional, i.e. each item in the list
         that is a folder containing child nodes will be followed by a sub-list containing those
         child nodes.
         
-        Example:
-            
+        Example of returned list:
+
+        .. code-block:: python
+
             [
                 <FileNode: Empty folder>, 
                 <FileNode: Photo folder>, 
-                    [<FileNode: photo1.jpg>, <FileNode: photo2.jpg>, <FileNode: another subfolder>],
+                    [<FileNode: photo1.jpg>, <FileNode: photo2.jpg>, 
+                     <FileNode: another subfolder>],
                         [<FileNode: photo3.jpg>]
                 <FileNode: file.txt>
             ]
@@ -301,8 +311,10 @@ class FileNode(MPTTModel):
     @staticmethod
     def get_merged_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
         """
-        Almost the same as `get_nested_list`, but returns a flat (one-dimensional) list.
+        Almost the same as :ref:`get_nested_list <media_tree.models.FileNode.get_nested_list>`, but returns a flat (one-dimensional) list.
         Using the same queryset as in the example for `get_nested_list`, this method would return:
+
+        .. code-block:: python
 
             [
                 <FileNode: Empty folder>, 
@@ -312,6 +324,7 @@ class FileNode(MPTTModel):
                 <FileNode: photo3.jpg>,
                 <FileNode: file.txt>
             ]
+
         """
         return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
             filter=filter, ordering=ordering, processors=processors, list_method='extend', max_depth=max_depth, max_nodes=max_nodes)
@@ -333,6 +346,8 @@ class FileNode(MPTTModel):
     has_metadata_including_descendants.boolean = True
 
     def get_admin_url(self):
+        """Returns the URL for viewing a FileNode in the admin."""
+        
         if self.is_top_node():
             return reverse('admin:media_tree_filenode_changelist');
         if self.is_folder():

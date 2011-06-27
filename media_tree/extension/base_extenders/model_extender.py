@@ -6,9 +6,49 @@ from types import FunctionType
 
 
 class ModelExtender(MediaTreeExtender):
+    """In many cases, extensions need to store additional data and add custom 
+    fields to the extended model class. This is achieved by defining model 
+    Fields in a ``ModelExtender`` subclass, just like they are defined in a 
+    Model class:
+
+    .. code-block:: python
+
+        class MyModelExtender(extension.ModelExtender):
+            some_field = models.CharField('a new field', max_length=10)
+
+    All fields defined like this will be added to to the extended model class
+    during runtime.  
+    """
 
     SIGNAL_NAMES = ('pre_save', 'post_save', 'pre_delete', 'post_delete')
+    """To perform custom processing and data manipulations when a Model instance
+    is changed, you can use signals.
+    
+    For each signal name listed in this attribute, you can define an 
+    extender method that will be receiving the respective signal. By default,
+    the allowed signals are: 
+    ``'pre_save', 'post_save', 'pre_delete', 'post_delete'``.
+    
+    For instance, if the extender should set a specific model Field before the
+    model instance is saved, define the ``pre_save`` receiver:
+    
+    .. code-block:: python
 
+        class MyModelExtender(extension.ModelExtender):
+
+            SIGNAL_NAMES = ('pre_save',)
+
+            @staticmethod
+            def pre_save(sender, **kwargs):
+                sender.some_field = 'some_value'
+    
+    **Notice that if the signal receiver is a class member it needs to be a 
+    static method**, as it won't be passed an instance of the class it belongs 
+    to. Also, the function takes a ``sender`` argument, along with wildcard 
+    keyword arguments (``**kwargs``), as explained in the `Django Signals 
+    documentation <https://docs.djangoproject.com/en/dev/topics/signals/>`_.
+    """
+    
     @classmethod
     def contribute(extender, extended_class=FileNode):
         for attr_name, attr in vars(extender).items():

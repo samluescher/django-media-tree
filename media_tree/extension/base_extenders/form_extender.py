@@ -3,6 +3,15 @@ from media_tree.forms import FileForm
 
 
 class FormExtender(MediaDefiningExtender):
+    """
+    In order to extend form classes, for instance to load additional form media, 
+    you need to subclass the this class and define the appropriate attributes: 
+    """
+
+    Media = None
+    """A Media class, defined exactly like the Media classes of a Form or
+    a ModelAdmin. The Media definitions are merged into the extended class.
+    """
     
     @classmethod
     def contribute(extender, extended_class=FileForm):
