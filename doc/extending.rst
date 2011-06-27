@@ -31,6 +31,8 @@ should help you with creating your own extension.
 Extender bases
 ==============
 
+An extender is created by subclassing one of the following base classes:
+
 Extending the FileNode model
 ----------------------------
 
