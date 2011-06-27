@@ -41,7 +41,12 @@ class FileNode(MPTTModel):
     Each ``FileNode`` instance represents a node in the media object tree. 
     Their ``node_type`` can either be ``FileNode.FOLDER``, meaning that they 
     may have child nodes, or ``FileNode.FILE``, meaning that they are 
-    associated to media files in storage and are storing metadata about those files.      
+    associated to media files in storage and are storing metadata about those 
+    files.      
+    
+    .. Note::
+       Since ``FileNode`` is a child class of ``MPTTModel``, it inherits many
+       methods that facilitate database queries and tree manipulation. 
     """
 
     FOLDER = media_types.FOLDER
@@ -278,15 +283,12 @@ class FileNode(MPTTModel):
     @staticmethod
     def get_nested_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
         """
-        .. _get_nested_list:
         Returns a nested list of nodes, applying optional filters and processors to each node.
         Nested means that the resulting list will be multi-dimensional, i.e. each item in the list
         that is a folder containing child nodes will be followed by a sub-list containing those
         child nodes.
         
-        Example of returned list:
-
-        .. code-block:: python
+        Example of returned list::
 
             [
                 <FileNode: Empty folder>, 
@@ -297,13 +299,13 @@ class FileNode(MPTTModel):
                 <FileNode: file.txt>
             ]
         
-        :nodes: A queryset or list of FileNode objects
-        :filter_media_types: A list of media types to include in the resulting list, e.g. [FileNode.DOCUMENT] 
-        :exclude_media_types: A list of media types to exclude from the resulting list
-        :filter: A dictionary of kwargs for the filter() method if `nodes` is a queryset
-        :processors: A list of callables to be applied to each node, e.g. [force_unicode] if you want the list to contain strings instead of FileNode objects
-        :max_depth: Can be used to limit the recursion depth (unlimited by default)
-        :max_nodes: Can be used to limit the number of items in the list (unlimited by default)
+        :param nodes: A queryset or list of FileNode objects
+        :param filter_media_types: A list of media types to include in the resulting list, e.g. [FileNode.DOCUMENT] 
+        :param exclude_media_types: A list of media types to exclude from the resulting list
+        :param filter: A dictionary of kwargs for the filter() method if ``nodes`` is a queryset
+        :param processors: A list of callables to be applied to each node, e.g. [force_unicode] if you want the list to contain strings instead of FileNode objects
+        :param max_depth: Can be used to limit the recursion depth (unlimited by default)
+        :param max_nodes: Can be used to limit the number of items in the list (unlimited by default)
         """
         return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
             filter=filter, ordering=ordering, processors=processors, list_method='append', max_depth=max_depth, max_nodes=max_nodes)
@@ -311,10 +313,8 @@ class FileNode(MPTTModel):
     @staticmethod
     def get_merged_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
         """
-        Almost the same as :ref:`get_nested_list <media_tree.models.FileNode.get_nested_list>`, but returns a flat (one-dimensional) list.
-        Using the same queryset as in the example for `get_nested_list`, this method would return:
-
-        .. code-block:: python
+        Almost the same as :func:`get_nested_list`, but returns a flat (one-dimensional) list.
+        Using the same queryset as in the example for `get_nested_list`, this method would return::
 
             [
                 <FileNode: Empty folder>, 

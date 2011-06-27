@@ -5,7 +5,7 @@ from media_tree.extension.base_extenders.model_extender import ModelExtender
 
 
 def register(extender):
-    """Registers the `extender` class and lets it contribute its attributes to 
+    """Registers the `extender` class and lets it contribute its members to 
     the respective extended classes during runtime.
     """ 
     if not issubclass(extender, MediaTreeExtender):

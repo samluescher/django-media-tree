@@ -18,10 +18,8 @@ class AdminExtender(MediaDefiningExtender):
     Each item in this list can either be a callable or a tuple containing the
     callable and a list of permissions required to execute an action.
     
-    For example:
+    For example::
     
-    .. code-block:: python
-
         actions = [
             perform_some_action, 
             (perform_a_maintenance_action, ('media_tree.manage_filenode',))

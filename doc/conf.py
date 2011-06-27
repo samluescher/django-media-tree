@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'django_dummy.settings'
-
 #
 # Django Media Tree documentation build configuration file, created by
 # sphinx-quickstart on Sun Jun 26 21:56:57 2011.
@@ -16,6 +13,11 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'django_dummy.settings'
 # serve to show the default.
 
 import sys, os
+
+print os.path.abspath('.')
+sys.path.append(os.path.abspath('.'))
+#sys.path.append(os.path.abspath('..'))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'dummy.settings'
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -100,7 +102,10 @@ html_theme = 'default'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+    'bodyfont': 'Helvetica, Arial',
+    'headfont': 'Helvetica, Arial',
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []

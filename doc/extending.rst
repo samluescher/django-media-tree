@@ -17,10 +17,12 @@ of a regular Django ``Model``, ``ModelAdmin``, or ``Form`` class, respectively,
 meaning that you can define several attributes such as model Fields or form
 Media, and they will be added to Media Tree during runtime. 
 
-You can package your extenders as a regular Django application module, and have
-Media Tree auto-discover installed extensions by providing a 
-``media_extension.py`` module. Such an application is called a **Media Tree 
-extension**. 
+.. Note::
+   You can :ref:`package and install <installing-extensions>` your extender classes as a regular Django 
+   application module, and have Media Tree auto-discover installed extensions by 
+   providing a ``media_extension.py`` module. An application containing one or 
+   more extenders and a ``media_extension.py`` that registers them is what is 
+   called a **Media Tree extension**. 
 
 Media Tree already comes with some exemplary extensions in its 
 ``contrib.media_extensions`` module. You should inspect these examples in order 
@@ -51,19 +53,18 @@ Extending forms
 .. autoclass:: media_tree.extension.FormExtender
    :members:
 
+.. _installing-extensions:
 
 Registering and installing Media Tree extensions 
 ================================================
 
-Each extension module is a Django application that is installed by putting the
-application in the ``INSTALLED_APPS`` setting.
+Each extension module is a regular Django application that is installed by 
+putting the application in the ``INSTALLED_APPS`` setting.
 
-An extension needs to contain a `media_extension.py` module that registers all
+An extension needs to contain a ``media_extension.py`` module that registers all
 extenders that the extension module contains:
 
-Example of an ``extension.py`` file:
-
-.. code-block:: python
+Example of an ``extension.py`` file::
 
     from media_tree import extension
     
@@ -80,20 +81,18 @@ function ``media_tree.extension.register()``.
    :members: register
    
 
-Tutorial extension: geocoding photos
+Tutorial extension: Geocoding Photos
 ====================================
 
-Assume you are using landscape photographs on your website, and you would like 
-to be able to enter the latitude and longitude of where they were taken in the
-FileNode admin. This is called *geocoding*. 
+Assume you are using landscape photographs on your website, and in the FileNode
+admin you would like to be able to enter the latitude and longitude of where 
+they were taken. This is called *geocoding*. 
 
 Getting started
 ---------------
 
 The first step is to create a Django application that serves as the container
-for our new extender classes. You can do this as usual on the command line: 
-
-.. code-block:: none
+for our new extender classes. You can do this as usual on the command line::
 
     $ django-admin startapp media_tree_geocode
     $ cd media_tree_geocode
@@ -110,9 +109,7 @@ Extending the Model
 -------------------
 
 Now you can create the model extender in the file ``media_extension.py``, 
-subclassing the parent class provided by Media Tree:
-
-.. code-block:: python
+subclassing the parent class provided by Media Tree::
 
     from media_tree import extension
     from django.db import models
@@ -136,9 +133,7 @@ Extending the form
 
 Of course we want to be able to edit our two new fields in the admin, so we need
 to create a form extender and add a new fieldset. We do this by adding a new 
-class to ``media_extension.py``:
-
-.. code-block:: python
+class to ``media_extension.py``::
 
     class GeocodeFormExtender(extension.FormExtender):
 
@@ -156,9 +151,7 @@ Installing the extension
 ------------------------
 
 After you have created the database fields, you can install the extension by
-adding it to the ``INSTALLED_APPS`` in your project's settings file:
-
-.. code-block:: python
+adding it to the ``INSTALLED_APPS`` in your project's settings file::
 
     INSTALLED_APPS = (
         # ... your apps here ...
@@ -178,10 +171,8 @@ With this extender, the editor will be able to check the checkboxes next to
 image files, have them checked automatically to see if they are not yet 
 geocoded, and email the photographer the admin links to those FileNode objects.
 
-As you may already be assuming, we create an admin extender in 
-``media_extension.py``: 
-
-.. code-block:: python
+As you may be assuming by now, we create an admin extender in 
+``media_extension.py``:: 
 
     class GeocodeAdminExtender(extension.AdminExtender):
 
@@ -215,13 +206,16 @@ extender will contribute to the FileNode admin. Also, we are giving the method a
 ``short_description`` that will appear in the drop-down menu above the list 
 displaying all of our FileNodes.
 
-And that's it! We are now able to geocode images in the Django admin. Of course
-it would be great if we had a map widget in the form where we can just drop a 
-pin on the location of the photograph. Creating such a widget is beyond the 
-scope of this tutorial, but adding the final Javascript file is done by simply
-adding a ``Media`` class to our form extender:
+And that's it! We are now able to geocode images in the Django admin. 
 
-.. code-block:: python
+Adding Form Media
+-----------------
+
+Of course it would be great if we had a map widget in the form where we can just 
+drop a pin on the location of the photograph. Creating such a widget is beyond 
+the scope of this tutorial, but if we had created a Javascript containing the 
+code that implements such a widget, we could easily add this file by adding a 
+``Media`` class to our form extender::
 
     class GeocodeFormExtender(extension.AdminExtender):
 
@@ -232,11 +226,14 @@ adding a ``Media`` class to our form extender:
 
         # ...
     
-Now this Media definition is merged with the default media loaded for the 
-FileNode form, and we load any code or CSS files required by our hypothetical
-map widget.
+This Media definition is merged with the default media loaded for the FileNode
+form, and we can use it to load any code or CSS files required by our 
+hypothetical map widget.
+
+Conclusion
+----------
 
 Using this extension system, you can change many aspects of how Media Tree 
-behaves. There more attributes and signals that you can define in your extenders
-than the ones described in this tutorial. Code away and, please, share your 
-extensions with the Interested Public!
+behaves. There are more attributes and also **signals** that you can define in 
+your extenders than the ones described in this tutorial. Code away and, please, 
+share your extensions with the Interested Public!

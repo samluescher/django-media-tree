@@ -9,9 +9,7 @@ class ModelExtender(MediaTreeExtender):
     """In many cases, extensions need to store additional data and add custom 
     fields to the extended model class. This is achieved by defining model 
     Fields in a ``ModelExtender`` subclass, just like they are defined in a 
-    Model class:
-
-    .. code-block:: python
+    Model class::
 
         class MyModelExtender(extension.ModelExtender):
             some_field = models.CharField('a new field', max_length=10)
@@ -36,9 +34,7 @@ class ModelExtender(MediaTreeExtender):
     ``'pre_save', 'post_save', 'pre_delete', 'post_delete'``.
     
     For instance, if the extender should set a specific model Field before the
-    model instance is saved, define the ``pre_save`` receiver:
-    
-    .. code-block:: python
+    model instance is saved, define the ``pre_save`` receiver::
 
         class MyModelExtender(extension.ModelExtender):
 
@@ -48,11 +44,14 @@ class ModelExtender(MediaTreeExtender):
             def pre_save(sender, **kwargs):
                 sender.some_field = 'some_value'
     
-    **Notice that if the signal receiver is a class member it needs to be a 
-    static method**, as it won't be passed an instance of the class it belongs 
-    to. Also, the function takes a ``sender`` argument, along with wildcard 
-    keyword arguments (``**kwargs``), as explained in the `Django Signals 
-    documentation <https://docs.djangoproject.com/en/dev/topics/signals/>`_.
+    .. note:: 
+       If the signal receiver function is a class member, it needs to be a **static
+       method** (hence the ```@staticmethod`` decorator in the example above), 
+       as it won't be passed an instance of the class it belongs to. Also, the 
+       function takes a ``sender`` argument, along with wildcard keyword 
+       arguments (``**kwargs``). You should refer to the `Django Signals 
+       documentation <https://docs.djangoproject.com/en/dev/topics/signals/>`_
+       if you are not familiar with this topic.
     """
     
     @classmethod
