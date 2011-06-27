@@ -134,7 +134,7 @@ Extending the form
 
 Of course we want to be able to edit our two new fields in the admin, so we need
 to create a form extender and add a new fieldset. We do this by adding a new 
-class to ``media_extension.py`:
+class to ``media_extension.py``:
 
 .. code-block:: python
 
