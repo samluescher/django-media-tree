@@ -10,7 +10,7 @@ CSS code to the FileNode form. For each of these cases, there is a so-called
 Overview
 ========
 
-The extender classes provided by Media Tree are ``ModelExtender``, 
+The extender base classes provided by Media Tree are ``ModelExtender``, 
 ``AdminExtender`` and ``FormExtender``, and by subclassing them you create your
 custom extenders. The structure of extender classes is similar to that
 of a regular Django ``Model``, ``ModelAdmin``, or ``Form`` class, respectively,  
@@ -28,7 +28,7 @@ to get an idea of how to build an extension. There is also a tutorial below that
 should help you with creating your own extension.
 
 
-Extender types
+Extender bases
 ==============
 
 Extending the FileNode model
