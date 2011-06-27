@@ -18,6 +18,12 @@ class ModelExtender(MediaTreeExtender):
 
     All fields defined like this will be added to to the extended model class
     during runtime.  
+
+    .. note:: 
+       If your extender defines model Fields, you are going to have to add these
+       to the database table yourself, since Media Tree does not make changes to
+       the table. However, using ``syncdb`` after installing an extension will
+       create the table including any new fields defined by extensions.
     """
 
     SIGNAL_NAMES = ('pre_save', 'post_save', 'pre_delete', 'post_delete')

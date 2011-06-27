@@ -90,8 +90,8 @@ FileNode admin. This is called *geocoding*.
 Getting started
 ---------------
 
-The first step is to create a Django application that serves as the container of
-our new extender classes. You can do this as usual on the command line: 
+The first step is to create a Django application that serves as the container
+for our new extender classes. You can do this as usual on the command line: 
 
 .. code-block:: none
 
@@ -127,11 +127,9 @@ This class looks just like a regular Model, but it does not have its own
 database table -- instead, its fields are added to the ``FileNode`` class when
 you restart the development server.
 
-.. note:: Database migration
-
-    **Notice that you are going to have to add these two fields to the database table
-    yourself** (using ``syncdb`` or modifying the ``media_tree_filenode`` table with
-    a database client). 
+**Notice that you are going to have to add these two fields to the database table
+yourself** (using ``syncdb`` or modifying the ``media_tree_filenode`` table with
+a database client). 
         
 Extending the form 
 ------------------
