@@ -5,7 +5,7 @@ Django Media Tree is a Django app for managing your website's media files in a f
 
 Key features:
 
-* Enables you to organise all of your site media in nested folders  
+* Enables you to organize all of your site media in nested folders  
 * Supports various media types (images, audio, video, archives etc.) 
 * Extension system, enabling you to easily add special processing for different media types and extend the admin interface.  
 * Upload queue with progress indicators (using SWFUpload)
