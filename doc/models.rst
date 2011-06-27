@@ -1,5 +1,5 @@
-Models
-******
+The FileNode Model
+******************
 
 .. automodule:: media_tree.models
    :members:

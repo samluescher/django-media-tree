@@ -1,10 +1,15 @@
 """
-Template tags for thumbnail generation and automatic thumbnail sizes.
+This module provides a few template tags related to generating thumbnails and
+image versions. You can use these tags in your templates after loading the tag
+library as follows::
 
-Most of the code below is an almost identical copy of easy_thumbnails' 
-template tag, modified to work with `FileNode` sources and the configured 
-`MediaBackend` so it will work with any thumbnail-generating application if 
-you provide an appropriate `MediaBackend` class.
+    {% load media_tree_thumbnail %}
+
+Most of the code of this module is an almost identical copy of easy_thumbnails' 
+template tag, modified to work with ``FileNode`` sources and the configured 
+``MEDIA_BACKEND``. Hence, the :func:`thumbnail` tag is compatible to that of
+easy_thumbnails, but it will work with any thumbnail-generating application if 
+you provide an appropriate ``MediaBackend`` class.
 """
 
 from media_tree import app_settings
@@ -51,6 +56,31 @@ class ThumbnailSizeNode(template.Node):
 
 
 def thumbnail_size(parser, token):
+    """Returns a pre-configured thumbnail size, or assigns it to a context
+    variable.
+
+    Basic tag syntax::
+
+        {% thumbnail_size [size_name] [as var_name] %}
+        
+    The ``size`` parameter can be any of the size names configured using the
+    setting ``MEDIA_TREE_THUMBNAIL_SIZES``. If omitted, the default size will
+    be returned.
+    
+    If the ``as var_name`` clause is present, the size will be assigned to
+    the respective context variable instead of being returned.
+    
+    You can use this template tag in conjunction with :func:`thumbnail` in order
+    to use pre-configured thumbnail sizes in your templates.
+    
+    For example::
+    
+        {% thumbnail_size "large" as large_size %}
+        {% thumbnail some_file large_size as large_thumb %}
+        <img src="{{ large_thumb.url }} width="{{ large_thumb.width }} ... />
+        
+    """
+    
     args = token.split_contents()
     tag = args.pop(0)
     if len(args) >= 2 and args[-2] == 'as':
@@ -158,17 +188,18 @@ class ThumbnailNode(Node):
 
 def thumbnail(parser, token):
     """
-    Creates a thumbnail of an ImageField.
+    Creates a thumbnail of an ``ImageField`` or ``FileNode`` representing a
+    supported image file.
 
-    Basic tag Syntax::
+    Basic tag syntax::
 
         {% thumbnail [source] [size] [options] %}
 
-    *source* can be a ``File`` object, usually an Image/FileField of a model
+    ``source`` can be a ``File`` object, usually an Image/FileField of a model
     instance, or a ``FileNode`` instance, whose ``file`` attribute will be 
     used as the source.
 
-    *size* can either be:
+    ``size`` can either be:
 
     * the size in the format ``[width]x[height]`` (for example,
       ``{% thumbnail person.photo 100x50 %}``) or
@@ -189,6 +220,16 @@ def thumbnail(parser, token):
 
     When ``as [variable]`` is used, the tag does not return the absolute URL of
     the thumbnail.
+
+    Having access to the ``ThumbnailFile`` object is extremely useful, since
+    you should always include the width and height attributes in the output
+    HTML.
+
+    Example usage, passing the tag a ``FileNode`` instance::
+    
+        {% thumbnail some_node "100x200" as thumb %}
+        <img src="{{ thumb.url }} alt="{{ some_node.alt }}"
+            width="{{ thumb.width }} height="{{ thumb.height }}" />
 
     **Debugging**
 

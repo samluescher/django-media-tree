@@ -38,15 +38,16 @@ def Property(func):
 
 class FileNode(MPTTModel):
     """
-    Each ``FileNode`` instance represents a node in the media object tree. 
-    Their ``node_type`` can either be ``FileNode.FOLDER``, meaning that they 
-    may have child nodes, or ``FileNode.FILE``, meaning that they are 
-    associated to media files in storage and are storing metadata about those 
-    files.      
+    Each ``FileNode`` instance represents a node in the media object tree, that
+    is to say a “file” or “folder”. Accordingly, their ``node_type`` attribute
+    can either be ``FileNode.FOLDER``, meaning that they may have child nodes,
+    or ``FileNode.FILE``, meaning that they are associated to media files in
+    storage and are storing metadata about those files. 
     
     .. Note::
        Since ``FileNode`` is a child class of ``MPTTModel``, it inherits many
-       methods that facilitate database queries and tree manipulation. 
+       methods that facilitate queries and data manipulation when working with
+       trees. 
     """
 
     FOLDER = media_types.FOLDER
