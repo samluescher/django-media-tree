@@ -1,4 +1,8 @@
 #encoding=utf-8
+
+#TODO: move get_*_list to utility class that executes lazily when used.
+#    https://docs.djangoproject.com/en/dev/ref/models/querysets/#when-querysets-are-evaluated
+
 from media_tree import app_settings, media_types
 from media_tree.utils import multi_splitext, join_phrases
 from media_tree.utils.staticfiles import get_icon_finders
@@ -51,8 +55,11 @@ class FileNode(MPTTModel):
     """
 
     FOLDER = media_types.FOLDER
+    """The constant denoting a folder node, used for the :attr:`node_type` attribute."""
+    
     FILE = media_types.FILE
-
+    """The constant denoting a file node, used for the :attr:`node_type` attribute."""
+    
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
     media_type = models.IntegerField(_('media type'), choices = app_settings.get('MEDIA_TREE_CONTENT_TYPE_CHOICES'), blank=True, null=True, editable=False)
     file = models.FileField(_('file'), upload_to=app_settings.get('MEDIA_TREE_UPLOAD_SUBDIR'), null=True)
@@ -108,15 +115,21 @@ class FileNode(MPTTModel):
                                         
     @staticmethod
     def get_top_node():
+        """Returns a symbolic node representing the root of all nodes. This node
+        is not actually stored in the database, but used in the admin to link to
+        the change list.
+        """        
         return FileNode(name=('Media objects'), level=-1)
 
     def is_top_node(self):
+        """Returns True if the model instance is the top node."""
         return self.level == -1
 
     # Workaround for http://code.djangoproject.com/ticket/11058
     def admin_preview(self):
         pass
 
+    # TODO: What's this for again?
     @Property
     def link():
 
@@ -157,7 +170,7 @@ class FileNode(MPTTModel):
             else:
                 files = self.get_children().filter(media_type__in=media_types)
             # TODO the two counts are due to the fact that, at this time, it seems
-            # not possible to order the queryset returned by get_children() by is_default
+            # not possible to order the QuerySet returned by get_children() by is_default
             if files.count() > 0:
                 default = files.filter(is_default=True)
                 if default.count() > 0:
@@ -170,12 +183,12 @@ class FileNode(MPTTModel):
             return self
 
     def get_qualified_file_url(self, field_name='file'):
-        """
-        Returns a fully qualified URL for a file field, including protocol, domain and port.
-        In most cases, you can just use `file_field.url` instead, which (depending on your 
-        `MEDIA_URL`) may or may not contain the domain. In some cases however, you always
-        need a fully qualified URL. This includes, for instance, embedding a flash video
-        player from a remote domain and passing it a video URL.
+        """Returns a fully qualified URL for the :attr:`file` field, including
+        protocol, domain and port. In most cases, you can just use ``file.url``
+        instead, which (depending on your ``MEDIA_URL``) may or may not contain
+        the domain. In some cases however, you always need a fully qualified
+        URL. This includes, for instance, embedding a flash video player from a
+        remote domain and passing it a video URL.
         """
         url = getattr(self, field_name).url
         if '://' in url:
@@ -192,6 +205,10 @@ class FileNode(MPTTModel):
     }
 
     def get_qualified_preview_url(self):
+        """Similar to :func:`get_qualified_file_url`, but returns the URL for
+        the :attr:`preview_file` field, which can be used to associate image
+        previews with video files.
+        """
         return self.get_qualified_file_url('preview_file')
 
     def get_preview_file(self, default_name=None):
@@ -233,7 +250,7 @@ class FileNode(MPTTModel):
     def __get_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, list_method='append', max_depth=None, max_nodes=None, _depth=1, _node_count=0):
 
         if isinstance(nodes, models.query.QuerySet):
-            # pre-filter() and exclude() on queryset for fewer iterations  
+            # pre-filter() and exclude() on QuerySet for fewer iterations  
             if filter_media_types:
                 nodes = nodes.filter(media_type__in=tuple(filter_media_types)+(FileNode.FOLDER,))
             if exclude_media_types:
@@ -299,14 +316,37 @@ class FileNode(MPTTModel):
                         [<FileNode: photo3.jpg>]
                 <FileNode: file.txt>
             ]
+            
+        You can use this list in conjunction with Django's built-in
+        list template filters to output nested lists in templates::
         
-        :param nodes: A queryset or list of FileNode objects
-        :param filter_media_types: A list of media types to include in the resulting list, e.g. [FileNode.DOCUMENT] 
+            {{ some_nested_list|unordered_list }}
+            
+        would output::
+        
+            <ul>
+                <li>Empty folder</li>
+                <li>Photo folder
+                    <ul>
+                        <li>photo1.jpg</li>
+                        <li>photo2.jpg</li>
+                        <li>another subfolder
+                            <ul>
+                                <li>photo3.jpg</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>file.txt</li>
+            </ul>
+        
+        :param nodes: A QuerySet or list of FileNode objects
+        :param filter_media_types: A list of media types to include in the resulting list, e.g. ``media_types.DOCUMENT``
         :param exclude_media_types: A list of media types to exclude from the resulting list
-        :param filter: A dictionary of kwargs for the filter() method if ``nodes`` is a queryset
-        :param processors: A list of callables to be applied to each node, e.g. [force_unicode] if you want the list to contain strings instead of FileNode objects
+        :param filter: A dictionary of kwargs to be applied with ``QuerySet.filter()`` if ``nodes`` is a QuerySet
+        :param processors: A list of callables to be applied to each node, e.g. ``force_unicode`` if you want the list to contain strings instead of FileNode objects
         :param max_depth: Can be used to limit the recursion depth (unlimited by default)
-        :param max_nodes: Can be used to limit the number of items in the list (unlimited by default)
+        :param max_nodes: Can be used to limit the number of items in the resulting list (unlimited by default)
         """
         return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
             filter=filter, ordering=ordering, processors=processors, list_method='append', max_depth=max_depth, max_nodes=max_nodes)
@@ -315,7 +355,7 @@ class FileNode(MPTTModel):
     def get_merged_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
         """
         Almost the same as :func:`get_nested_list`, but returns a flat (one-dimensional) list.
-        Using the same queryset as in the example for `get_nested_list`, this method would return::
+        Using the same QuerySet as in the example for `get_nested_list`, this method would return::
 
             [
                 <FileNode: Empty folder>, 
@@ -537,6 +577,10 @@ class FileNode(MPTTModel):
     # TODO: Problem: If rendered |safe, all illegal tags in title / description will be displayed.
     # escape text before returning?
     def caption(self):
+        """Returns object metadata that has been selected to be displayed to
+        users, compiled as a string.
+
+        """
         if self.override_caption != '':
             return self.override_caption
         else:
@@ -546,6 +590,13 @@ class FileNode(MPTTModel):
 
     @property
     def alt(self):
+        """Returns object metadata suitable for use as the HTML ``alt``
+        attribute. You can use this method in templates::
+        
+            <img src="node.file.url" alt="node.alt" />
+            
+        """
+        
         if self.override_alt != '':
             return self.override_alt
         else:

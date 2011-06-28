@@ -23,6 +23,7 @@ Table of Contents
    :maxdepth: 2
 
    installation
+   admin
    models
    fields
    templatetags

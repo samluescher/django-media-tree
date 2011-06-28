@@ -66,6 +66,21 @@ STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
 
 
 class FileNodeAdmin(MPTTModelAdmin):
+    """The FileNodeAdmin aims to let you manage your media files on the web like
+    you are used to on your desktop computer.
+    
+    Mimicking the file explorer of an operating system, you can browse your
+    virtual folder structure, copy and move items, upload more media files, and
+    perform many other tasks.
+        
+    The FileNodeAdmin can be used in your own Django projects, serving as a file
+    selection dialog when linking ``FileNode`` objects to your own models.
+    
+    You can also extend the admin interface in many different fashions to suit
+    your custom requirements. Please refer to the :ref:`extension` section for
+    more information about extending Media Tree.
+    """
+    
     change_list_template = 'admin/media_tree/filenode/mptt_change_list.html'
     
     list_display = app_settings.get('MEDIA_TREE_LIST_DISPLAY')
