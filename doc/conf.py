@@ -14,9 +14,8 @@
 
 import sys, os
 
-print os.path.abspath('.')
 sys.path.append(os.path.abspath('.'))
-#sys.path.append(os.path.abspath('..'))
+sys.path.append(os.path.abspath('..'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'dummy.settings'
 
 # If extensions (or modules to document with autodoc) are in another directory,
