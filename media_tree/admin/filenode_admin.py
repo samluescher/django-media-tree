@@ -29,6 +29,7 @@ from media_tree.templatetags.filesize import filesize as format_filesize
 from media_tree.admin.change_list import MediaTreeChangeList
 from media_tree.admin.utils import get_current_request, set_current_request,  \
     get_request_attr, set_request_attr, is_search_request
+from media_tree.media_backends import get_media_backend
 from mptt.admin import MPTTModelAdmin
 from mptt.forms import TreeNodeChoiceField
 import django
@@ -228,13 +229,18 @@ class FileNodeAdmin(MPTTModelAdmin):
     expand_collapse.allow_tags = True
             
     def admin_preview(self, node, icons_only=False):
-        preview = render_to_string('admin/media_tree/filenode/includes/preview.html', {
+        template = 'admin/media_tree/filenode/includes/preview.html'
+        if not get_media_backend():
+            icons_only = True
+            template = 'html/media_tree/filenode/includes/icon.html'
+            # TODO SPLIT preview.html in two: one that doesn't need media backend!
+        preview = render_to_string(template, {
             'node': node,
             'preview_file': node.get_icon_file() if icons_only else node.get_preview_file(),
             'class': 'collapsed' if node.is_folder() else ''
         })
         if node.is_folder():
-            preview += render_to_string('admin/media_tree/filenode/includes/preview.html', {
+            preview += render_to_string(template, {
                 'node': node,
                 'preview_file': node.get_preview_file(default_name='_folder_expanded'),
                 'class': 'expanded'

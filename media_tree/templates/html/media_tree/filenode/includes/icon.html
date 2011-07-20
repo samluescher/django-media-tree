@@ -1,0 +1,7 @@
+{% spaceless %}
+{% if preview_file %}
+<span class="preview icon{% if class %} {{ class }}{% endif %}">
+    <img src="{{ preview_file.url }}" alt="{{ node.alt }}" />
+</span>
+{% endif %}
+{% endspaceless %}

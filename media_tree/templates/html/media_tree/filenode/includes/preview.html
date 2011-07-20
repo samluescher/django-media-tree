@@ -1,14 +1,9 @@
 {% spaceless %}
-{% load media_tree_thumbnail %}
-
 {% if preview_file %}
-<span class="preview {% if preview_file.is_icon %}icon{% else %}thumbnail{% endif %}{% if class %} {{ class }}{% endif %}">
     {% if not preview_file.is_icon %}
-        {% thumbnail preview_file "80x80" sharpen as thumb %}
-        <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" alt="{{ node.alt }}" />
+        {% include "html/media_tree/filenode/includes/thumbnail.html" %}
     {% else %}
-        <img src="{{ preview_file.url }}" alt="{{ node.alt }}" />
+        {% include "html/media_tree/filenode/includes/icon.html" %}
     {% endif %}
-</span>
 {% endif %}
 {% endspaceless %}

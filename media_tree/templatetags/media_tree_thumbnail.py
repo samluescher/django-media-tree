@@ -26,7 +26,7 @@ import re
 THUMBNAIL_SIZES = app_settings.merge('MEDIA_TREE_THUMBNAIL_SIZES')
 RE_SIZE = re.compile(r'(\d+)x(\d+)$')
 MEDIA_BACKEND = get_media_backend()
-VALID_OPTIONS = MEDIA_BACKEND.get_valid_thumbnail_options()
+VALID_OPTIONS = MEDIA_BACKEND.get_valid_thumbnail_options() if MEDIA_BACKEND else {}
 register = template.Library()
 
 
@@ -154,6 +154,7 @@ class ThumbnailNode(Node):
             if raise_errors:
                 raise
             return self.bail_out(context)
+            
         # Size variable can be either a tuple/list of two integers or a
         # valid string, only the string is checked.
         size = opts['size']

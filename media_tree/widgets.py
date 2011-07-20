@@ -38,12 +38,13 @@ class AdminThumbWidget(AdminFileWidget):
  
     def render(self, name, value, attrs=None):
         output = super(AdminThumbWidget, self).render(name, value, attrs)
-        if value and hasattr(value, "url"):
+        backend = get_media_backend()
+        if backend and value and hasattr(value, "url"):
             try:
                 thumb_extension = os.path.splitext(value.name)[1].lstrip('.').lower()
                 if not thumb_extension in THUMBNAIL_EXTENSIONS:
                     thumb_extension = None
-                thumb = get_media_backend().get_thumbnail(value, {'size': THUMBNAIL_SIZE, 'sharpen': True})
+                thumb = backend.get_thumbnail(value, {'size': THUMBNAIL_SIZE, 'sharpen': True})
                 thumb_html = u'<img src="%s" alt="%s" width="%i" height="%i" />' % (thumb.url, os.path.basename(value.name), thumb.width, thumb.height) 
                 output = u'<div><p><span class="thumbnail">%s</span></p><p>%s</p></div>' % (thumb_html, output)
             except ThumbnailError as inst:

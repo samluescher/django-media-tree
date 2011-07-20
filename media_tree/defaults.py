@@ -3,6 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from media_tree import media_types
 from media_tree.contrib.media_tree_cms_plugins.helpers import PluginLink
 
+MEDIA_TREE_MEDIA_BACKENDS = ()
+
 MEDIA_TREE_LIST_DISPLAY = ('browse_controls', 'size_formatted', 'extension', 'resolution_formatted', 'get_descendant_count_display', 'modified', 'modified_by', 'metadata_check', 'position', 'node_tools')
 
 MEDIA_TREE_LIST_FILTER = ('media_type', 'extension', 'has_metadata')
@@ -29,6 +31,7 @@ MEDIA_TREE_ICON_FINDERS = (
 )
 
 MEDIA_TREE_THUMBNAIL_SIZES = {
+    'small': (80, 80),
     'default': (100, 100),
     'medium': (250, 250),
     'large': (400, 400),
