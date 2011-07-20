@@ -1,0 +1,11 @@
+include AUTHORS
+include LICENSE
+include README.md
+include CHANGELOG.txt
+recursive-include media_tree/locale *
+recursive-include media_tree/templates *
+recursive-include media_tree/static *
+recursive-include media_tree/contrib *
+recursive-include media_tree/templates *
+recursive-include doc *
+recursive-exclude * *.pyc
