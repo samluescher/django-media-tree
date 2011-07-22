@@ -6,7 +6,8 @@
 from media_tree import app_settings, media_types
 from media_tree.utils import multi_splitext, join_phrases
 from media_tree.utils.staticfiles import get_icon_finders
-from media_tree.templatetags.filesize import filesize as format_filesize
+from django.template.defaultfilters import filesizeformat
+
 from mptt.models import MPTTModel
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
@@ -423,7 +424,7 @@ class FileNode(MPTTModel):
             if include_size:
                 if extra != '':
                     extra += ', '
-                extra += '<span class="file-size">%s</span>' % format_filesize(node.size)
+                extra += '<span class="file-size">%s</span>' % filesizeformat(node.size)
             if extra:
                 extra = ' (%s)' % extra
             return force_unicode(mark_safe(u'<a class="file '+node.extension+'" href="%s">%s</a>%s' % 

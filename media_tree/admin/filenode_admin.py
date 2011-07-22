@@ -25,7 +25,8 @@ from media_tree.admin.actions import maintenance_actions
 from media_tree.admin.actions.utils import execute_empty_queryset_action
 from media_tree import defaults
 from media_tree import app_settings, media_types
-from media_tree.templatetags.filesize import filesize as format_filesize
+from django.template.defaultfilters import filesizeformat
+
 from media_tree.admin.change_list import MediaTreeChangeList
 from media_tree.admin.utils import get_current_request, set_current_request,  \
     get_request_attr, set_request_attr, is_search_request
@@ -288,7 +289,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         if not size:
             return ''
         else:
-            return '<span class="filesize">%s</span>' % format_filesize(size)
+            return '<span class="filesize">%s</span>' % filesizeformat(size)
     size_formatted.short_description = _('size')
     size_formatted.admin_order_field = 'size'
     size_formatted.allow_tags = True

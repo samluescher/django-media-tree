@@ -37,14 +37,13 @@ class StaticFile(FieldFile):
         self.is_icon = True
 
     def save(self, *args, **kwargs):
-        raise NotImplementedError('Icon files are read-only')
+        raise NotImplementedError('Static files are read-only')
 
     def delete(self, *args, **kwargs):
-        raise NotImplementedError('Icon files are read-only')
+        raise NotImplementedError('Static files are read-only')
 
     def __unicode__(self):
         return self.instance.__unicode__()
-        #return self.instance.get_media_type_name()
 
     def alt(self):
         return self.instance.alt()
