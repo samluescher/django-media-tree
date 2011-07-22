@@ -4,7 +4,7 @@
 #    https://docs.djangoproject.com/en/dev/ref/models/querysets/#when-querysets-are-evaluated
 
 from media_tree import app_settings, media_types
-from media_tree.utils import multi_splitext, join_phrases
+from media_tree.utils import multi_splitext, join_formatted
 from media_tree.utils.staticfiles import get_icon_finders
 from django.template.defaultfilters import filesizeformat
 
@@ -558,36 +558,46 @@ class FileNode(MPTTModel):
 
     def check_minimal_metadata(self):
         result = (self.node_type == FileNode.FOLDER and self.name != '') or  \
-            (self.title != '' or self.description != '' or self.override_alt != '')
+            (self.title != '' or self.description != '' or  \
+            self.override_alt != '' or self.override_caption != '')
         if result and self.node_type == FileNode.FOLDER and self.pk:
             result = self.has_metadata_including_descendants()
         return result
 
-    def get_metadata_display(self, title_prepend='', title_append=''):
-        t = join_phrases('', self.title, else_prepend=title_prepend, else_append=title_append);
-        t = join_phrases(t, self.description, ugettext(': '))
-        if self.publish_author:
-            t = join_phrases(t, '', ugettext(u' – ')+ugettext('Author: %s') % self.author, compare_text=self.author, if_empty=True)
-        if self.publish_copyright:
-            t = join_phrases(t, self.copyright, ugettext(', '), compare_text=self.author, else_prepend=' ')
-        if self.publish_date_time and self.date_time:
-            date_time_formatted = dateformat.format(self.date_time, get_format('DATE_FORMAT'))
-            t = join_phrases(t, date_time_formatted, ' (', ')');
-        return t
-
-    # TODO: Problem: If rendered |safe, all illegal tags in title / description will be displayed.
-    # escape text before returning?
-    def caption(self):
+    def get_metadata_display(self, field_formats = {}):
         """Returns object metadata that has been selected to be displayed to
         users, compiled as a string.
+        """
+        def field_format(field):
+            if field in field_formats:
+                return field_formats[field]
+            return u'%s'
+        t = join_formatted('', self.title, format=field_format('title'))
+        t = join_formatted(t, self.description, u'%s: %s')
+        if self.publish_author:
+            t = join_formatted(t, self.author, u'%s' + u' – ' + u'Author: %s', u'%s' + u'Author: %s')
+        if self.publish_copyright:
+            t = join_formatted(t, self.copyright, u'%s, %s')
+        if self.publish_date_time and self.date_time:
+            date_time_formatted = dateformat.format(self.date_time, get_format('DATE_FORMAT'))
+            t = join_formatted(t, date_time_formatted, u'%s (%s)', '%s%s')
+        return t
+    get_metadata_display.allow_tags = True
 
+    def get_metadata_formatted(self, field_formats = app_settings.get('MEDIA_TREE_METADATA_FORMATS')):
+        """Returns object metadata that has been selected to be displayed to
+        users, compiled as a string including default formatting, for examples
+        bold titles.
+        
+        You can use this method in templates where you want to output image
+        captions.
         """
         if self.override_caption != '':
             return self.override_caption
         else:
-            return self.get_metadata_display('<strong>', '</strong>')
-    caption.allow_tags = True
-    caption.short_description = _('displayed metadata')
+            return self.get_metadata_display(field_formats)
+    get_metadata_formatted.allow_tags = True
+    get_metadata_formatted.short_description = _('displayed metadata')
 
     @property
     def alt(self):
@@ -597,9 +607,10 @@ class FileNode(MPTTModel):
             <img src="node.file.url" alt="node.alt" />
             
         """
-        
         if self.override_alt != '':
             return self.override_alt
+        elif self.override_caption != '':
+            return self.override_caption
         else:
             return self.get_metadata_display()
 

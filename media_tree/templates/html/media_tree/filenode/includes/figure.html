@@ -13,9 +13,9 @@
         <a style="display: none" rel="image-full" href="{{ image_node.file.url }}"></a>
     {% endif %}
     {% endspaceless %}</span>
-    {% if image_node.caption %}
+    {% if image_node.has_metadata %}
     <span class="caption">
-        {{ image_node.caption|safe }}
+        {{ image_node.get_metadata_formatted }}
     </span>
     {% endif %}
 </span>

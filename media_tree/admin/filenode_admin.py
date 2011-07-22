@@ -207,7 +207,7 @@ class FileNodeAdmin(MPTTModelAdmin):
     def metadata_check(self, node):
         icon = _boolean_icon(node.has_metadata_including_descendants())
         return '<span class="metadata"><span class="metadata-icon">%s</span><span class="displayed-metadata">%s</span></span>' % (
-            icon, node.caption())
+            icon, node.get_metadata_formatted())
     metadata_check.short_description = _('Metadata')
     metadata_check.allow_tags = True
 
