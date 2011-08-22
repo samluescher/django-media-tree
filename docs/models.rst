@@ -6,4 +6,3 @@ The FileNode Model
    :inherited-members:
    :exclude-members: clean, clean_fields, full_clean, save_base, 
       serializable_value, validate_unique
-   

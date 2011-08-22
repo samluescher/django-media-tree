@@ -6,7 +6,7 @@ TODO This howto does not cover... serving media files, django.contrib.staticfile
 - Download and put the ``media_tree`` module on your pythonpath, or install using
   pypi TODO
 
-- Add ``media_tree`` to your ``INSTALLED_APPS``::
+- Add ``media_tree`` to your ``INSTALLED_APPS`` setting::
 
     INSTALLED_APPS = (
         # ... your other apps here 
@@ -52,7 +52,7 @@ TODO This howto does not cover... serving media files, django.contrib.staticfile
     )
 
 - Optional: If you are planning to use a Flash uploader such as ``SWFUpload``,
-  add ``SessionPostMiddleware`` to your ``MIDDLEWARE_CLASSES```::
+  add ``SessionPostMiddleware`` to your ``MIDDLEWARE_CLASSES``::
 
     MIDDLEWARE_CLASSES = (
         # ...

@@ -1,0 +1,410 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The FileNode Model &mdash; Django Media Tree v1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django Media Tree v1.0.0 documentation" href="index.html" />
+    <link rel="next" title="Fields and forms" href="fields.html" />
+    <link rel="prev" title="Admin interface overview" href="admin.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fields.html" title="Fields and forms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="admin.html" title="Admin interface overview"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django Media Tree v1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-media_tree.models">
+<span id="the-filenode-model"></span><h1>The FileNode Model<a class="headerlink" href="#module-media_tree.models" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="media_tree.models.FileNode">
+<em class="property">class </em><tt class="descclassname">media_tree.models.</tt><tt class="descname">FileNode</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Each <tt class="docutils literal"><span class="pre">FileNode</span></tt> instance represents a node in the media object tree, that
+is to say a “file” or “folder”. Accordingly, their <tt class="docutils literal"><span class="pre">node_type</span></tt> attribute
+can either be <tt class="docutils literal"><span class="pre">FileNode.FOLDER</span></tt>, meaning that they may have child nodes,
+or <tt class="docutils literal"><span class="pre">FileNode.FILE</span></tt>, meaning that they are associated to media files in
+storage and are storing metadata about those files.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Since <tt class="docutils literal"><span class="pre">FileNode</span></tt> is a child class of <tt class="docutils literal"><span class="pre">MPTTModel</span></tt>, it inherits many
+methods that facilitate queries and data manipulation when working with
+trees.</p>
+</div>
+<dl class="attribute">
+<dt id="media_tree.models.FileNode.FILE">
+<tt class="descname">FILE</tt><a class="headerlink" href="#media_tree.models.FileNode.FILE" title="Permalink to this definition">¶</a></dt>
+<dd><p>The constant denoting a file node, used for the <tt class="xref py py-attr docutils literal"><span class="pre">node_type</span></tt> attribute.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="media_tree.models.FileNode.FOLDER">
+<tt class="descname">FOLDER</tt><a class="headerlink" href="#media_tree.models.FileNode.FOLDER" title="Permalink to this definition">¶</a></dt>
+<dd><p>The constant denoting a folder node, used for the <tt class="xref py py-attr docutils literal"><span class="pre">node_type</span></tt> attribute.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="media_tree.models.FileNode.alt">
+<tt class="descname">alt</tt><a class="headerlink" href="#media_tree.models.FileNode.alt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns object metadata suitable for use as the HTML <tt class="docutils literal"><span class="pre">alt</span></tt>
+attribute. You can use this method in templates:</p>
+<div class="highlight-python"><pre>&lt;img src="node.file.url" alt="node.alt" /&gt;</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_admin_url">
+<tt class="descname">get_admin_url</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_admin_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the URL for viewing a FileNode in the admin.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_ancestors">
+<tt class="descname">get_ancestors</tt><big>(</big><em>ascending=False</em>, <em>include_self=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_ancestors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <tt class="docutils literal"><span class="pre">QuerySet</span></tt> containing the ancestors of this model
+instance.</p>
+<p>This defaults to being in descending order (root ancestor first,
+immediate parent last); passing <tt class="xref docutils literal"><span class="pre">True</span></tt> for the <tt class="docutils literal"><span class="pre">ascending</span></tt>
+argument will reverse the ordering (immediate parent first, root
+ancestor last).</p>
+<p>If <tt class="docutils literal"><span class="pre">include_self</span></tt> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the <tt class="docutils literal"><span class="pre">QuerySet</span></tt> will also
+include this model instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_children">
+<tt class="descname">get_children</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <tt class="docutils literal"><span class="pre">QuerySet</span></tt> containing the immediate children of this
+model instance, in tree order.</p>
+<p>The benefit of using this method over the reverse relation
+provided by the ORM to the instance&#8217;s children is that a
+database query can be avoided in the case where the instance is
+a leaf node (it has no children).</p>
+<p>If called from a template where the tree has been walked by the
+<tt class="docutils literal"><span class="pre">cache_tree_children</span></tt> filter, no database query is required.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_descendant_count">
+<tt class="descname">get_descendant_count</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_descendant_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of descendants this model instance has.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_descendants">
+<tt class="descname">get_descendants</tt><big>(</big><em>include_self=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_descendants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <tt class="docutils literal"><span class="pre">QuerySet</span></tt> containing descendants of this model
+instance, in tree order.</p>
+<p>If <tt class="docutils literal"><span class="pre">include_self</span></tt> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the <tt class="docutils literal"><span class="pre">QuerySet</span></tt> will also
+include this model instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_leafnodes">
+<tt class="descname">get_leafnodes</tt><big>(</big><em>include_self=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_leafnodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <tt class="docutils literal"><span class="pre">QuerySet</span></tt> containing leafnodes of this model
+instance, in tree order.</p>
+<p>If <tt class="docutils literal"><span class="pre">include_self</span></tt> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the <tt class="docutils literal"><span class="pre">QuerySet</span></tt> will also
+include this model instance (if it is a leaf node)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_level">
+<tt class="descname">get_level</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the level of this node (distance from root)</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="media_tree.models.FileNode.get_merged_list">
+<em class="property">static </em><tt class="descname">get_merged_list</tt><big>(</big><em>nodes</em>, <em>filter_media_types=None</em>, <em>exclude_media_types=None</em>, <em>filter=None</em>, <em>ordering=None</em>, <em>processors=None</em>, <em>max_depth=None</em>, <em>max_nodes=None</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_merged_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Almost the same as <a class="reference internal" href="#media_tree.models.FileNode.get_nested_list" title="media_tree.models.FileNode.get_nested_list"><tt class="xref py py-func docutils literal"><span class="pre">get_nested_list()</span></tt></a>, but returns a flat (one-dimensional) list.
+Using the same QuerySet as in the example for <cite>get_nested_list</cite>, this method would return:</p>
+<div class="highlight-python"><pre>[
+    &lt;FileNode: Empty folder&gt;, 
+    &lt;FileNode: Photo folder&gt;, 
+    &lt;FileNode: photo1.jpg&gt;,
+    &lt;FileNode: photo2.jpg&gt;,
+    &lt;FileNode: photo3.jpg&gt;,
+    &lt;FileNode: file.txt&gt;
+]</pre>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_metadata_display">
+<tt class="descname">get_metadata_display</tt><big>(</big><em>field_formats={}</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_metadata_display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns object metadata that has been selected to be displayed to
+users, compiled as a string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_metadata_formatted">
+<tt class="descname">get_metadata_formatted</tt><big>(</big><em>field_formats={'title': '&lt;strong&gt;%s&lt;/strong&gt;'}</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_metadata_formatted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns object metadata that has been selected to be displayed to
+users, compiled as a string including default formatting, for examples
+bold titles.</p>
+<p>You can use this method in templates where you want to output image
+captions.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="media_tree.models.FileNode.get_nested_list">
+<em class="property">static </em><tt class="descname">get_nested_list</tt><big>(</big><em>nodes</em>, <em>filter_media_types=None</em>, <em>exclude_media_types=None</em>, <em>filter=None</em>, <em>ordering=None</em>, <em>processors=None</em>, <em>max_depth=None</em>, <em>max_nodes=None</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_nested_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a nested list of nodes, applying optional filters and processors to each node.
+Nested means that the resulting list will be multi-dimensional, i.e. each item in the list
+that is a folder containing child nodes will be followed by a sub-list containing those
+child nodes.</p>
+<p>Example of returned list:</p>
+<div class="highlight-python"><pre>[
+    &lt;FileNode: Empty folder&gt;, 
+    &lt;FileNode: Photo folder&gt;, 
+        [&lt;FileNode: photo1.jpg&gt;, &lt;FileNode: photo2.jpg&gt;, 
+         &lt;FileNode: another subfolder&gt;],
+            [&lt;FileNode: photo3.jpg&gt;]
+    &lt;FileNode: file.txt&gt;
+]</pre>
+</div>
+<p>You can use this list in conjunction with Django&#8217;s built-in
+list template filters to output nested lists in templates:</p>
+<div class="highlight-python"><pre>{{ some_nested_list|unordered_list }}</pre>
+</div>
+<p>would output:</p>
+<div class="highlight-python"><pre>&lt;ul&gt;
+    &lt;li&gt;Empty folder&lt;/li&gt;
+    &lt;li&gt;Photo folder
+        &lt;ul&gt;
+            &lt;li&gt;photo1.jpg&lt;/li&gt;
+            &lt;li&gt;photo2.jpg&lt;/li&gt;
+            &lt;li&gt;another subfolder
+                &lt;ul&gt;
+                    &lt;li&gt;photo3.jpg&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;file.txt&lt;/li&gt;
+&lt;/ul&gt;</pre>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nodes</strong> &#8211; A QuerySet or list of FileNode objects</li>
+<li><strong>filter_media_types</strong> &#8211; A list of media types to include in the resulting list, e.g. <tt class="docutils literal"><span class="pre">media_types.DOCUMENT</span></tt></li>
+<li><strong>exclude_media_types</strong> &#8211; A list of media types to exclude from the resulting list</li>
+<li><strong>filter</strong> &#8211; A dictionary of kwargs to be applied with <tt class="docutils literal"><span class="pre">QuerySet.filter()</span></tt> if <tt class="docutils literal"><span class="pre">nodes</span></tt> is a QuerySet</li>
+<li><strong>processors</strong> &#8211; A list of callables to be applied to each node, e.g. <tt class="docutils literal"><span class="pre">force_unicode</span></tt> if you want the list to contain strings instead of FileNode objects</li>
+<li><strong>max_depth</strong> &#8211; Can be used to limit the recursion depth (unlimited by default)</li>
+<li><strong>max_nodes</strong> &#8211; Can be used to limit the number of items in the resulting list (unlimited by default)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_next_sibling">
+<tt class="descname">get_next_sibling</tt><big>(</big><em>**filters</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_next_sibling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this model instance&#8217;s next sibling in the tree, or
+<tt class="xref docutils literal"><span class="pre">None</span></tt> if it doesn&#8217;t have a next sibling.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_previous_sibling">
+<tt class="descname">get_previous_sibling</tt><big>(</big><em>**filters</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_previous_sibling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this model instance&#8217;s previous sibling in the tree, or
+<tt class="xref docutils literal"><span class="pre">None</span></tt> if it doesn&#8217;t have a previous sibling.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_qualified_file_url">
+<tt class="descname">get_qualified_file_url</tt><big>(</big><em>field_name='file'</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_qualified_file_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a fully qualified URL for the <tt class="xref py py-attr docutils literal"><span class="pre">file</span></tt> field, including
+protocol, domain and port. In most cases, you can just use <tt class="docutils literal"><span class="pre">file.url</span></tt>
+instead, which (depending on your <tt class="docutils literal"><span class="pre">MEDIA_URL</span></tt>) may or may not contain
+the domain. In some cases however, you always need a fully qualified
+URL. This includes, for instance, embedding a flash video player from a
+remote domain and passing it a video URL.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_qualified_preview_url">
+<tt class="descname">get_qualified_preview_url</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_qualified_preview_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Similar to <a class="reference internal" href="#media_tree.models.FileNode.get_qualified_file_url" title="media_tree.models.FileNode.get_qualified_file_url"><tt class="xref py py-func docutils literal"><span class="pre">get_qualified_file_url()</span></tt></a>, but returns the URL for
+the <tt class="xref py py-attr docutils literal"><span class="pre">preview_file</span></tt> field, which can be used to associate image
+previews with video files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_root">
+<tt class="descname">get_root</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the root node of this model instance&#8217;s tree.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.get_siblings">
+<tt class="descname">get_siblings</tt><big>(</big><em>include_self=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_siblings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <tt class="docutils literal"><span class="pre">QuerySet</span></tt> containing siblings of this model
+instance. Root nodes are considered to be siblings of other root
+nodes.</p>
+<p>If <tt class="docutils literal"><span class="pre">include_self</span></tt> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the <tt class="docutils literal"><span class="pre">QuerySet</span></tt> will also
+include this model instance.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="media_tree.models.FileNode.get_top_node">
+<em class="property">static </em><tt class="descname">get_top_node</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_top_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a symbolic node representing the root of all nodes. This node
+is not actually stored in the database, but used in the admin to link to
+the change list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.insert_at">
+<tt class="descname">insert_at</tt><big>(</big><em>target</em>, <em>position='first-child'</em>, <em>save=False</em>, <em>allow_existing_pk=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.insert_at" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method for calling <tt class="docutils literal"><span class="pre">TreeManager.insert_node</span></tt> with this
+model instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.is_ancestor_of">
+<tt class="descname">is_ancestor_of</tt><big>(</big><em>other</em>, <em>include_self=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.is_ancestor_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if this model is an ancestor of the given node,
+<tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise.
+If include_self is True, also returns True if the two nodes are the same node.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.is_child_node">
+<tt class="descname">is_child_node</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.is_child_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if this model instance is a child node, <tt class="xref docutils literal"><span class="pre">False</span></tt>
+otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.is_leaf_node">
+<tt class="descname">is_leaf_node</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.is_leaf_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if this model instance is a leaf node (it has no
+children), <tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.is_root_node">
+<tt class="descname">is_root_node</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.is_root_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <tt class="xref docutils literal"><span class="pre">True</span></tt> if this model instance is a root node,
+<tt class="xref docutils literal"><span class="pre">False</span></tt> otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.is_top_node">
+<tt class="descname">is_top_node</tt><big>(</big><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.is_top_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the model instance is the top node.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="media_tree.models.FileNode.move_to">
+<tt class="descname">move_to</tt><big>(</big><em>target</em>, <em>position='first-child'</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.move_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method for calling <tt class="docutils literal"><span class="pre">TreeManager.move_node</span></tt> with this
+model instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="admin.html"
+                        title="previous chapter">Admin interface overview</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fields.html"
+                        title="next chapter">Fields and forms</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/models.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fields.html" title="Fields and forms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="admin.html" title="Admin interface overview"
+             >previous</a> |</li>
+        <li><a href="index.html">Django Media Tree v1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Samuel Luescher.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

@@ -79,7 +79,6 @@ MEDIA_TREE_METADATA_FORMATS = {
     'title': '<strong>%s</strong>'
 }
 
-
 MEDIA_TREE_CONTENT_TYPE_CHOICES = (
     (media_types.FOLDER, _('folder')),
     (media_types.ARCHIVE, _('archive')),

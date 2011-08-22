@@ -29,7 +29,8 @@ Table of Contents
    templatetags
    configuration
    extending 
-
+   bundled
+   
    
 Indices and tables
 ==================

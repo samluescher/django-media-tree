@@ -46,7 +46,7 @@ class ModelExtender(MediaTreeExtender):
     
     .. note:: 
        If the signal receiver function is a class member, it needs to be a **static
-       method** (hence the ```@staticmethod`` decorator in the example above), 
+       method** (hence the ``@staticmethod`` decorator in the example above), 
        as it won't be passed an instance of the class it belongs to. Also, the 
        function takes a ``sender`` argument, along with wildcard keyword 
        arguments (``**kwargs``). You should refer to the `Django Signals 

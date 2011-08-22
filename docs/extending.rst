@@ -81,21 +81,22 @@ function ``media_tree.extension.register()``.
    :members: register
    
 
-Tutorial extension: Geocoding Photos
-====================================
+Tutorial extension: Geotagging Photos
+=====================================
 
 Assume you are using landscape photographs on your website, and in the FileNode
-admin you would like to be able to enter the latitude and longitude of where 
-they were taken. This is called *geocoding*. 
+admin you would like to be able to enter the latitude and longitude of the place
+where they were taken. This is called *geotagging*. 
 
 Getting started
 ---------------
 
 The first step is to create a Django application that serves as the container
-for our new extender classes. You can do this as usual on the command line::
+for our new extender classes. You can do this as usual on the command line from
+your project folder::
 
-    $ django-admin startapp media_tree_geocode
-    $ cd media_tree_geocode
+    $ django-admin startapp media_tree_geotagging
+    $ cd media_tree_geotagging
     $ touch media_extension.py
 
 Notice that on the last line we created a file called ``media_extension.py``. 
@@ -114,19 +115,22 @@ subclassing the parent class provided by Media Tree::
     from media_tree import extension
     from django.db import models
     
-    class GeocodeModelExtender(extension.ModelExtender):
+    class GeotaggingModelExtender(extension.ModelExtender):
         lat = models.FloatField('latitude', null=True, blank=True)
         lng = models.FloatField('latitude', null=True, blank=True)
         
-    extension.register(GeocodeModelExtender)
+    extension.register(GeotaggingModelExtender)
     
-This class looks just like a regular Model, but it does not have its own 
+This class looks similar to a regular Model, but it does not have its own 
 database table -- instead, its fields are added to the ``FileNode`` class when
 you restart the development server.
 
-**Notice that you are going to have to add these two fields to the database table
-yourself** (using ``syncdb`` or modifying the ``media_tree_filenode`` table with
-a database client). 
+.. Note::
+   This extension adds the fields ``lat`` and ``lng`` to
+   the ``FileNode`` model. You are going to have to add these fields to 
+   the database table yourself by modifying the ``media_tree_filenode`` table 
+   with a database client, **unless you installed it before running** 
+   ``syncdb``). 
         
 Extending the form 
 ------------------
@@ -135,17 +139,17 @@ Of course we want to be able to edit our two new fields in the admin, so we need
 to create a form extender and add a new fieldset. We do this by adding a new 
 class to ``media_extension.py``::
 
-    class GeocodeFormExtender(extension.FormExtender):
+    class GeotaggingFormExtender(extension.FormExtender):
 
         class Meta:
             fieldsets = [
-                ('Geocoding', {
+                ('Geotagging', {
                     'fields': ['lat', 'lng'],
                     'classes': ['collapse']
                 })
             ]
 
-    extension.register(GeocodeFormExtender)
+    extension.register(GeotaggingFormExtender)
 
 Installing the extension
 ------------------------
@@ -156,48 +160,50 @@ adding it to the ``INSTALLED_APPS`` in your project's settings file::
     INSTALLED_APPS = (
         # ... your apps here ...
         'media_tree',
-        'media_tree_geocode'
+        'media_tree_geotagging'
     )
 
 Adding an Admin Action
 ----------------------
 
 Let's assume you have a content editor on staff, and this person's job is to 
-check if photographs were geocoded, and notify the photographer of the ones
+check if photographs were geotagged, and to notify the photographer of the ones
 that aren't. We can simplify this task by adding an admin action to the 
 FileNode admin.
 
 With this extender, the editor will be able to check the checkboxes next to 
 image files, have them checked automatically to see if they are not yet 
-geocoded, and email the photographer the admin links to those FileNode objects.
+geotagged, and email the photographer the admin links to those FileNode objects.
 
 As you may be assuming by now, we create an admin extender in 
 ``media_extension.py``:: 
 
-    class GeocodeAdminExtender(extension.AdminExtender):
+    from django.core.mail import send_mail
+    
+    class GeotaggingAdminExtender(extension.AdminExtender):
 
-        def notify_of_non_geocoded(modeladmin, request, queryset):
-            non_geocoded_links = []
+        def notify_of_non_geotagged(modeladmin, request, queryset):
+            non_geotagged_links = []
             for node in queryset:
-                # Check if node is JPG and not geocoded:
+                # Check if node is JPG and not geotagged:
                 if node.extension == 'jpg':
                     if not node.lat or not node.lng:
-                        non_geocoded_links.append(node.get_admin_url())
-            # Send email with admin links for thise nodes, and message
+                        non_geotagged_links.append(node.get_admin_url())
+            # Send email with admin links for these nodes, and message
             # current user about status of the action.
-            if len(non_geocoded_links):
-                message = '\n'.join(non_geocoded_links) + '\n\nThanks!'
-                send_mail('Please geocode these files', message, 
+            if len(non_geotagged_links):
+                message = '\n'.join(non_geotagged_links) + '\n\nThanks!'
+                send_mail('Please geotag these files', message, 
                     'from@example.com', ['to@example.com'])
                 modeladmin.message_user(request, 'Notification sent for'  \
-                    + ' %i non-geocoded JPGs.' % len(non_geocoded_links))
+                    + ' %i non-geotagged JPGs.' % len(non_geotagged_links))
             else:
                 modeladmin.message_user(request, 'All selected images appear'  \
                     +' to be OK.')
-        notify_of_non_geocoded.short_description =  \
-            'Notify photographer if selected JPGs are not geocoded' 
+        notify_of_non_geotagged.short_description =  \
+            'Notify photographer if selected JPGs are not geotagged' 
 
-        actions = [notify_of_non_geocoded]
+        actions = [notify_of_non_geotagged]
     
 This last example is a bit more verbose, but you will notice that it just 
 contains one method with the exact same signature like a regular Django admin 
@@ -206,7 +212,7 @@ extender will contribute to the FileNode admin. Also, we are giving the method a
 ``short_description`` that will appear in the drop-down menu above the list 
 displaying all of our FileNodes.
 
-And that's it! We are now able to geocode images in the Django admin. 
+And that's it! We are now able to geotag images in the Django admin. 
 
 Adding Form Media
 -----------------
@@ -217,7 +223,7 @@ the scope of this tutorial, but if we had created a Javascript containing the
 code that implements such a widget, we could easily add this file by adding a 
 ``Media`` class to our form extender::
 
-    class GeocodeFormExtender(extension.AdminExtender):
+    class GeotaggingFormExtender(extension.AdminExtender):
 
         class Media:
             js = (
