@@ -1,7 +1,12 @@
 from media_tree.admin.utils import get_current_request, is_search_request,  \
     get_request_attr
-from mptt.admin import MPTTChangeList
-
+    
+try:
+    from mptt.admin import MPTTChangeList
+except ImportError:
+    # Legacy mptt support
+    from media_tree.contrib.legacy_mptt_support.admin import MPTTChangeList
+    
 class MediaTreeChangeList(MPTTChangeList):
 
     def is_filtered(self, request):

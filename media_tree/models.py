@@ -8,7 +8,13 @@ from media_tree.utils import multi_splitext, join_formatted
 from media_tree.utils.staticfiles import get_icon_finders
 from django.template.defaultfilters import filesizeformat
 
-from mptt.models import MPTTModel
+try:
+    from mptt.models import MPTTModel as ModelBase
+except ImportError:
+    # Legacy mptt support
+    import mptt
+    from django.db.models import Model as ModelBase 
+
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
 from django.template.defaultfilters import slugify
@@ -41,7 +47,7 @@ def Property(func):
     return property(**func())
 
 
-class FileNode(MPTTModel):
+class FileNode(ModelBase):
     """
     Each ``FileNode`` instance represents a node in the media object tree, that
     is to say a “file” or “folder”. Accordingly, their ``node_type`` attribute
@@ -113,7 +119,7 @@ class FileNode(MPTTModel):
 
     class MPTTMeta:
         order_insertion_by = ['name']
-                                        
+
     @staticmethod
     def get_top_node():
         """Returns a symbolic node representing the root of all nodes. This node
@@ -614,6 +620,14 @@ class FileNode(MPTTModel):
         else:
             return self.get_metadata_display()
 
+# Legacy mptt support
+if ModelBase == models.Model:
+    FileNode._mptt_meta = FileNode._meta
+    try:
+        mptt.register(FileNode, 
+            order_insertion_by=FileNode.MPTTMeta.order_insertion_by)
+    except mptt.AlreadyRegistered:
+        pass
 
 from media_tree.utils import autodiscover_media_extensions
 autodiscover_media_extensions()

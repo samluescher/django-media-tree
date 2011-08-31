@@ -31,7 +31,13 @@ from media_tree.admin.change_list import MediaTreeChangeList
 from media_tree.admin.utils import get_current_request, set_current_request,  \
     get_request_attr, set_request_attr, is_search_request
 from media_tree.media_backends import get_media_backend
-from mptt.admin import MPTTModelAdmin
+
+try:
+    from mptt.admin import MPTTModelAdmin
+except ImportError:
+    # Legacy mptt support
+    from media_tree.contrib.legacy_mptt_support.admin import MPTTModelAdmin
+
 from mptt.forms import TreeNodeChoiceField
 import django
 from django.contrib.admin import actions
