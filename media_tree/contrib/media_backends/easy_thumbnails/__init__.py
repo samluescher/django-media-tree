@@ -1,6 +1,7 @@
 from media_tree.media_backends import MediaBackend, ThumbnailError
 from media_tree.utils import get_media_storage
 from media_tree import app_settings
+from media_tree import media_types
 from easy_thumbnails.files import get_thumbnailer
 from easy_thumbnails import utils
 from django.conf import settings
@@ -11,6 +12,8 @@ class EasyThumbnailsBackend(MediaBackend):
     """
     Media backend for easy_thumbnails support. 
     """
+
+    SUPPORTED_MEDIA_TYPES = (media_types.SUPPORTED_IMAGE,)
 
     @staticmethod
     def check_conf():

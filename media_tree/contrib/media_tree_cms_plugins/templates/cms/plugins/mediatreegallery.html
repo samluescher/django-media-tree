@@ -35,7 +35,7 @@ $(document).ready(function() {
     {% ifnotequal nodes|length 1 %}
     var thumbs = [
     {% for node in nodes %}
-        {% if not forloop.first %},{% endif %}'<li><a href="#">{% if pager_thumbnails %}<img src="{% node_thumbnail node pager_thumbnail_size %}" alt="{{ node.get_alt }}"/>{% else %}{{ forloop.counter}}{% endif %}</a></li>'
+        {% if not forloop.first %},{% endif %}'<li><a href="#">{% if pager_thumbnails %}<img src="{% thumbnail node pager_thumbnail_size as thumb%}{{ thumb.url }}" alt="{{ node.get_alt }}"/>{% else %}{{ forloop.counter}}{% endif %}</a></li>'
     {% endfor %}
     ]
     {% endifnotequal %}

@@ -6,6 +6,9 @@ class SorlThumbnailsBackend(MediaBackend):
     Media backend for sorl.thumbnails support. 
     Experimental and currently not officially supported.
     """
+    
+    SUPPORTED_MEDIA_TYPES = (media_types.SUPPORTED_IMAGE,)
+    
     @staticmethod
     def get_thumbnail(source, options):
         size = options['size']
