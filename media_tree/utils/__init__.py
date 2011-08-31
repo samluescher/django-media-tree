@@ -10,7 +10,7 @@ def get_media_storage():
     klass = get_storage_class()
     return klass()
     
-
+# TODO: This function should probably cache all imported modules
 def get_module_attr(path):
     i = path.rfind('.')
     module_name, attr_name = path[:i], path[i+1:]
