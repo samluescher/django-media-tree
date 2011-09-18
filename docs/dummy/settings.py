@@ -143,3 +143,5 @@ LOGGING = {
         },
     }
 }
+
+MEDIA_TREE_MEDIA_BACKENDS = 'media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend'
