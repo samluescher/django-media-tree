@@ -48,8 +48,6 @@ MEDIA_TREE_ALLOWED_FILE_TYPES = (
 
 MEDIA_TREE_THUMBNAIL_EXTENSIONS = ('jpg', 'png')
 
-MEDIA_TREE_THUMBNAIL_SIZE_TINY = '50x50'
-
 MEDIA_TREE_FILE_SIZE_LIMIT = 1000000000 # 1 GB
 
 MEDIA_TREE_SWFUPLOAD = True
@@ -97,6 +95,10 @@ MEDIA_TREE_LEVEL_INDICATOR = unichr(0x00A0) * 3;
 
 MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT = '%(name)s_%(number)i%(ext)s'
 
+MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS = {
+    'sharpen': None, # None means enabled 
+}
+
 # TODO: move to contrib
 
 MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_CHOICES = (
@@ -105,10 +107,6 @@ MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_CHOICES = (
     (PluginLink.LINK_IMAGE_DETAIL, _('Link to full size image')),
     (PluginLink.LINK_URL_REVERSE, _('Link to URL pattern')),
 )
-
-MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS = {
-    'sharpen': None, # None means enabled 
-}
 
 MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_DEFAULT = PluginLink.LINK_IMAGE_DETAIL  \
     if getattr(settings, 'CMS_APPLICATIONS_URLS', {}).has_key('media_tree.urls') else None

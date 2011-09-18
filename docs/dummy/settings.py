@@ -145,5 +145,5 @@ LOGGING = {
 }
 
 MEDIA_TREE_MEDIA_BACKENDS = (
-    'media_tree.media_backends.MediaBackend',
+    'dummy.media_backends.DummyBackend',
 )

@@ -35,11 +35,11 @@ TODO This howto does not cover... serving media files, django.contrib.staticfile
       )
 
   .. Note::
-  In principle, Media Tree can work together with any other thumbnail generating
-  app, provided that you write the appropriate media backend class to support 
-  it. Please have a look at one of the backends under 
-  ``media_tree.media_backends`` if you are interested in using your own specific 
-  3rd-party app. 
+     In principle, Media Tree can work together with any other thumbnail generating
+     app, provided that you write the appropriate media backend class to support 
+     it. Please have a look at one of the backends under 
+     ``media_tree.contrib.media_backends`` if you are interested in using your own 
+     specific 3rd-party app. 
 
 - Optional: Also add any Media Tree extensions that you are planning to use to 
   your ``INSTALLED_APPS``::
