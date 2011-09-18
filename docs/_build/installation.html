@@ -58,7 +58,7 @@
 <li><p class="first">Download and put the <tt class="docutils literal"><span class="pre">media_tree</span></tt> module on your pythonpath, or install using
 pypi TODO</p>
 </li>
-<li><p class="first">Add <tt class="docutils literal"><span class="pre">media_tree</span></tt> to your <tt class="docutils literal"><span class="pre">INSTALLED_APPS</span></tt>:</p>
+<li><p class="first">Add <tt class="docutils literal"><span class="pre">media_tree</span></tt> to your <tt class="docutils literal"><span class="pre">INSTALLED_APPS</span></tt> setting:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">(</span>
     <span class="c"># ... your other apps here</span>
     <span class="s">&#39;mptt&#39;</span><span class="p">,</span>
@@ -83,7 +83,7 @@ defining <tt class="docutils literal"><span class="pre">MEDIA_TREE_MEDIA_BACKEND
 <blockquote>
 <div><dl class="docutils">
 <dt>MEDIA_TREE_MEDIA_BACKENDS = (</dt>
-<dd><p class="first last">&#8216;media_tree.media_backends.easy_thumbnails_backend.EasyThumbnailsBackend&#8217;,</p>
+<dd><p class="first last">&#8216;media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend&#8217;,</p>
 </dd>
 </dl>
 <p>)</p>
@@ -91,7 +91,7 @@ defining <tt class="docutils literal"><span class="pre">MEDIA_TREE_MEDIA_BACKEND
 <p>In principle, Media Tree can work together with any other thumbnail generating
 app, provided that you write the appropriate media backend class to support
 it. Please have a look at one of the backends under
-<tt class="docutils literal"><span class="pre">media_tree.media_backends</span></tt> if you are interested to use your own specific
+<tt class="docutils literal"><span class="pre">media_tree.media_backends</span></tt> if you are interested in using your own specific
 3rd-party app.</p>
 </li>
 <li><p class="first">Optional: Also add any Media Tree extensions that you are planning to use to

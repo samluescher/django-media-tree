@@ -6,7 +6,7 @@ TODO This howto does not cover... serving media files, django.contrib.staticfile
 - Download and put the ``media_tree`` module on your pythonpath, or install using
   pypi TODO
 
-- Add ``media_tree`` to your ``INSTALLED_APPS``::
+- Add ``media_tree`` to your ``INSTALLED_APPS`` setting::
 
     INSTALLED_APPS = (
         # ... your other apps here 
@@ -31,14 +31,14 @@ TODO This howto does not cover... serving media files, django.contrib.staticfile
   defining ``MEDIA_TREE_MEDIA_BACKENDS`` in your project settings:
   
       MEDIA_TREE_MEDIA_BACKENDS = (
-          'media_tree.media_backends.easy_thumbnails_backend.EasyThumbnailsBackend',
+          'media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend',
       )
 
   .. Note::
   In principle, Media Tree can work together with any other thumbnail generating
   app, provided that you write the appropriate media backend class to support 
   it. Please have a look at one of the backends under 
-  ``media_tree.media_backends`` if you are interested to use your own specific 
+  ``media_tree.media_backends`` if you are interested in using your own specific 
   3rd-party app. 
 
 - Optional: Also add any Media Tree extensions that you are planning to use to 

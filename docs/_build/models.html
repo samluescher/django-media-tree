@@ -96,15 +96,13 @@ attribute. You can use this method in templates:</p>
 
 <dl class="method">
 <dt id="media_tree.models.FileNode.get_ancestors">
-<tt class="descname">get_ancestors</tt><big>(</big><em>ascending=False</em>, <em>include_self=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_ancestors" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_ancestors</tt><big>(</big><em>ascending=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.get_ancestors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a <tt class="docutils literal"><span class="pre">QuerySet</span></tt> containing the ancestors of this model
 instance.</p>
 <p>This defaults to being in descending order (root ancestor first,
 immediate parent last); passing <tt class="xref docutils literal"><span class="pre">True</span></tt> for the <tt class="docutils literal"><span class="pre">ascending</span></tt>
 argument will reverse the ordering (immediate parent first, root
 ancestor last).</p>
-<p>If <tt class="docutils literal"><span class="pre">include_self</span></tt> is <tt class="xref docutils literal"><span class="pre">True</span></tt>, the <tt class="docutils literal"><span class="pre">QuerySet</span></tt> will also
-include this model instance.</p>
 </dd></dl>
 
 <dl class="method">
@@ -299,7 +297,7 @@ the change list.</p>
 
 <dl class="method">
 <dt id="media_tree.models.FileNode.insert_at">
-<tt class="descname">insert_at</tt><big>(</big><em>target</em>, <em>position='first-child'</em>, <em>save=False</em>, <em>allow_existing_pk=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.insert_at" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">insert_at</tt><big>(</big><em>target</em>, <em>position='first-child'</em>, <em>save=False</em><big>)</big><a class="headerlink" href="#media_tree.models.FileNode.insert_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience method for calling <tt class="docutils literal"><span class="pre">TreeManager.insert_node</span></tt> with this
 model instance.</p>
 </dd></dl>
