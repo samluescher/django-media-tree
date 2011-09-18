@@ -1,5 +1,5 @@
 from media_tree.media_backends import MediaBackend
-
+from media_tree import media_types
 
 class DummyBackend(MediaBackend):
     """
