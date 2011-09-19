@@ -10,22 +10,22 @@ from django.conf import settings
 from media_tree.contrib.media_tree_cms_plugins.forms import MediaTreeImagePluginForm, MediaTreeListPluginForm, MediaTreeSlideshowPluginForm, MediaTreeGalleryPluginForm, MediaTreeSlideshowItemInlineForm, MediaTreeGalleryItemInlineForm, MediaTreeListItemInline, MediaTreeSlideshowItemInline, MediaTreeGalleryItemInline
 from django.core.urlresolvers import reverse
 from django import forms
-from media_tree import app_settings
+from media_tree import settings as media_tree_settings
 from django.utils.safestring import mark_safe
 from media_tree.utils import widthratio
 from django.db import models
 from django.core.urlresolvers import NoReverseMatch
 import os
 
-STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
+STATIC_SUBDIR = media_tree_settings.MEDIA_TREE_STATIC_SUBDIR
 
-# TODO: Disentangle settings with media_tree
 # TODO: Solve image_detail with get_absolute_url()?
 # TODO: Rework gallery plugin
 # TODO: Slideshow/Gallery/Filelist ordering and drag/drop
 
 class MediaTreeImagePlugin(CMSPluginBase):
 
+    module = _('Media Tree')
     model = MediaTreeImage
     name = _("Image")
     admin_preview = False
@@ -71,6 +71,7 @@ class MediaTreeImagePlugin(CMSPluginBase):
 
 class MediaTreeListPlugin(CMSPluginBase):
     inlines = [MediaTreeListItemInline]
+    module = _('Media Tree')
     model = MediaTreeList
     name = _('File list')
     admin_preview = False
@@ -91,7 +92,8 @@ class MediaTreeListPlugin(CMSPluginBase):
     
     @staticmethod
     def list_str_callback(node):
-        return FileNode.get_file_link(node, use_metadata=True, include_size=True, include_extension=True)
+        # ??? Use this method, and include icon
+        return FileNode.get_file_link(node, use_metadata=True, include_size=True, include_extension=True, include_icon=True)
 
     list_max_depth = None
     list_filter_media_types = None
@@ -128,7 +130,7 @@ class MediaTreeListPlugin(CMSPluginBase):
         else:
             processors = None
         
-        if instance.filter_supported:
+        if getattr(instance, 'filter_supported', None):
             filter_media_types = self.list_filter_media_types
         else:
             filter_media_types = None
@@ -186,6 +188,7 @@ class MediaTreeListPlugin(CMSPluginBase):
 class MediaTreeSlideshowPlugin(MediaTreeListPlugin):
 
     inlines = [MediaTreeSlideshowItemInline]
+    module = _('Media Tree')
     list_type = MediaTreeList.LIST_MERGED
     list_str_callback = None
     list_filter_media_types = (media_types.SUPPORTED_IMAGE,)
@@ -232,6 +235,7 @@ class MediaTreeGalleryPlugin(MediaTreeSlideshowPlugin):
             os.path.join(STATIC_SUBDIR, 'lib/jquery.cycle/jquery.cycle.all.js'),
         ]
 
+    module = _('Media Tree')
     model = MediaTreeGallery
     form = MediaTreeGalleryPluginForm
     fieldsets = [

@@ -45,7 +45,7 @@ Basic setup
 - If you are using ``django.contrib.staticfiles`` (recommended), just run the
   usual command to collect static files::
 
-    ./manage.py collectstatic
+    $ ./manage.py collectstatic
 
   If you are **not** using the ``staticfiles`` app, copy the contents of the
   ``static`` folder to the static root of your project.
@@ -78,10 +78,11 @@ Basic setup
 
     INSTALLED_APPS = (
         # ... your other apps here 
-        'media_tree.contrib.icon_sets.teambox_icons',
         'media_tree.contrib.media_extensions.images.focal_point',
         'media_tree.contrib.media_extensions.zipfiles',
     )
+
+.. _install-swfupload:
 
 - Optional: If you are planning to use a Flash uploader such as ``SWFUpload``,
   add ``SessionPostMiddleware`` to your ``MIDDLEWARE_CLASSES``::
@@ -94,7 +95,7 @@ Basic setup
     )
 
 
-.. _installiconsets:
+.. _install-icon-sets:
 
 Installing icon sets
 ====================
@@ -102,7 +103,7 @@ Installing icon sets
 By default, Media Tree only comes with plain file and folder icons. If you would
 like to use custom icon sets that are more appropriate for your specific media
 types, you can install them like a Django application, and configure Media Tree
-to use them as follows:
+to use them as follows.
 
 - In order to install an icon set, simply add the respective module to your
   ``INSTALLED_APPS`` setting::
@@ -120,8 +121,8 @@ to use them as follows:
   If you are **not** using the ``staticfiles`` app, copy the contents of the
   ``static`` folder to the static root of your project.
 
-- Define the ``MEDIA_TREE_ICON_DIRS`` setting in your project settings, and
-  add the static path containing the new icon files, e.g.::
+- Define ``MEDIA_TREE_ICON_DIRS`` in your project settings, and add the static
+  path containing the new icon files, e.g.::
 
     MEDIA_TREE_ICON_DIRS = (
         'my_custom_icons/64x64px',  # the new folder under your static root 

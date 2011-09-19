@@ -1,5 +1,5 @@
 from media_tree.models import FileNode
-from media_tree import app_settings
+from media_tree import settings as app_settings
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
@@ -62,9 +62,9 @@ class FileForm(forms.ModelForm):
 
     @staticmethod
     def upload_clean(uploaded_file):
-        if not os.path.splitext(uploaded_file.name)[1].lstrip('.').lower() in app_settings.get('MEDIA_TREE_ALLOWED_FILE_TYPES'):
+        if not os.path.splitext(uploaded_file.name)[1].lstrip('.').lower() in app_settings.MEDIA_TREE_ALLOWED_FILE_TYPES:
             raise forms.ValidationError(_('This file type is not allowed.'))
-        max_size = app_settings.get('MEDIA_TREE_FILE_SIZE_LIMIT');
+        max_size = app_settings.MEDIA_TREE_FILE_SIZE_LIMIT;
         if max_size and uploaded_file.size > max_size:
             raise forms.ValidationError(_('Maximum file size is %s.') % filesizeformat(max_size))
         return uploaded_file

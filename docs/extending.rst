@@ -273,6 +273,6 @@ one for either ``OGG`` or ``MP3`` files.
 
 To install this icon set, simply add ``my_custom_audio_icon_set`` to your
 ``INSTALLED_APPS``, collect its static files, and configure the new icon folder
-using the ``MEDIA_TREE_ICON_DIRS`` setting. See :ref:`installiconsets`
+using the ``MEDIA_TREE_ICON_DIRS`` setting. See :ref:`install-icon-sets`
 for more detailed instructions.
 

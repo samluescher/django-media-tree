@@ -1,4 +1,4 @@
-from media_tree import app_settings
+from media_tree import settings as app_settings
 from media_tree.models import FileNode
 from media_tree.widgets import FileNodeForeignKeyRawIdWidget
 from mptt.forms import TreeNodeChoiceField
@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_unicode
 from django.conf import settings
 
-LEVEL_INDICATOR = app_settings.get('MEDIA_TREE_LEVEL_INDICATOR')
+LEVEL_INDICATOR = app_settings.MEDIA_TREE_LEVEL_INDICATOR
 
 
 class FileNodeChoiceField(TreeNodeChoiceField):
@@ -46,7 +46,7 @@ class FileNodeChoiceField(TreeNodeChoiceField):
                     errors.append(_('You cannot select this node type.'))
             if self.allowed_media_types != None and not result.media_type in self.allowed_media_types:
                 if len(self.allowed_media_types) == 1:
-                    label = app_settings.get('MEDIA_TREE_CONTENT_TYPES')[self.allowed_media_types[0]]
+                    label = app_settings.MEDIA_TREE_CONTENT_TYPES[self.allowed_media_types[0]]
                     errors.append(_('The required media type is %s.') % label)
                 else: 
                     errors.append(_('You cannot select this media type.'))

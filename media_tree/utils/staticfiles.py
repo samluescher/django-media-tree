@@ -1,4 +1,4 @@
-from media_tree import app_settings
+from media_tree import settings as app_settings
 from media_tree.utils import get_module_attr
 from django.conf import settings
 from django.db.models.fields.files import FieldFile
@@ -7,7 +7,7 @@ from django.core.files.base import File
 import os
 
 
-ICON_DIRS = app_settings.get('MEDIA_TREE_ICON_DIRS')
+ICON_DIRS = app_settings.MEDIA_TREE_ICON_DIRS
 
 
 def get_static_storage():

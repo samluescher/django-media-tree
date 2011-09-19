@@ -1,10 +1,12 @@
+.. _media-backends:
+
 Using FileNodes in templates
 ****************************
 
-Although Media Tree is designed to be agnostic of the toolkit you use to
-generate image versions and thumbnails, it includes some tags to assist you
-with generating thumbnails from ``FileNode`` objects, since this is one of the
-most common tasks when working with image files in web applications.
+Although Media Tree is designed to be agnostic of the module you use to generate
+image versions and thumbnails, it includes some tags to assist you with
+generating thumbnails from ``FileNode`` objects, since this is one of the most
+common tasks when working with image files in web applications.
 
 
 A word about Media Backends

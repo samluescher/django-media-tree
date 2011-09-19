@@ -52,11 +52,11 @@
           <div class="body">
             
   <div class="section" id="using-filenodes-in-templates">
-<h1>Using FileNodes in templates<a class="headerlink" href="#using-filenodes-in-templates" title="Permalink to this headline">¶</a></h1>
-<p>Although Media Tree is designed to be agnostic of the toolkit you use to
-generate image versions and thumbnails, it includes some tags to assist you
-with generating thumbnails from <tt class="docutils literal"><span class="pre">FileNode</span></tt> objects, since this is one of the
-most common tasks when working with image files in web applications.</p>
+<span id="media-backends"></span><h1>Using FileNodes in templates<a class="headerlink" href="#using-filenodes-in-templates" title="Permalink to this headline">¶</a></h1>
+<p>Although Media Tree is designed to be agnostic of the module you use to generate
+image versions and thumbnails, it includes some tags to assist you with
+generating thumbnails from <tt class="docutils literal"><span class="pre">FileNode</span></tt> objects, since this is one of the most
+common tasks when working with image files in web applications.</p>
 <div class="section" id="a-word-about-media-backends">
 <h2>A word about Media Backends<a class="headerlink" href="#a-word-about-media-backends" title="Permalink to this headline">¶</a></h2>
 <p>Media Tree&#8217;s template tags do not use an imaging toolkit directly, but an
@@ -75,11 +75,15 @@ image versions. You can use these tags in your templates after loading the tag
 library as follows:</p>
 <div class="highlight-python"><pre>{% load media_tree_thumbnail %}</pre>
 </div>
-<p>Most of the code of this module is an almost identical copy of easy_thumbnails&#8217; 
-template tag, modified to work with <tt class="docutils literal"><span class="pre">FileNode</span></tt> sources and the configured 
-<tt class="docutils literal"><span class="pre">MEDIA_BACKEND</span></tt>. Hence, the <a class="reference internal" href="#media_tree.templatetags.media_tree_thumbnail.thumbnail" title="media_tree.templatetags.media_tree_thumbnail.thumbnail"><tt class="xref py py-func docutils literal"><span class="pre">thumbnail()</span></tt></a> tag is compatible to that of
-easy_thumbnails, but it will work with any thumbnail-generating application if 
-you provide an appropriate <tt class="docutils literal"><span class="pre">MediaBackend</span></tt> class.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Most of the code of this module is an almost identical copy of
+easy_thumbnails&#8217; template tag, modified to work with <tt class="docutils literal"><span class="pre">FileNode</span></tt> sources and
+the configured <tt class="docutils literal"><span class="pre">MEDIA_BACKEND</span></tt>. Hence, the <a class="reference internal" href="#media_tree.templatetags.media_tree_thumbnail.thumbnail" title="media_tree.templatetags.media_tree_thumbnail.thumbnail"><tt class="xref py py-func docutils literal"><span class="pre">thumbnail()</span></tt></a> tag is
+compatible to that of easy_thumbnails, but it will work with any
+thumbnail-generating application if you provide an appropriate
+<tt class="docutils literal"><span class="pre">MediaBackend</span></tt> class.</p>
+</div>
 <dl class="function">
 <dt id="media_tree.templatetags.media_tree_thumbnail.thumbnail">
 <tt class="descclassname">media_tree.templatetags.media_tree_thumbnail.</tt><tt class="descname">thumbnail</tt><big>(</big><em>parser</em>, <em>token</em><big>)</big><a class="headerlink" href="#media_tree.templatetags.media_tree_thumbnail.thumbnail" title="Permalink to this definition">¶</a></dt>
@@ -176,7 +180,7 @@ to use pre-configured thumbnail sizes in your templates.</p>
                         title="next chapter">Configuring Media Tree</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/templatetags.txt"
+    <li><a href="_sources/templates.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">

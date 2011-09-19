@@ -24,7 +24,7 @@ from media_tree.admin.actions import core_actions
 from media_tree.admin.actions import maintenance_actions
 from media_tree.admin.actions.utils import execute_empty_queryset_action
 from media_tree import defaults
-from media_tree import app_settings, media_types
+from media_tree import settings as app_settings, media_types
 from django.template.defaultfilters import filesizeformat
 
 from media_tree.admin.change_list import MediaTreeChangeList
@@ -71,7 +71,7 @@ except ImportError:
 
 setattr(settings, 'MPTT_ADMIN_LEVEL_INDENT', 25)
 
-STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
+STATIC_SUBDIR = app_settings.MEDIA_TREE_STATIC_SUBDIR
 
 
 class FileNodeAdmin(MPTTModelAdmin):
@@ -92,11 +92,11 @@ class FileNodeAdmin(MPTTModelAdmin):
     
     change_list_template = 'admin/media_tree/filenode/mptt_change_list.html'
     
-    list_display = app_settings.get('MEDIA_TREE_LIST_DISPLAY')
-    list_filter = app_settings.get('MEDIA_TREE_LIST_FILTER')
-    #list_display_links = app_settings.get('MEDIA_TREE_LIST_DISPLAY_LINKS')
-    search_fields = app_settings.get('MEDIA_TREE_SEARCH_FIELDS')
-    ordering = app_settings.get('MEDIA_TREE_ORDERING_DEFAULT')
+    list_display = app_settings.MEDIA_TREE_LIST_DISPLAY
+    list_filter = app_settings.MEDIA_TREE_LIST_FILTER
+    #list_display_links = app_settings.MEDIA_TREE_LIST_DISPLAY_LINKS
+    search_fields = app_settings.MEDIA_TREE_SEARCH_FIELDS
+    ordering = app_settings.MEDIA_TREE_ORDERING_DEFAULT
     mptt_indent_field = 'browse_controls'
 
     formfield_overrides = {
@@ -374,7 +374,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         
         if not extra_context:
             extra_context = {}
-        if app_settings.get('MEDIA_TREE_SWFUPLOAD'):
+        if app_settings.MEDIA_TREE_SWFUPLOAD:
             middleware = 'media_tree.middleware.SessionPostMiddleware'
             if not middleware in settings.MIDDLEWARE_CLASSES:
                 request.user.message_set.create(message=_('You need to put %s in your MIDDLEWARE_CLASSES setting to use SWFUpload.') % middleware)
@@ -383,8 +383,8 @@ class FileNodeAdmin(MPTTModelAdmin):
                 #swfupload_flash_url = os.path.join(settings.MEDIA_URL, STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10/swfupload.swf')
                 swfupload_flash_url = reverse('admin:media_tree_filenode_static_swfupload_swf')
                 extra_context.update({
-                    'file_types': app_settings.get('MEDIA_TREE_ALLOWED_FILE_TYPES'),
-                    'file_size_limit': app_settings.get('MEDIA_TREE_FILE_SIZE_LIMIT'),
+                    'file_types': app_settings.MEDIA_TREE_ALLOWED_FILE_TYPES,
+                    'file_size_limit': app_settings.MEDIA_TREE_FILE_SIZE_LIMIT,
                     'swfupload_flash_url': swfupload_flash_url,
                     'swfupload_upload_url': swfupload_upload_url,
                 })

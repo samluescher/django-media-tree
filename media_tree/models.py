@@ -3,7 +3,7 @@
 #TODO: move get_*_list to utility class that executes lazily when used.
 #    https://docs.djangoproject.com/en/dev/ref/models/querysets/#when-querysets-are-evaluated
 
-from media_tree import app_settings, media_types
+from media_tree import settings as app_settings, media_types
 from media_tree.utils import multi_splitext, join_formatted
 from media_tree.utils.staticfiles import get_icon_finders
 from django.template.defaultfilters import filesizeformat
@@ -34,12 +34,12 @@ import mimetypes
 from copy import copy
 import uuid
 
-MIMETYPE_CONTENT_TYPE_MAP = app_settings.get('MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP')
-EXT_MIMETYPE_MAP = app_settings.get('MEDIA_TREE_EXT_MIMETYPE_MAP')
-STATIC_SUBDIR = app_settings.get('MEDIA_TREE_STATIC_SUBDIR')
+MIMETYPE_CONTENT_TYPE_MAP = app_settings.MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP
+EXT_MIMETYPE_MAP = app_settings.MEDIA_TREE_EXT_MIMETYPE_MAP
+STATIC_SUBDIR = app_settings.MEDIA_TREE_STATIC_SUBDIR
 
-MEDIA_TYPE_NAMES = app_settings.get('MEDIA_TREE_CONTENT_TYPES')
-ICON_FINDERS = get_icon_finders(app_settings.get('MEDIA_TREE_ICON_FINDERS'))
+MEDIA_TYPE_NAMES = app_settings.MEDIA_TREE_CONTENT_TYPES
+ICON_FINDERS = get_icon_finders(app_settings.MEDIA_TREE_ICON_FINDERS)
 
 
 # http://adam.gomaa.us/blog/2008/aug/11/the-python-property-builtin/
@@ -68,9 +68,9 @@ class FileNode(ModelBase):
     """The constant denoting a file node, used for the :attr:`node_type` attribute."""
     
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
-    media_type = models.IntegerField(_('media type'), choices = app_settings.get('MEDIA_TREE_CONTENT_TYPE_CHOICES'), blank=True, null=True, editable=False)
-    file = models.FileField(_('file'), upload_to=app_settings.get('MEDIA_TREE_UPLOAD_SUBDIR'), null=True)
-    preview_file = models.ImageField(_('preview'), upload_to=app_settings.get('MEDIA_TREE_PREVIEW_SUBDIR'), blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'))
+    media_type = models.IntegerField(_('media type'), choices = app_settings.MEDIA_TREE_CONTENT_TYPE_CHOICES, blank=True, null=True, editable=False)
+    file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True)
+    preview_file = models.ImageField(_('preview'), upload_to=app_settings.MEDIA_TREE_PREVIEW_SUBDIR, blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'))
     published = models.BooleanField(_('is published'), blank=True, default=True, editable=False)
     mimetype = models.CharField(_('mimetype'), max_length=64, null=True, editable=False)
 
@@ -488,7 +488,7 @@ class FileNode(ModelBase):
         while qs.filter(name__exact=self.name).count() > 0:
             number += 1
             # rename using a number
-            self.name = app_settings.get('MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT') % {'name': name, 'number': number, 'ext': ext}
+            self.name = app_settings.MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT % {'name': name, 'number': number, 'ext': ext}
 
     def prevent_save(self):
         self.save_prevented = True
@@ -590,7 +590,7 @@ class FileNode(ModelBase):
         return t
     get_metadata_display.allow_tags = True
 
-    def get_metadata_formatted(self, field_formats = app_settings.get('MEDIA_TREE_METADATA_FORMATS')):
+    def get_metadata_formatted(self, field_formats = app_settings.MEDIA_TREE_METADATA_FORMATS):
         """Returns object metadata that has been selected to be displayed to
         users, compiled as a string including default formatting, for examples
         bold titles.

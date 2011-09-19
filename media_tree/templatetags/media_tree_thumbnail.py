@@ -5,14 +5,16 @@ library as follows::
 
     {% load media_tree_thumbnail %}
 
-Most of the code of this module is an almost identical copy of easy_thumbnails' 
-template tag, modified to work with ``FileNode`` sources and the configured 
-``MEDIA_BACKEND``. Hence, the :func:`thumbnail` tag is compatible to that of
-easy_thumbnails, but it will work with any thumbnail-generating application if 
-you provide an appropriate ``MediaBackend`` class.
+.. Note::
+   Most of the code of this module is an almost identical copy of
+   easy_thumbnails' template tag, modified to work with ``FileNode`` sources and
+   the configured ``MEDIA_BACKEND``. Hence, the :func:`thumbnail` tag is
+   compatible to that of easy_thumbnails, but it will work with any
+   thumbnail-generating application if you provide an appropriate
+   ``MediaBackend`` class.
 """
 
-from media_tree import app_settings
+from media_tree import settings as app_settings
 from media_tree.models import FileNode
 from media_tree.media_backends import get_media_backend
 from media_tree import media_types
@@ -24,7 +26,7 @@ from django.utils.html import escape
 import re
 
 
-THUMBNAIL_SIZES = app_settings.merge('MEDIA_TREE_THUMBNAIL_SIZES')
+THUMBNAIL_SIZES = app_settings.MEDIA_TREE_THUMBNAIL_SIZES
 RE_SIZE = re.compile(r'(\d+)x(\d+)$')
 MEDIA_BACKEND = get_media_backend(fail_silently=False, handles_media_types=(
     media_types.SUPPORTED_IMAGE,))

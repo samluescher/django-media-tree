@@ -3,7 +3,7 @@ from media_tree.media_backends import get_media_backend
 from media_tree.models import FileNode
 from media_tree.admin.actions.utils import get_actions_context
 from media_tree.admin.actions.forms import DeleteOrphanedFilesForm
-from media_tree import app_settings
+from media_tree import settings as app_settings
 from django import forms
 from django.utils.translation import ungettext, ugettext as _
 from django.template import RequestContext
@@ -19,7 +19,7 @@ def delete_orphaned_files(modeladmin, request, queryset=None):
     from unicodedata import normalize
     
     execute = request.POST.get('execute')
-    media_subdir = app_settings.get('MEDIA_TREE_UPLOAD_SUBDIR')
+    media_subdir = app_settings.MEDIA_TREE_UPLOAD_SUBDIR
     
     files_on_disk = []
     storage = get_media_storage()

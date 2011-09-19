@@ -26,7 +26,7 @@ Table of Contents
    admin
    models
    fields
-   templatetags
+   templates
    configuration
    extending 
    bundled

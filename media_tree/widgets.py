@@ -1,4 +1,4 @@
-from media_tree import app_settings
+from media_tree import settings as app_settings
 from django.contrib.admin.widgets import AdminFileWidget
 from media_tree.media_backends import get_media_backend, ThumbnailError
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
@@ -8,8 +8,8 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 import os
 
-THUMBNAIL_EXTENSIONS = app_settings.get('MEDIA_TREE_THUMBNAIL_EXTENSIONS')
-THUMBNAIL_SIZE = app_settings.get('MEDIA_TREE_THUMBNAIL_SIZES')['large']
+THUMBNAIL_EXTENSIONS = app_settings.MEDIA_TREE_THUMBNAIL_EXTENSIONS
+THUMBNAIL_SIZE = app_settings.MEDIA_TREE_THUMBNAIL_SIZES['large']
 
 
 class FileNodeForeignKeyRawIdWidget(ForeignKeyRawIdWidget):

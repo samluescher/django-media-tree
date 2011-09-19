@@ -12,7 +12,7 @@ easy_thumbnails, but it will work with any thumbnail-generating application if
 you provide an appropriate ``MediaBackend`` class.
 """
 
-from media_tree import app_settings
+from media_tree import settings as app_settings
 from media_tree.models import FileNode
 from media_tree.media_backends import get_media_backend
 from django.conf import settings
@@ -23,7 +23,7 @@ from django.utils.html import escape
 import re
 
 
-THUMBNAIL_SIZES = app_settings.merge('MEDIA_TREE_THUMBNAIL_SIZES')
+THUMBNAIL_SIZES = app_settings.MEDIA_TREE_THUMBNAIL_SIZES
 RE_SIZE = re.compile(r'(\d+)x(\d+)$')
 MEDIA_BACKEND = get_media_backend()
 VALID_OPTIONS = MEDIA_BACKEND.get_valid_thumbnail_options() if MEDIA_BACKEND else {}
