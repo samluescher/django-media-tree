@@ -7,7 +7,7 @@ The following settings can be specified in your Django project's settings
 module.
 
 
-MEDIA_TREE_MEDIA_BACKENDS
+``MEDIA_TREE_MEDIA_BACKENDS``
     A tuple of media backends for thumbnail generation and other media-related
     tasks.
     
@@ -17,36 +17,36 @@ MEDIA_TREE_MEDIA_BACKENDS
     :ref:`media-backends` for more information.
 
 
-MEDIA_TREE_LIST_DISPLAY
+``MEDIA_TREE_LIST_DISPLAY``
     A tuple containing the columns that should be displayed in the
     ``FileNodeAdmin``. Note that the ``browse_controls`` column is necessary for
     the admin to function properly.
 
 
-MEDIA_TREE_LIST_FILTER
+``MEDIA_TREE_LIST_FILTER``
     A tuple containing the fields that nodes can be filtered by in the
     ``FileNodeAdmin``.
 
 
-MEDIA_TREE_SEARCH_FIELDS
+``MEDIA_TREE_SEARCH_FIELDS``
     A tuple containing the fields that nodes can be searched by in the
     ``FileNodeAdmin``.
 
 
-MEDIA_TREE_UPLOAD_SUBDIR
+``MEDIA_TREE_UPLOAD_SUBDIR``
     Default: ``'upload'``
 
     The name of the folder under your ``MEDIA_ROOT`` where media files are stored.
 
 
-MEDIA_TREE_PREVIEW_SUBDIR
+``MEDIA_TREE_PREVIEW_SUBDIR``
     Default: ``'upload/_preview'``
     
     The name of the folder under your ``MEDIA_ROOT`` where cached versions of
     media files, e.g. thumbnails, are stored.
 
 
-MEDIA_TREE_ICON_DIRS
+``MEDIA_TREE_ICON_DIRS``
     Default::
     
         (
@@ -57,7 +57,7 @@ MEDIA_TREE_ICON_DIRS
     for more information.
 
 
-MEDIA_TREE_THUMBNAIL_SIZES
+``MEDIA_TREE_THUMBNAIL_SIZES``
     A dictionary of default thumbnail sizes. You can pass the dictionary key to
     the ``thumbnail`` templatetag instead of a numeric size.
 
@@ -72,7 +72,7 @@ MEDIA_TREE_THUMBNAIL_SIZES
         }
 
 
-MEDIA_TREE_ALLOWED_FILE_TYPES
+``MEDIA_TREE_ALLOWED_FILE_TYPES``
     A whitelist of file extensions that can be uploaded. By default, this is a
     comprehensive list of many common media file extensions that shouldn't pose
     a security risk.
@@ -83,7 +83,7 @@ MEDIA_TREE_ALLOWED_FILE_TYPES
        attackers.
 
 
-MEDIA_TREE_THUMBNAIL_EXTENSIONS = ('jpg', 'png')
+``MEDIA_TREE_THUMBNAIL_EXTENSIONS``
     Default: ``('jpg', 'png')``
 
     A tuple of image extensions used for thumbnail files. Note that ``png`` is
@@ -91,17 +91,19 @@ MEDIA_TREE_THUMBNAIL_EXTENSIONS = ('jpg', 'png')
     images instead of converting them to JPG.
 
 
-MEDIA_TREE_FILE_SIZE_LIMIT
+``MEDIA_TREE_FILE_SIZE_LIMIT``
     Default: ``1000000000 # 1 GB``
 
     Maximum file size for uploaded files.
 
 
-MEDIA_TREE_SWFUPLOAD = True
+``MEDIA_TREE_SWFUPLOAD``
+    Default: ``True``
+    
     Toggles support for SWFUpload on or off. See
     :ref:`Installing SWFUpload <install-swfupload>` for more information.
 
 
-MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS
+``MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS``
     A dictionary of options that should be applied by default when generating
     thumbnails. You might use this, for instance, to sharpen all thumbnails.
