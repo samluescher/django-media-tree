@@ -74,13 +74,16 @@ module.
 
 ``MEDIA_TREE_ALLOWED_FILE_TYPES``
     A whitelist of file extensions that can be uploaded. By default, this is a
-    comprehensive list of many common media file extensions that shouldn't pose
-    a security risk.
+    comprehensive list of many common media file extensions that generally
+    shouldn't pose a security risk.
     
     .. Warning::
+       Just because a file extension may be considered “safe”, there is
+       absolutely no guarantee that a skilled attacker couldn't find an exploit.
+       Only allow people you trust to upload files to your webserver.
        Be careful when adding potentially unsafe file extensions to this
        setting, such as executables or scripts, as this possibly opens a door to
-       attackers.
+       attackers. 
 
 
 ``MEDIA_TREE_THUMBNAIL_EXTENSIONS``
