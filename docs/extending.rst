@@ -1,3 +1,5 @@
+.. _extending:
+
 Extending Django Media Tree
 ***************************
 

@@ -85,8 +85,8 @@ class FileNodeAdmin(MPTTModelAdmin):
     selection dialog when linking ``FileNode`` objects to your own models.
     
     You can also extend the admin interface in many different fashions to suit
-    your custom requirements. Please refer to the :ref:`extension` section for
-    more information about extending Media Tree.
+    your custom requirements. Please refer to :ref:`extending` for more
+    information about extending Media Tree.
     """
     
     change_list_template = 'admin/media_tree/filenode/mptt_change_list.html'

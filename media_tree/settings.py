@@ -145,6 +145,8 @@ MEDIA_TREE_EXT_MIMETYPE_MAP = {
     'flv': 'video/x-flv',
 }
 
+# TODO: This currently doesn't do anything. Make configurable per ModelAdmin in
+# MPTT and send pull request.
 MEDIA_TREE_MPTT_ADMIN_LEVEL_INDENT = getattr(settings, 'MEDIA_TREE_MPTT_ADMIN_LEVEL_INDENT', 25)
 
 MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP = {

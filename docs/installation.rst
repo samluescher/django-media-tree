@@ -9,10 +9,10 @@ Dependencies
 
 Make sure to install these packages prior to installation:
 
-- Django>=1.2.5
-- south>=0.7.2
-- django-mptt>=0.4.2
-- PIL>=1.1
+- Django >= 1.2.5
+- south >= 0.7.2
+- django-mptt > 0.4.2
+- PIL >= 1.1
 
 Getting the code
 ================
@@ -37,10 +37,27 @@ Basic setup
 - In your project settings, add ``media_tree`` to the ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
-        # ... your other apps here 
+        # ... your other apps here
         'mptt',
         'media_tree',
     )
+
+- A version of ``django-mptt`` **newer than 0.4.2** is required because there is
+  an issue with older versions not indenting the folder list correctly. There
+  are two ways to resolve is. If you can't use a newer version, put
+  ``legacy_mptt_support`` in your ``INSTALLED_APPS`` **before** ``mptt``::
+
+    INSTALLED_APPS = (
+        # ... your other apps here
+        'media_tree.contrib.legacy_mptt_support',
+        'mptt',
+        'media_tree',
+    )
+  
+  Alternatively, you can use the current development version of
+  ``django-mptt``::
+
+    $ sudo pip install -e git://github.com/django-mptt/django-mptt#egg=django-mptt
 
 - If you are using ``django.contrib.staticfiles`` (recommended), just run the
   usual command to collect static files::
@@ -54,10 +71,11 @@ Basic setup
      To learn about the ``staticfiles`` app please refer to the
      `respective Django documentation
      <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_.
-    
-- Optional: If you want thumbnails to be generated, which will usually be the 
-  case, you need to install the appropriate media backend that takes care of 
-  this. Currently, ``easy_thumbnails`` is the recommended 3rd-party application. 
+
+
+- **Optional**: If you want thumbnails to be generated, which will usually be
+  the case, you need to install the appropriate media backend that takes care of
+  this. Currently, ``easy_thumbnails`` is the recommended 3rd-party application.
 
   After you've installed ``easy_thumbnails``, configure Media Tree to use it by
   defining ``MEDIA_TREE_MEDIA_BACKENDS`` in your project settings::
@@ -73,19 +91,19 @@ Basic setup
      ``media_tree.contrib.media_backends`` if you are interested in using your own 
      specific 3rd-party app. 
 
-- Optional: Also add any Media Tree extensions that you are planning to use to 
-  your ``INSTALLED_APPS``::
+- **Optional**: Also add any Media Tree extensions that you are planning to use
+  to your ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
-        # ... your other apps here 
+        # ... your other apps here
         'media_tree.contrib.media_extensions.images.focal_point',
         'media_tree.contrib.media_extensions.zipfiles',
     )
 
 .. _install-swfupload:
 
-- Optional: If you are planning to use a Flash uploader such as ``SWFUpload``,
-  add ``SessionPostMiddleware`` to your ``MIDDLEWARE_CLASSES``::
+- **Optional**: If you are planning to use a Flash uploader such as
+  ``SWFUpload``, add ``SessionPostMiddleware`` to your ``MIDDLEWARE_CLASSES``::
 
     MIDDLEWARE_CLASSES = (
         # ...
