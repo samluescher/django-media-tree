@@ -44,7 +44,7 @@ Basic setup
 
 - A version of ``django-mptt`` **newer than 0.4.2** is required because there is
   an issue with older versions not indenting the folder list correctly. There
-  are two ways to resolve is. If you can't use a newer version, put
+  are two ways of resolving this. If you can't use a newer version, put
   ``legacy_mptt_support`` in your ``INSTALLED_APPS`` **before** ``mptt``::
 
     INSTALLED_APPS = (
