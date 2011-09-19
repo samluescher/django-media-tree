@@ -145,6 +145,8 @@ MEDIA_TREE_EXT_MIMETYPE_MAP = {
     'flv': 'video/x-flv',
 }
 
+MEDIA_TREE_MPTT_ADMIN_LEVEL_INDENT = getattr(settings, 'MEDIA_TREE_MPTT_ADMIN_LEVEL_INDENT', 25)
+
 MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP = {
     'application/octet-stream': media_types.FILE,
     'application/zip': media_types.ARCHIVE,
