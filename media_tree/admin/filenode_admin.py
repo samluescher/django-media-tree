@@ -69,7 +69,6 @@ except ImportError:
     # pre 1.2
     from django.contrib.csrf.middleware import csrf_view_exempt
 
-setattr(settings, 'MPTT_ADMIN_LEVEL_INDENT', 25)
 
 STATIC_SUBDIR = app_settings.MEDIA_TREE_STATIC_SUBDIR
 
