@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installing Media Tree &mdash; Django Media Tree v1.0.0 documentation</title>
+    <title>Installing Media Tree &mdash; Django Media Tree v0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '1.0.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Django Media Tree v1.0.0 documentation" href="index.html" />
+    <link rel="top" title="Django Media Tree v0.2.0 documentation" href="index.html" />
     <link rel="next" title="Admin interface overview" href="admin.html" />
     <link rel="prev" title="Django Media Tree Documentation" href="index.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="index.html" title="Django Media Tree Documentation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Django Media Tree v1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Django Media Tree v0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,12 +53,34 @@
             
   <div class="section" id="installing-media-tree">
 <h1>Installing Media Tree<a class="headerlink" href="#installing-media-tree" title="Permalink to this headline">¶</a></h1>
-<p>TODO This howto does not cover... serving media files, django.contrib.staticfiles.</p>
+<p>This document assumes you are familiar with Python and Django.</p>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Make sure to install these packages prior to installation:</p>
+<ul class="simple">
+<li>Django&gt;=1.2.5</li>
+<li>south&gt;=0.7.2</li>
+<li>django-mptt&gt;=0.4.2</li>
+<li>PIL&gt;=1.1</li>
+</ul>
+</div>
+<div class="section" id="getting-the-code">
+<h2>Getting the code<a class="headerlink" href="#getting-the-code" title="Permalink to this headline">¶</a></h2>
+<p>For the latest stable version (recommended), use <tt class="docutils literal"><span class="pre">pip</span></tt> or <tt class="docutils literal"><span class="pre">easy_install</span></tt>:</p>
+<div class="highlight-python"><pre>$ pip install django-media-tree</pre>
+</div>
+<p><strong>Alternatively</strong>, you can also download the latest development version from
+<a class="reference external" href="http://github.com/philomat/django-media-tree">http://github.com/philomat/django-media-tree</a> and run the installation script:</p>
+<div class="highlight-python"><pre>$ python setup.py install</pre>
+</div>
+<p><strong>or</strong> use <tt class="docutils literal"><span class="pre">pip</span></tt>:</p>
+<div class="highlight-python"><pre>$ pip install -e git://github.com/philomat/django-media-tree#egg=django-media-tree</pre>
+</div>
+</div>
+<div class="section" id="basic-setup">
+<h2>Basic setup<a class="headerlink" href="#basic-setup" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p class="first">Download and put the <tt class="docutils literal"><span class="pre">media_tree</span></tt> module on your pythonpath, or install using
-pypi TODO</p>
-</li>
-<li><p class="first">Add <tt class="docutils literal"><span class="pre">media_tree</span></tt> to your <tt class="docutils literal"><span class="pre">INSTALLED_APPS</span></tt> setting:</p>
+<li><p class="first">In your project settings, add <tt class="docutils literal"><span class="pre">media_tree</span></tt> to the <tt class="docutils literal"><span class="pre">INSTALLED_APPS</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">(</span>
     <span class="c"># ... your other apps here</span>
     <span class="s">&#39;mptt&#39;</span><span class="p">,</span>
@@ -67,27 +89,28 @@ pypi TODO</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">If you are not using <tt class="docutils literal"><span class="pre">django.contrib.staticfiles</span></tt>, copy the contents of the
-<tt class="docutils literal"><span class="pre">static</span></tt> folder to the static root of your project. If you are using the
-<tt class="docutils literal"><span class="pre">staticfiles</span></tt> app, just run the usual command to collect static files:</p>
+<li><p class="first">If you are using <tt class="docutils literal"><span class="pre">django.contrib.staticfiles</span></tt> (recommended), just run the
+usual command to collect static files:</p>
 <div class="highlight-python"><pre>./manage.py collectstatic</pre>
 </div>
-<p>Please refer to the Django documentation to learn about the <tt class="docutils literal"><span class="pre">staticfiles</span></tt>
-app.</p>
+<p>If you are <strong>not</strong> using the <tt class="docutils literal"><span class="pre">staticfiles</span></tt> app, copy the contents of the
+<tt class="docutils literal"><span class="pre">static</span></tt> folder to the static root of your project.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To learn about the <tt class="docutils literal"><span class="pre">staticfiles</span></tt> app please refer to the
+<a class="reference external" href="https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/">respective Django documentation</a>.</p>
+</div>
 </li>
 <li><p class="first">Optional: If you want thumbnails to be generated, which will usually be the
 case, you need to install the appropriate media backend that takes care of
 this. Currently, <tt class="docutils literal"><span class="pre">easy_thumbnails</span></tt> is the recommended 3rd-party application.</p>
 <p>After you&#8217;ve installed <tt class="docutils literal"><span class="pre">easy_thumbnails</span></tt>, configure Media Tree to use it by
 defining <tt class="docutils literal"><span class="pre">MEDIA_TREE_MEDIA_BACKENDS</span></tt> in your project settings:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>MEDIA_TREE_MEDIA_BACKENDS = (</dt>
-<dd><p class="first last">&#8216;media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend&#8217;,</p>
-</dd>
-</dl>
-<p>)</p>
-</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">MEDIA_TREE_MEDIA_BACKENDS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&#39;media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">In principle, Media Tree can work together with any other thumbnail generating
@@ -119,9 +142,50 @@ add <tt class="docutils literal"><span class="pre">SessionPostMiddleware</span><
 </pre></div>
 </div>
 </li>
-<li><p class="first">Install icon set: TODO</p>
+</ul>
+</div>
+<div class="section" id="installing-icon-sets">
+<span id="installiconsets"></span><h2>Installing icon sets<a class="headerlink" href="#installing-icon-sets" title="Permalink to this headline">¶</a></h2>
+<p>By default, Media Tree only comes with plain file and folder icons. If you would
+like to use custom icon sets that are more appropriate for your specific media
+types, you can install them like a Django application, and configure Media Tree
+to use them as follows:</p>
+<ul>
+<li><p class="first">In order to install an icon set, simply add the respective module to your
+<tt class="docutils literal"><span class="pre">INSTALLED_APPS</span></tt> setting:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="c"># ... your other apps here</span>
+    <span class="s">&#39;my_custom_icon_set&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">If you are using <tt class="docutils literal"><span class="pre">django.contrib.staticfiles</span></tt> (recommended), just run the
+usual command to collect static files:</p>
+<div class="highlight-python"><pre>$ ./manage.py collectstatic</pre>
+</div>
+<p>If you are <strong>not</strong> using the <tt class="docutils literal"><span class="pre">staticfiles</span></tt> app, copy the contents of the
+<tt class="docutils literal"><span class="pre">static</span></tt> folder to the static root of your project.</p>
+</li>
+<li><p class="first">Define the <tt class="docutils literal"><span class="pre">MEDIA_TREE_ICON_DIRS</span></tt> setting in your project settings, and
+add the static path containing the new icon files, e.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">MEDIA_TREE_ICON_DIRS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&#39;my_custom_icons/64x64px&#39;</span><span class="p">,</span>  <span class="c"># the new folder under your static root</span>
+    <span class="s">&#39;media_tree/img/icons/mimetypes&#39;</span><span class="p">,</span>  <span class="c"># default icon folder</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can add several icon sets to this tuple, and for each media file the
+first appropriate icon that is encountered will be used. Please notice
+that on the last line we are specifying the default icon location,
+which will be used as a fallback in case no appropriate icon is found in
+one of the custom sets.</p>
+</div>
 </li>
 </ul>
+</div>
 </div>
 
 
@@ -130,6 +194,17 @@ add <tt class="docutils literal"><span class="pre">SessionPostMiddleware</span><
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installing Media Tree</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#getting-the-code">Getting the code</a></li>
+<li><a class="reference internal" href="#basic-setup">Basic setup</a></li>
+<li><a class="reference internal" href="#installing-icon-sets">Installing icon sets</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Django Media Tree Documentation</a></p>
@@ -173,7 +248,7 @@ add <tt class="docutils literal"><span class="pre">SessionPostMiddleware</span><
         <li class="right" >
           <a href="index.html" title="Django Media Tree Documentation"
              >previous</a> |</li>
-        <li><a href="index.html">Django Media Tree v1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Django Media Tree v0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

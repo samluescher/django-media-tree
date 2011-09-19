@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Extending Django Media Tree &mdash; Django Media Tree v1.0.0 documentation</title>
+    <title>Extending Django Media Tree &mdash; Django Media Tree v0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '1.0.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Django Media Tree v1.0.0 documentation" href="index.html" />
+    <link rel="top" title="Django Media Tree v0.2.0 documentation" href="index.html" />
     <link rel="next" title="Bundled extensions" href="bundled.html" />
     <link rel="prev" title="Configuring Media Tree" href="configuration.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="configuration.html" title="Configuring Media Tree"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Django Media Tree v1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Django Media Tree v0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -369,6 +369,35 @@ your extenders than the ones described in this tutorial. Code away and, please,
 share your extensions with the Interested Public!</p>
 </div>
 </div>
+<div class="section" id="tutorial-extension-creating-an-icon-set">
+<h2>Tutorial extension: Creating an icon set<a class="headerlink" href="#tutorial-extension-creating-an-icon-set" title="Permalink to this headline">¶</a></h2>
+<p>Icon sets are also packaged as Django applications, and creating a custom set
+is rather easy. Basically, an icon set is a Python module containing nothing
+but an empty <tt class="docutils literal"><span class="pre">__init__.py</span></tt> and a <tt class="docutils literal"><span class="pre">static</span></tt> folder with the respective image
+files. Here&#8217;s an example of how that could look like:</p>
+<div class="highlight-python"><pre>my_custom_audio_icon_set
+    __init__.py
+    static
+        audio_icons
+            audio.png
+            ogg.png
+            mp3.png</pre>
+</div>
+<p>Note that this package contains three icons: One for generic audio files and
+one for either <tt class="docutils literal"><span class="pre">OGG</span></tt> or <tt class="docutils literal"><span class="pre">MP3</span></tt> files.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When displaying a file icon, Media Tree will first look for an icon that is
+named like the media file&#8217;s extension (e.g. <tt class="docutils literal"><span class="pre">mp3.png</span></tt>), then for one named
+like its mimetype (e.g. <tt class="docutils literal"><span class="pre">audio/x-mpeg.png</span></tt>), then for the mime supertype
+(e.g. <tt class="docutils literal"><span class="pre">audio.png</span></tt>). Icon discovery is handled by a class called
+<tt class="docutils literal"><span class="pre">MimetypeStaticIconFileFinder</span></tt>.</p>
+</div>
+<p>To install this icon set, simply add <tt class="docutils literal"><span class="pre">my_custom_audio_icon_set</span></tt> to your
+<tt class="docutils literal"><span class="pre">INSTALLED_APPS</span></tt>, collect its static files, and configure the new icon folder
+using the <tt class="docutils literal"><span class="pre">MEDIA_TREE_ICON_DIRS</span></tt> setting. See <a class="reference internal" href="installation.html#installiconsets"><em>Installing icon sets</em></a>
+for more detailed instructions.</p>
+</div>
 </div>
 
 
@@ -398,6 +427,7 @@ share your extensions with the Interested Public!</p>
 <li><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#tutorial-extension-creating-an-icon-set">Tutorial extension: Creating an icon set</a></li>
 </ul>
 </li>
 </ul>
@@ -445,7 +475,7 @@ share your extensions with the Interested Public!</p>
         <li class="right" >
           <a href="configuration.html" title="Configuring Media Tree"
              >previous</a> |</li>
-        <li><a href="index.html">Django Media Tree v1.0.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Django Media Tree v0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

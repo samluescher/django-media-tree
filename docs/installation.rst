@@ -1,12 +1,40 @@
 Installing Media Tree
 *********************
 
-TODO This howto does not cover... serving media files, django.contrib.staticfiles. 
+This document assumes you are familiar with Python and Django.
 
-- Download and put the ``media_tree`` module on your pythonpath, or install using
-  pypi TODO
 
-- Add ``media_tree`` to your ``INSTALLED_APPS`` setting::
+Dependencies
+============
+
+Make sure to install these packages prior to installation:
+
+- Django>=1.2.5
+- south>=0.7.2
+- django-mptt>=0.4.2
+- PIL>=1.1
+
+Getting the code
+================
+
+For the latest stable version (recommended), use ``pip`` or ``easy_install``::
+
+    $ pip install django-media-tree  
+
+**Alternatively**, you can also download the latest development version from 
+http://github.com/philomat/django-media-tree and run the installation script::
+
+    $ python setup.py install
+
+**or** use ``pip``::
+
+    $ pip install -e git://github.com/philomat/django-media-tree#egg=django-media-tree
+
+
+Basic setup
+===========
+
+- In your project settings, add ``media_tree`` to the ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
         # ... your other apps here 
@@ -14,21 +42,25 @@ TODO This howto does not cover... serving media files, django.contrib.staticfile
         'media_tree',
     )
 
-- If you are not using ``django.contrib.staticfiles``, copy the contents of the
-  ``static`` folder to the static root of your project. If you are using the 
-  ``staticfiles`` app, just run the usual command to collect static files::
+- If you are using ``django.contrib.staticfiles`` (recommended), just run the
+  usual command to collect static files::
 
     ./manage.py collectstatic
 
-  Please refer to the Django documentation to learn about the ``staticfiles`` 
-  app.
+  If you are **not** using the ``staticfiles`` app, copy the contents of the
+  ``static`` folder to the static root of your project.
+  
+  .. Note::
+     To learn about the ``staticfiles`` app please refer to the
+     `respective Django documentation
+     <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_.
     
 - Optional: If you want thumbnails to be generated, which will usually be the 
   case, you need to install the appropriate media backend that takes care of 
   this. Currently, ``easy_thumbnails`` is the recommended 3rd-party application. 
 
   After you've installed ``easy_thumbnails``, configure Media Tree to use it by
-  defining ``MEDIA_TREE_MEDIA_BACKENDS`` in your project settings:
+  defining ``MEDIA_TREE_MEDIA_BACKENDS`` in your project settings::
   
       MEDIA_TREE_MEDIA_BACKENDS = (
           'media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend',
@@ -61,4 +93,44 @@ TODO This howto does not cover... serving media files, django.contrib.staticfile
         'django.contrib.sessions.middleware.SessionMiddleware',
     )
 
-- Install icon set: TODO
+
+.. _installiconsets:
+
+Installing icon sets
+====================
+
+By default, Media Tree only comes with plain file and folder icons. If you would
+like to use custom icon sets that are more appropriate for your specific media
+types, you can install them like a Django application, and configure Media Tree
+to use them as follows:
+
+- In order to install an icon set, simply add the respective module to your
+  ``INSTALLED_APPS`` setting::
+
+    INSTALLED_APPS = (
+        # ... your other apps here 
+        'my_custom_icon_set',
+    )
+
+- If you are using ``django.contrib.staticfiles`` (recommended), just run the
+  usual command to collect static files::
+
+    $ ./manage.py collectstatic
+
+  If you are **not** using the ``staticfiles`` app, copy the contents of the
+  ``static`` folder to the static root of your project.
+
+- Define the ``MEDIA_TREE_ICON_DIRS`` setting in your project settings, and
+  add the static path containing the new icon files, e.g.::
+
+    MEDIA_TREE_ICON_DIRS = (
+        'my_custom_icons/64x64px',  # the new folder under your static root 
+        'media_tree/img/icons/mimetypes',  # default icon folder
+    )
+
+  .. Note::
+     You can add several icon sets to this tuple, and for each media file the
+     first appropriate icon that is encountered will be used. Please notice
+     that on the last line we are specifying the default icon location,
+     which will be used as a fallback in case no appropriate icon is found in
+     one of the custom sets.

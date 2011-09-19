@@ -243,3 +243,36 @@ Using this extension system, you can change many aspects of how Media Tree
 behaves. There are more attributes and also **signals** that you can define in 
 your extenders than the ones described in this tutorial. Code away and, please, 
 share your extensions with the Interested Public!
+
+
+Tutorial extension: Creating an icon set
+========================================
+
+Icon sets are also packaged as Django applications, and creating a custom set
+is rather easy. Basically, an icon set is a Python module containing nothing
+but an empty ``__init__.py`` and a ``static`` folder with the respective image
+files. Here's an example of how that could look like::
+
+    my_custom_audio_icon_set
+        __init__.py
+        static
+            audio_icons
+                audio.png
+                ogg.png
+                mp3.png
+
+Note that this package contains three icons: One for generic audio files and
+one for either ``OGG`` or ``MP3`` files.
+
+.. Note::
+   When displaying a file icon, Media Tree will first look for an icon that is
+   named like the media file's extension (e.g. ``mp3.png``), then for one named
+   like its mimetype (e.g. ``audio/x-mpeg.png``), then for the mime supertype
+   (e.g. ``audio.png``). Icon discovery is handled by a class called
+   ``MimetypeStaticIconFileFinder``.
+
+To install this icon set, simply add ``my_custom_audio_icon_set`` to your
+``INSTALLED_APPS``, collect its static files, and configure the new icon folder
+using the ``MEDIA_TREE_ICON_DIRS`` setting. See :ref:`installiconsets`
+for more detailed instructions.
+
