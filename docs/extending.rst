@@ -119,7 +119,7 @@ subclassing the parent class provided by Media Tree::
     
     class GeotaggingModelExtender(extension.ModelExtender):
         lat = models.FloatField('latitude', null=True, blank=True)
-        lng = models.FloatField('latitude', null=True, blank=True)
+        lng = models.FloatField('longitude', null=True, blank=True)
         
     extension.register(GeotaggingModelExtender)
     
