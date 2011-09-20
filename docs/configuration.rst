@@ -11,10 +11,16 @@ module.
     A tuple of media backends for thumbnail generation and other media-related
     tasks.
     
-    Currently, the only supported backend is
-    ``media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend``,
-    which depends on ``easy_thumbnails`` to be installed. Please refer to
-    :ref:`media-backends` for more information.
+    Currently, the only supported backend is ``EasyThumbnailsBackend``, 
+    which depends on ``easy_thumbnails`` to be installed. You should install
+    that module and then define this setting as follows in your project's
+    settings module::
+    
+        MEDIA_TREE_MEDIA_BACKENDS = (
+            'media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend',
+        )
+    
+    Please refer to :ref:`media-backends` for more information.
 
 
 ``MEDIA_TREE_LIST_DISPLAY``

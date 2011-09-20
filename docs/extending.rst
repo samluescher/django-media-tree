@@ -267,11 +267,11 @@ Note that this package contains three icons: One for generic audio files and
 one for either ``OGG`` or ``MP3`` files.
 
 .. Note::
-   When displaying a file icon, Media Tree will first look for an icon that is
-   named like the media file's extension (e.g. ``mp3.png``), then for one named
-   like its mimetype (e.g. ``audio/x-mpeg.png``), then for the mime supertype
-   (e.g. ``audio.png``). Icon discovery is handled by a class called
-   ``MimetypeStaticIconFileFinder``.
+   When displaying a file icon, Media Tree will scan all installed icon sets for
+   an icon that is named like the media file's extension (e.g. ``mp3.png``),
+   then for one named like its mimetype (e.g. ``audio/x-mpeg.png``), then for
+   the mime supertype (e.g. ``audio.png``). Icon discovery is handled by a class
+   called ``MimetypeStaticIconFileFinder``.
 
 To install this icon set, simply add ``my_custom_audio_icon_set`` to your
 ``INSTALLED_APPS``, collect its static files, and configure the new icon folder
