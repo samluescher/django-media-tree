@@ -14,14 +14,18 @@ which depends on ``easy_thumbnails`` to be installed. Please refer to
 :ref:`media-backends` for more information.
 """
 
-MEDIA_TREE_LIST_DISPLAY = ('browse_controls', 'size_formatted', 'extension', 'resolution_formatted', 'get_descendant_count_display', 'modified', 'modified_by', 'metadata_check', 'position', 'node_tools')
+MEDIA_TREE_LIST_DISPLAY = getattr(settings, 'MEDIA_TREE_LIST_DISPLAY',
+    ('browse_controls', 'size_formatted', 'extension', 'resolution_formatted',
+    'get_descendant_count_display', 'modified', 'modified_by', 'metadata_check',
+    'position', 'node_tools'))
 """
 A tuple containing the columns that should be displayed in the ``FileNodeAdmin``.
 Note that the ``browse_controls`` column is necessary for the admin to function
 properly.
 """
 
-MEDIA_TREE_LIST_FILTER = ('media_type', 'extension', 'has_metadata')
+MEDIA_TREE_LIST_FILTER = getattr(settings, 'MEDIA_TREE_LIST_FILTER',
+    ('media_type', 'extension', 'has_metadata'))
 """
 A tuple containing the fields that nodes can be filtered by in the
 ``FileNodeAdmin``.
@@ -29,19 +33,20 @@ A tuple containing the fields that nodes can be filtered by in the
 
 #MEDIA_TREE_LIST_DISPLAY_LINKS = ('name',)
 
-MEDIA_TREE_SEARCH_FIELDS = ('name', 'title', 'description', 'author', 'copyright', 
-    'override_caption', 'override_alt')
+MEDIA_TREE_SEARCH_FIELDS = getattr(settings, 'MEDIA_TREE_SEARCH_FIELDS',
+    ('name', 'title', 'description', 'author', 'copyright', 'override_caption',
+    'override_alt'))
 """
 A tuple containing the fields that nodes can be searched by in the
 ``FileNodeAdmin``.
 """
 
-MEDIA_TREE_UPLOAD_SUBDIR = 'upload'
+MEDIA_TREE_UPLOAD_SUBDIR = getattr(settings, 'MEDIA_TREE_UPLOAD_SUBDIR', 'upload')
 """
 The name of the folder under your ``MEDIA_ROOT`` where media files are stored.
 """
 
-MEDIA_TREE_PREVIEW_SUBDIR = 'upload/_preview'
+MEDIA_TREE_PREVIEW_SUBDIR = getattr(settings, 'MEDIA_TREE_PREVIEW_SUBDIR', 'upload/_preview')
 """
 The name of the folder under your ``MEDIA_ROOT`` where cached versions of media
 files, e.g. thumbnails, are stored.
@@ -49,25 +54,25 @@ files, e.g. thumbnails, are stored.
 
 MEDIA_TREE_STATIC_SUBDIR = 'media_tree'
 
-MEDIA_TREE_ICON_DIRS = (
+MEDIA_TREE_ICON_DIRS = getattr(settings, 'MEDIA_TREE_ICON_DIRS', (
     'media_tree/img/icons/mimetypes',
-)    
+))    
 """
 A tuple containing all icon directories. See :ref:`install-icon-sets`
 for more information.
 """
 
-MEDIA_TREE_ICON_FINDERS = (
+MEDIA_TREE_ICON_FINDERS = getattr(settings, 'MEDIA_TREE_ICON_FINDERS', (
     'media_tree.utils.staticfiles.MimetypeStaticIconFileFinder',
-)
+))
 
-MEDIA_TREE_THUMBNAIL_SIZES = {
+MEDIA_TREE_THUMBNAIL_SIZES = getattr(settings, 'MEDIA_TREE_THUMBNAIL_SIZES', {
     'small': (80, 80),
     'default': (100, 100),
     'medium': (250, 250),
     'large': (400, 400),
     'full': None, # None means: use original size
-}
+})
 """
 A dictionary of default thumbnail sizes. You can pass the dictionary key to the
 ``thumbnail`` templatetag instead of a numeric size.
@@ -84,13 +89,13 @@ Default::
 
 """
 
-MEDIA_TREE_ALLOWED_FILE_TYPES = (
+MEDIA_TREE_ALLOWED_FILE_TYPES = getattr(settings, 'MEDIA_TREE_ALLOWED_FILE_TYPES', (
     'aac', 'ace', 'ai', 'aiff', 'avi', 'bmp', 'dir', 'doc', 'docx', 'dmg', 'eps', 'fla', 'flv', 
     'gif', 'gz', 'hqx', 'htm', 'html', 'ico', 'indd', 'inx', 'jpg', 'jar', 'jpeg', 'md', 'mov', 
     'mp3', 'mp4', 'mpc', 'mkv', 'mpg', 'mpeg', 'ogg', 'odg', 'odf', 'odp', 'ods', 'odt', 'otf', 
     'pdf', 'png', 'pps', 'ppsx', 'ps', 'psd', 'rar', 'rm', 'rtf', 'sit', 'swf', 'tar', 'tga', 
     'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma', 'wmv', 'xls', 'xlsx', 'xml', 'zip'
-)
+))
 """
 A whitelist of file extensions that can be uploaded. By default, this is a
 comprehensive list of many common media file extensions that shouldn't pose a
@@ -101,7 +106,8 @@ security risk.
    such as executables or scripts, as this possibly opens a door to attackers.
 """
 
-MEDIA_TREE_THUMBNAIL_EXTENSIONS = ('jpg', 'png')
+MEDIA_TREE_THUMBNAIL_EXTENSIONS = getattr(settings, 'MEDIA_TREE_THUMBNAIL_EXTENSIONS',
+    ('jpg', 'png'))
 """
 Default: ``('jpg', 'png')``
 
@@ -110,30 +116,30 @@ there since you might typically want to preserve the file type of PNG images
 instead of converting them to JPG.
 """
 
-MEDIA_TREE_FILE_SIZE_LIMIT = 1000000000 # 1 GB
+MEDIA_TREE_FILE_SIZE_LIMIT = getattr(settings, 'MEDIA_TREE_FILE_SIZE_LIMIT', 1000000000) # 1 GB
 """
 Default: 1 GB
 
 Maximum file size for uploaded files.
 """
 
-MEDIA_TREE_SWFUPLOAD = True
+MEDIA_TREE_SWFUPLOAD = getattr(settings, 'MEDIA_TREE_SWFUPLOAD', True)
 """
 Toggles support for SWFUpload on or off. See :ref:`install-swfupload` for more
 information.
 """
 
-MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS = {
+MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS = getattr(settings, 'MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS', {
     'sharpen': None, # None means enabled 
-}
+})
 """
 A dictionary of options that should be applied by default when generating
 thumbnails. You might use this, for instance, to sharpen all thumbnails.
 """
 
-MEDIA_TREE_METADATA_FORMATS = {
+MEDIA_TREE_METADATA_FORMATS = getattr(settings, 'MEDIA_TREE_METADATA_FORMATS', {
     'title': '<strong>%s</strong>'
-}
+})
 
 MEDIA_TREE_ORDERING_DEFAULT = ['name']
 

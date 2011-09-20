@@ -8,6 +8,10 @@
 #       TODO: Opening in new window etc. is currently unclear. Possibly ?folder_id=1 should be replaced with folder-path (real names!)
 #   --> Actually, /folder_id/ should show zero-indented list and replace ?folder_id --> solves many problems
 #
+# TODO: Metadata output is too wrapped
+# TODO: Add icon for change and add folder
+# TODO: Change default folder icons to open source or custom graphics
+#
 # ** maybe **
 # TODO: Refactor PIL stuff, width|height as extension? 
 # TODO: Refactor SWFUpload stuff as extension. This would require signals calls
@@ -263,9 +267,9 @@ class FileNodeAdmin(MPTTModelAdmin):
     def node_tools(self, node):
         tools = ''
         tools += '<li><a class="change" href="%s">%s</a></li>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), _('change')) 
-        if node.is_folder():
-            tools += '<li><a class="add-folder" href="%s?folder_id=%s">%s</a></li>' % (
-                reverse('admin:media_tree_filenode_add_folder', args=()), str(node.pk), _('add folder')) 
+        #if node.is_folder():
+        #    tools += '<li><a class="add-folder" href="%s?folder_id=%s">%s</a></li>' % (
+        #        reverse('admin:media_tree_filenode_add_folder', args=()), str(node.pk), _('add folder')) 
         return '<ul class="node-tools">%s</ul>' % tools
     node_tools.short_description = ''
     node_tools.allow_tags = True
