@@ -72,6 +72,7 @@ Basic setup
      `respective Django documentation
      <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_.
 
+.. _configuring-media-backends:
 
 - **Optional**: If you want thumbnails to be generated, which will usually be
   the case, you need to install the appropriate media backend that takes care of

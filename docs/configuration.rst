@@ -12,15 +12,15 @@ module.
     tasks.
     
     Currently, the only supported backend is ``EasyThumbnailsBackend``, 
-    which depends on ``easy_thumbnails`` to be installed. You should install
-    that module and then define this setting as follows in your project's
-    settings module::
+    which depends on ``easy_thumbnails`` to be installed.
+
+    .. Note::
+       Please refer to the :ref:`installation instructions
+       <configuring-media-backends>` for information on how to configure
+       supported media backends.
     
-        MEDIA_TREE_MEDIA_BACKENDS = (
-            'media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend',
-        )
-    
-    Please refer to :ref:`media-backends` for more information.
+    For general information on media backends, see :ref:`media-backends` for
+    more information.
 
 
 ``MEDIA_TREE_LIST_DISPLAY``
