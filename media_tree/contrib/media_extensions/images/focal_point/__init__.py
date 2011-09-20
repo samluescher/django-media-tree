@@ -17,7 +17,7 @@ then use these coordinates in templates for image cropping.
   ``static`` folder to the static root of your project. If you are using the 
   ``staticfiles`` app, just run the usual command to collect static files::
 
-    ./manage.py collectstatic
+    $ ./manage.py collectstatic
 
 .. Note::
    This extension adds the fields ``focal_x`` and ``focal_y`` to
