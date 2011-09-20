@@ -9,8 +9,8 @@ module.
 
 ``MEDIA_TREE_MEDIA_BACKENDS``
     A tuple of media backends for thumbnail generation and other media-related
-    tasks, i.e. a list of wrappers for the third-party applications that take
-    care of this.
+    tasks, i.e. a list of wrappers for the 3rd-party applications that take
+    care of them.
 
     .. Note::
        Please refer to the :ref:`installation instructions
