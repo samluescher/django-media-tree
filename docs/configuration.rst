@@ -9,10 +9,8 @@ module.
 
 ``MEDIA_TREE_MEDIA_BACKENDS``
     A tuple of media backends for thumbnail generation and other media-related
-    tasks.
-    
-    Currently, the only supported backend is ``EasyThumbnailsBackend``, 
-    which depends on ``easy_thumbnails`` to be installed.
+    tasks, i.e. a list of wrappers for the third-party applications that take
+    care of this.
 
     .. Note::
        Please refer to the :ref:`installation instructions

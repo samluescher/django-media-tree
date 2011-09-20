@@ -74,23 +74,25 @@ Basic setup
 
 .. _configuring-media-backends:
 
-- **Optional**: If you want thumbnails to be generated, which will usually be
-  the case, you need to install the appropriate media backend that takes care of
-  this. Currently, ``easy_thumbnails`` is the recommended 3rd-party application.
+- **Configuring media backends (optional)**: If you want thumbnails to be
+  generated, which will usually be the case, you need to install the appropriate
+  media backend that takes care of this. Currently, `easy-thumbnails
+  <https://github.com/SmileyChris/easy-thumbnails>`_ is the only recommended and
+  officially supported 3rd-party application.
 
-  After you've installed ``easy_thumbnails``, configure Media Tree to use it by
-  defining ``MEDIA_TREE_MEDIA_BACKENDS`` in your project settings::
+  After you've installed the ``easy_thumbnails`` module, configure Media Tree to
+  use it by defining ``MEDIA_TREE_MEDIA_BACKENDS`` in your project settings::
   
       MEDIA_TREE_MEDIA_BACKENDS = (
           'media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend',
       )
 
   .. Note::
-     In principle, Media Tree can work together with any other thumbnail generating
-     app, provided that you write the appropriate media backend class to support 
-     it. Please have a look at one of the backends under 
-     ``media_tree.contrib.media_backends`` if you are interested in using your own 
-     specific 3rd-party app. 
+     In principle, Media Tree can work together with any other thumbnail
+     generating app, provided that you write the appropriate media backend class
+     to support it. Please have a look at one of the backends under
+     ``media_tree.contrib.media_backends`` if you are interested in using your
+     own specific 3rd-party app. 
 
 - **Optional**: Also add any Media Tree extensions that you are planning to use
   to your ``INSTALLED_APPS``::
