@@ -64,7 +64,7 @@ class FileNodeChoiceField(TreeNodeChoiceField):
         Creates labels which represent the tree level of each node when
         generating option labels.
         """
-        return u'%s %s' % (self.level_indicator * (getattr(obj, obj._meta.level_attr) + (1 if not self.required else 0)), smart_unicode(obj))
+        return u'%s %s' % (self.level_indicator * (getattr(obj, obj._mptt_meta.level_attr) + (1 if not self.required else 0)), smart_unicode(obj))
 
 
 class FileNodeForeignKey(models.ForeignKey):
