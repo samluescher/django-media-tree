@@ -49,7 +49,7 @@ class StaticFile(FieldFile):
         return self.instance.alt()
 
 
-class StaticFileFinder:
+class StaticPathFinder:
 
     @staticmethod
     def find(names, dirs, file_ext):
@@ -88,7 +88,7 @@ class MimetypeStaticIconFileFinder:
                 names.append(attr)
         if default_name:
             names.append(default_name)
-        icon_path = StaticFileFinder.find(names, dirs, file_ext)
+        icon_path = StaticPathFinder.find(names, dirs, file_ext)
         if icon_path:
             return StaticFile(file_node, icon_path)
 
