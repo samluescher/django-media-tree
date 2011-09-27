@@ -3,7 +3,7 @@
 Bundled extensions
 ******************
 
-Media Tree contains a few useful extensions in its ``contrib`` directory. Since
+Media Tree contains a few useful extensions in its ``contrib`` module. Since
 some of these extensions modify the ``FileNode`` model, you should install them
 before you run ``syncdb`` for the first time.
 
