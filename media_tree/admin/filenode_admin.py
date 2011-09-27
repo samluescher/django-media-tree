@@ -97,6 +97,7 @@ class FileNodeAdmin(MPTTModelAdmin):
     search_fields = app_settings.MEDIA_TREE_SEARCH_FIELDS
     ordering = app_settings.MEDIA_TREE_ORDERING_DEFAULT
     mptt_indent_field = 'browse_controls'
+    mptt_level_indent = app_settings.MEDIA_TREE_MPTT_ADMIN_LEVEL_INDENT
 
     formfield_overrides = {
         models.FileField: {'widget': AdminThumbWidget},
