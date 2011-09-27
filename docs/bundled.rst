@@ -1,3 +1,5 @@
+.. _bundled-extensions:
+
 Bundled extensions
 ******************
 
