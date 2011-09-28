@@ -415,7 +415,7 @@ class FileNode(ModelBase):
             (capfirst(self._meta.verbose_name), self.get_admin_url(), self.__unicode__())))
 
     # TODO: Refactor, move out of model
-    def get_file_link(node, use_metadata=False, include_size=False, include_extension=False):
+    def get_file_link(node, use_metadata=False, include_size=False, include_extension=False, include_icon=False):
         link_text = None
         if use_metadata:
             link_text = node.get_metadata_display()

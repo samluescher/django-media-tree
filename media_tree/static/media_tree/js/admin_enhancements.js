@@ -182,7 +182,8 @@ jQuery(function($) {
         // was updated, actions() needs to be called again:
         django.jQuery("tr input.action-select").actions();
 
-        $('tbody tr', this).each(function(index) {
+        var rows = $('tbody tr', this);
+        rows.each(function(index) {
             if ($('input.action-select:checked', this).length) {
                 $(this).selectChangelistRow();
             }
@@ -193,6 +194,9 @@ jQuery(function($) {
                 $(this).addClass('row1');
             }
         });
+
+        $('#changelist .paginator').text(ngettext('%i media object',
+            '%i media objects', rows.length).replace('%i', rows.length));
         
         if (updatedRows) {
             $(updatedRows).each(function() {

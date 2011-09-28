@@ -34,7 +34,8 @@ http://github.com/philomat/django-media-tree and run the installation script::
 Basic setup
 ===========
 
-- In your project settings, add ``media_tree`` to the ``INSTALLED_APPS``::
+- In your project settings, add ``mptt`` and ``media_tree`` to the
+  ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
         # ... your other apps here

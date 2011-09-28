@@ -8,6 +8,10 @@
 #       TODO: Opening in new window etc. is currently unclear. Possibly ?folder_id=1 should be replaced with folder-path (real names!)
 #   --> Actually, /folder_id/ should show zero-indented list and replace ?folder_id --> solves many problems
 #
+# TODO: Metadata output is too wrapped
+# TODO: Add icon for change and add folder
+# TODO: Change default folder icons to open source or custom graphics
+#
 # ** maybe **
 # TODO: Refactor PIL stuff, width|height as extension? 
 # TODO: Refactor SWFUpload stuff as extension. This would require signals calls
@@ -52,7 +56,7 @@ from django.contrib.admin.util import unquote
 from django.contrib.admin.templatetags.admin_list import _boolean_icon
 from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django import forms
@@ -103,6 +107,10 @@ class FileNodeAdmin(MPTTModelAdmin):
         models.FileField: {'widget': AdminThumbWidget},
         models.ImageField: {'widget': AdminThumbWidget},
     }
+
+    # TODO: Really disable pagination since it does not work well with
+    # AJAX loading
+    list_per_page = 10000
 
     _registered_actions = []
 
@@ -263,10 +271,10 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     def node_tools(self, node):
         tools = ''
-        tools += '<li><a class="change" href="%s">%s</a></li>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), _('change')) 
-        if node.is_folder():
-            tools += '<li><a class="add-folder" href="%s?folder_id=%s">%s</a></li>' % (
-                reverse('admin:media_tree_filenode_add_folder', args=()), str(node.pk), _('add folder')) 
+        tools += '<li><a class="change" href="%s">%s</a></li>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), ugettext('change')) 
+        #if node.is_folder():
+        #    tools += '<li><a class="add-folder" href="%s?folder_id=%s">%s</a></li>' % (
+        #        reverse('admin:media_tree_filenode_add_folder', args=()), str(node.pk), ugettext('add folder')) 
         return '<ul class="node-tools">%s</ul>' % tools
     node_tools.short_description = ''
     node_tools.allow_tags = True
@@ -498,11 +506,25 @@ class FileNodeAdmin(MPTTModelAdmin):
             return render_to_response('admin/media_tree/filenode/upload_form.html', 
                 {'form': form, 'node': self.get_parent_folder(request)}, context_instance=RequestContext(request))
 
+    def i18n_javascript(self, request):
+        """
+        Displays the i18n JavaScript that the Django admin requires.
+
+        This takes into account the USE_I18N setting. If it's set to False, the
+        generated JavaScript will be leaner and faster.
+        """
+        if settings.USE_I18N:
+            from django.views.i18n import javascript_catalog
+        else:
+            from django.views.i18n import null_javascript_catalog as javascript_catalog
+        return javascript_catalog(request, packages=['media_tree'])
+        
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
         urls = super(FileNodeAdmin, self).get_urls()
         info = self.model._meta.app_label, self.model._meta.module_name
         url_patterns = patterns('',
+            url(r'^jsi18n/', self.admin_site.admin_view(self.i18n_javascript), name='media_tree_jsi18n'),
             # Since Flash Player enforces a same-domain policy, the upload will break if static files 
             # are served from another domain. So the built-in static file view is used for the uploader SWF:
             url(r'^static/swfupload\.swf$', 

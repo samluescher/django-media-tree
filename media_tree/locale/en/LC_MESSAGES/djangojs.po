@@ -18,59 +18,58 @@ msgstr ""
 
 #: static/media_tree/js/admin_enhancements.js:6
 msgid "Name"
-msgstr "Name"
+msgstr ""
 
 #: static/media_tree/js/admin_enhancements.js:6
 msgid "Size"
-msgstr "Grösse"
+msgstr ""
 
 #: static/media_tree/js/admin_enhancements.js:39
 msgid "New folder"
-msgstr "Neuer Ordner"
+msgstr ""
 
 #: static/media_tree/js/admin_enhancements.js:40
 msgid "Save"
-msgstr "Speichern"
+msgstr ""
 
 #: static/media_tree/js/admin_enhancements.js:198
 #, perl-format
 msgid "%i media object"
 msgid_plural "%i media objects"
-msgstr[0] "%i Medienobjekt"
-msgstr[1] "%i Medienobjekte"
+msgstr[0] ""
+msgstr[1] ""
 
 #: static/media_tree/js/jquery.swfupload_manager.js:84
 #, perl-format
 msgid "uploading... (%i in queue)"
-msgstr "Upload… (%i in Warteschlange)"
+msgstr ""
 
 #: static/media_tree/js/jquery.swfupload_manager.js:85
 #, perl-format
 msgid "%i file in queue."
 msgid_plural "%i files in queue."
-msgstr[0] "%i Datei in Warteschlange."
-msgstr[1] "%i Dateien in Warteschlange."
+msgstr[0] ""
+msgstr[1] ""
 
 #: static/media_tree/js/jquery.swfupload_manager.js:86
 msgid "Please do not close this window until upload is complete."
 msgstr ""
-"Bitte dieses Fenster nicht schliessen, bevor der Upload abgeschlossen ist."
 
 #: static/media_tree/js/jquery.swfupload_manager.js:118
 msgid "Upload error"
-msgstr "Upload-Fehler"
+msgstr ""
 
 #: static/media_tree/js/jquery.swfupload_manager.js:225
 msgid "loading..."
-msgstr "laden…"
+msgstr ""
 
 #: static/media_tree/js/jquery.swfupload_manager.js:235
 #, perl-format
 msgid "Successfully added %i file."
 msgid_plural "Successfully added %i files."
-msgstr[0] "Erfolgreich %i Datei hinzugefügt."
-msgstr[1] "Erfolgreich %i Dateien hinzugefügt."
+msgstr[0] ""
+msgstr[1] ""
 
 #: static/media_tree/js/jquery.swfupload_manager.js:243
 msgid "There were errors during upload."
-msgstr "Beim Upload sind Fehler aufgetreten."
+msgstr ""
