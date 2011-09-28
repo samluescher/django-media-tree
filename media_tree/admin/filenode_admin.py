@@ -56,7 +56,7 @@ from django.contrib.admin.util import unquote
 from django.contrib.admin.templatetags.admin_list import _boolean_icon
 from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django import forms
@@ -270,10 +270,10 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     def node_tools(self, node):
         tools = ''
-        tools += '<li><a class="change" href="%s">%s</a></li>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), _('change')) 
+        tools += '<li><a class="change" href="%s">%s</a></li>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), ugettext('change')) 
         #if node.is_folder():
         #    tools += '<li><a class="add-folder" href="%s?folder_id=%s">%s</a></li>' % (
-        #        reverse('admin:media_tree_filenode_add_folder', args=()), str(node.pk), _('add folder')) 
+        #        reverse('admin:media_tree_filenode_add_folder', args=()), str(node.pk), ugettext('add folder')) 
         return '<ul class="node-tools">%s</ul>' % tools
     node_tools.short_description = ''
     node_tools.allow_tags = True
