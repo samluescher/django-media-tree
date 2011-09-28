@@ -66,13 +66,15 @@ MEDIA_TREE_ICON_FINDERS = getattr(settings, 'MEDIA_TREE_ICON_FINDERS', (
     'media_tree.utils.staticfiles.MimetypeStaticIconFileFinder',
 ))
 
-MEDIA_TREE_THUMBNAIL_SIZES = getattr(settings, 'MEDIA_TREE_THUMBNAIL_SIZES', {
+MEDIA_TREE_THUMBNAIL_SIZES = {
     'small': (80, 80),
     'default': (100, 100),
     'medium': (250, 250),
     'large': (400, 400),
     'full': None, # None means: use original size
-})
+}
+MEDIA_TREE_THUMBNAIL_SIZES.update(getattr(settings,
+    'MEDIA_TREE_THUMBNAIL_SIZES', {}))
 """
 A dictionary of default thumbnail sizes. You can pass the dictionary key to the
 ``thumbnail`` templatetag instead of a numeric size.
