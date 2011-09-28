@@ -107,6 +107,10 @@ class FileNodeAdmin(MPTTModelAdmin):
         models.ImageField: {'widget': AdminThumbWidget},
     }
 
+    # TODO: Really disable pagination since it does not work well with
+    # AJAX loading
+    list_per_page = 10000
+
     _registered_actions = []
 
     class Media:
@@ -501,11 +505,25 @@ class FileNodeAdmin(MPTTModelAdmin):
             return render_to_response('admin/media_tree/filenode/upload_form.html', 
                 {'form': form, 'node': self.get_parent_folder(request)}, context_instance=RequestContext(request))
 
+    def i18n_javascript(self, request):
+        """
+        Displays the i18n JavaScript that the Django admin requires.
+
+        This takes into account the USE_I18N setting. If it's set to False, the
+        generated JavaScript will be leaner and faster.
+        """
+        if settings.USE_I18N:
+            from django.views.i18n import javascript_catalog
+        else:
+            from django.views.i18n import null_javascript_catalog as javascript_catalog
+        return javascript_catalog(request, packages=['media_tree'])
+        
     def get_urls(self):
         from django.conf.urls.defaults import patterns, url
         urls = super(FileNodeAdmin, self).get_urls()
         info = self.model._meta.app_label, self.model._meta.module_name
         url_patterns = patterns('',
+            url(r'^jsi18n/', self.admin_site.admin_view(self.i18n_javascript), name='media_tree_jsi18n'),
             # Since Flash Player enforces a same-domain policy, the upload will break if static files 
             # are served from another domain. So the built-in static file view is used for the uploader SWF:
             url(r'^static/swfupload\.swf$', 
