@@ -104,6 +104,9 @@ Basic setup
         'media_tree.contrib.media_extensions.zipfiles',
     )
 
+  .. Note::
+     See :ref:`bundled-extensions` for a list of default extensions included in the project.
+
 .. _install-swfupload:
 
 - **Optional**: If you are planning to use a Flash uploader such as
