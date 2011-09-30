@@ -4,7 +4,7 @@ zipfiles
 
 The *zipfiles* extension adds support for ZIP archives to the ``FileNodeAdmin``.
 If it is installed, you can select files and folders in the admin and
-download them in a ZIP file. 
+download them as a ZIP archive. 
 
 To install it, add the extension module to your ``INSTALLED_APPS`` setting::   
 

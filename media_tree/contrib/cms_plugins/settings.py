@@ -1,4 +1,4 @@
-from media_tree.contrib.media_tree_cms_plugins.helpers import PluginLink
+from media_tree.contrib.cms_plugins.helpers import PluginLink
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 

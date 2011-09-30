@@ -75,6 +75,7 @@ copy_selected.short_description = _('Copy selected %(verbose_name_plural)s')
 
 def change_metadata_for_selected(modeladmin, request, queryset):
     # TODO Use AdminDateTimeWidget etc
+    # TODO Should be able to leave required fields blank if confirmation not checked
     
     # Compare all nodes in queryset in order to display initial values
     # in form that have an identical value for all nodes 

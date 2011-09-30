@@ -25,7 +25,7 @@ class FileNodeActionsForm(forms.Form):
         selected_nodes_pk = []
         if queryset:
             for node in queryset:
-                opts = node._meta
+                opts = node._mptt_meta
                 selected_nodes_pk.append(node.pk)
                 valid_targets = valid_targets.exclude(**{
                     opts.tree_id_attr: getattr(node, opts.tree_id_attr),

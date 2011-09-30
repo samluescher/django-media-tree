@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from media_tree import media_types
-from media_tree.contrib.media_tree_cms_plugins.helpers import PluginLink
+from media_tree.contrib.cms_plugins.helpers import PluginLink
 
 MEDIA_TREE_MEDIA_BACKENDS = ()
 

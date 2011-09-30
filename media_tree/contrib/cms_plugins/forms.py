@@ -1,6 +1,6 @@
 from media_tree.models import FileNode
-from media_tree.contrib.media_tree_cms_plugins.models import MediaTreeImage, MediaTreeList, MediaTreeListItem, MediaTreeSlideshow, MediaTreeSlideshowItem, MediaTreeGallery, MediaTreeGalleryItem
-from media_tree.contrib.media_tree_cms_plugins.helpers import PluginLink
+from media_tree.contrib.cms_plugins.models import MediaTreeImage, MediaTreeList, MediaTreeListItem, MediaTreeSlideshow, MediaTreeSlideshowItem, MediaTreeGallery, MediaTreeGalleryItem
+from media_tree.contrib.cms_plugins.helpers import PluginLink
 from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _

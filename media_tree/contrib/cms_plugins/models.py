@@ -2,7 +2,7 @@ from django.db import models
 from cms.models import CMSPlugin, Page
 from media_tree.fields import FileNodeForeignKey
 from media_tree import media_types
-from media_tree.contrib.media_tree_cms_plugins import settings as app_settings
+from media_tree.contrib.cms_plugins import settings as app_settings
 from media_tree.models import FileNode
 from django.utils.translation import ugettext_lazy as _
 from django import forms
