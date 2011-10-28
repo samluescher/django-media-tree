@@ -2,6 +2,7 @@ from media_tree.contrib.cms_plugins.media_tree_image.models import MediaTreeImag
 from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormBase
 from media_tree.media_backends import get_media_backend
 from media_tree.contrib.cms_plugins.helpers import PluginLink
+from media_tree.utils import widthratio
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import ugettext_lazy as _
