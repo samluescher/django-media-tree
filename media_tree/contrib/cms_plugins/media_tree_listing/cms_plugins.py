@@ -4,15 +4,15 @@ from media_tree.contrib.cms_plugins.media_tree_listing.models import MediaTreeLi
 from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormBase
 from media_tree import media_types
 from media_tree.media_backends import get_media_backend
+from media_tree import settings as media_tree_settings
+from media_tree.utils import widthratio
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django import forms
-from media_tree import settings as media_tree_settings
 from django.utils.safestring import mark_safe
-from media_tree.utils import widthratio
 from django.db import models
 from django.core.urlresolvers import NoReverseMatch
 from django.contrib import admin
@@ -27,11 +27,6 @@ class MediaTreeListingPluginForm(MediaTreePluginFormBase):
 class MediaTreeListingItemInline(admin.StackedInline):
     model = MediaTreeListingItem
     extra = 1
-    fieldsets = [
-        ('', {
-            'fields': ['node']
-        }),
-    ]
 
 
 class MediaTreeListingPlugin(CMSPluginBase):
@@ -40,7 +35,7 @@ class MediaTreeListingPlugin(CMSPluginBase):
     model = MediaTreeListing
     name = _('File listing')
     admin_preview = False
-    render_template = 'cms/plugins/mediatreelist.html'
+    render_template = 'cms/plugins/mediatreelisting.html'
     list_type = MediaTreeListing.LIST_NESTED
     form = MediaTreeListingPluginForm
     fieldsets = [
@@ -50,11 +45,20 @@ class MediaTreeListingPlugin(CMSPluginBase):
         }),
     ]
 
+    def init_folder(self, context, instance):
+        folder_id = context['request'].GET.get(self.FolderLink.folder_param_name(instance), None)
+
+        self.current_folder = None
+        self.parent_folder = None
+        self.selected_nodes = []
+        self.files_selected = False
+        # TODO re-implement. This currently only sets variables GalleryPlugin not to choke
+
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.attname != 'cmsplugin_ptr_id':
             raise Exception(db_field.attname)
         #field = super(MediaTreeListPlugin, self)
-    
+
     @staticmethod
     def list_str_callback(node):
         # ??? Use this method, and include icon
@@ -82,7 +86,7 @@ class MediaTreeListingPlugin(CMSPluginBase):
 
         if hasattr(instance, 'list_type'):
             self.list_type = instance.list_type
-        
+
         if self.list_type == MediaTreeListing.LIST_MERGED:
             list_method = getattr(FileNode, 'get_merged_list')
             exclude_media_types = (FileNode.FOLDER,)
@@ -94,18 +98,19 @@ class MediaTreeListingPlugin(CMSPluginBase):
             processors = [self.list_str_callback]
         else:
             processors = None
-        
+
         if getattr(instance, 'filter_supported', None):
             filter_media_types = self.list_filter_media_types
         else:
             filter_media_types = None
-        
-        return list_method(self.visible_nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
+
+        return list_method(self.visible_nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types,
             processors=processors, max_depth=max_depth, ordering=['position', 'name'])
 
     def render(self, context, instance, placeholder):
+        self.init_folder(context, instance)
         self.visible_nodes = [item.node for item in instance.media_items.all()]
-        context.update({ 
+        context.update({
             'nodes': self.get_render_nodes(context, instance),
         })
         return context

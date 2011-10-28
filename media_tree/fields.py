@@ -21,7 +21,7 @@ class FileNodeChoiceField(TreeNodeChoiceField):
         kwargs['level_indicator'] = level_indicator;
         if not kwargs.has_key('widget'):
             kwargs['widget'] = self.widget
-            
+
             # TODO: FileNodeForeignKeyRawIdWidget should only be the standard widget when in admin
             # TODO: It currently does not work with move/copy form
             #kwargs['widget'] = FileNodeForeignKeyRawIdWidget(rel)
@@ -48,12 +48,12 @@ class FileNodeChoiceField(TreeNodeChoiceField):
                 if len(self.allowed_media_types) == 1:
                     label = app_settings.MEDIA_TREE_CONTENT_TYPES[self.allowed_media_types[0]]
                     errors.append(_('The required media type is %s.') % label)
-                else: 
+                else:
                     errors.append(_('You cannot select this media type.'))
             if self.allowed_extensions != None and not result.extension in self.allowed_extensions:
                 if len(self.allowed_extensions) == 1:
                     errors.append(_('The required file type is %s.') % self.allowed_extensions[0])
-                else: 
+                else:
                     errors.append(_('You cannot select this file type.'))
             if len(errors) > 0:
                 raise forms.ValidationError(errors)
@@ -75,7 +75,7 @@ class FileNodeForeignKey(models.ForeignKey):
         self.allowed_extensions = allowed_extensions
         self.level_indicator = level_indicator
         super(FileNodeForeignKey, self).__init__(FileNode, *args, **kwargs)
-    
+
     def formfield(self, **kwargs):
         defaults = {
             'form_class': FileNodeChoiceField,
@@ -87,3 +87,20 @@ class FileNodeForeignKey(models.ForeignKey):
         }
         defaults.update(kwargs)
         return super(FileNodeForeignKey, self).formfield(**defaults)
+
+
+class DimensionField(models.CharField):
+    """
+    CharField for image dimensions. Currently, this needs to be an integer > 0, but since it
+    is a CharField, it might also contain units such as "px" or "%" in the future.
+    """
+    def __init__(self, verbose_name=None, name=None, **kwargs):
+        if not 'max_length' in kwargs:
+            kwargs['max_length'] = 8
+        super(DimensionField, self).__init__(verbose_name, name, **kwargs)
+
+    def formfield(self, **kwargs):
+        defaults = {'regex': '^[1-9][0-9]*$',
+                    'form_class': forms.RegexField}
+        defaults.update(kwargs)
+        return models.Field.formfield(self, **defaults)
