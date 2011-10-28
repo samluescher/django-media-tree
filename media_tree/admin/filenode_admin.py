@@ -1,3 +1,7 @@
+# TODO --- RELEASE
+# TODO: Move templates out of html/ dir, use Django convention
+# TODO: Fix gallery plugin
+
 # ** next **
 # TODO: Fix search inconsistencies. For example: Opening a folder and then searching for its name presents it with an expanded marker, but no children.
 # TODO: Search results should be ordered alphabetically
