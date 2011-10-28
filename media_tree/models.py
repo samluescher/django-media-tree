@@ -13,7 +13,7 @@ try:
 except ImportError:
     # Legacy mptt support
     import mptt
-    from django.db.models import Model as ModelBase 
+    from django.db.models import Model as ModelBase
 
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
@@ -53,20 +53,20 @@ class FileNode(ModelBase):
     is to say a “file” or “folder”. Accordingly, their ``node_type`` attribute
     can either be ``FileNode.FOLDER``, meaning that they may have child nodes,
     or ``FileNode.FILE``, meaning that they are associated to media files in
-    storage and are storing metadata about those files. 
-    
+    storage and are storing metadata about those files.
+
     .. Note::
        Since ``FileNode`` is a child class of ``MPTTModel``, it inherits many
        methods that facilitate queries and data manipulation when working with
-       trees. 
+       trees.
     """
 
     FOLDER = media_types.FOLDER
     """The constant denoting a folder node, used for the :attr:`node_type` attribute."""
-    
+
     FILE = media_types.FILE
     """The constant denoting a file node, used for the :attr:`node_type` attribute."""
-    
+
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
     media_type = models.IntegerField(_('media type'), choices = app_settings.MEDIA_TREE_CONTENT_TYPE_CHOICES, blank=True, null=True, editable=False)
     file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True)
@@ -103,7 +103,7 @@ class FileNode(ModelBase):
     created_by = models.ForeignKey(User, null=True, blank=True, related_name='created_by', verbose_name = _('created by'), editable=False)
     modified_by = models.ForeignKey(User, null=True, blank=True, related_name='modified_by', verbose_name = _('modified by'), editable=False)
     position = models.IntegerField(_('position'), default=0)
-    
+
     is_ancestor_being_updated = False
 
     # TODO: PickledField for media extenders
@@ -125,7 +125,7 @@ class FileNode(ModelBase):
         """Returns a symbolic node representing the root of all nodes. This node
         is not actually stored in the database, but used in the admin to link to
         the change list.
-        """        
+        """
         return FileNode(name=('Media objects'), level=-1)
 
     def is_top_node(self):
@@ -150,9 +150,9 @@ class FileNode(ModelBase):
             del self.link_obj
 
         return locals()
-                
+
     # TODO this should be called from FileNode.save(), not from admin (since there is no request on CopyFileNodesForm.save())
-    # -- look into threadlocals 
+    # -- look into threadlocals
     def attach_user(self, user, change):
         if not change:
             self.created_by = user
@@ -166,7 +166,7 @@ class FileNode(ModelBase):
             nodes.insert(0, FileNode.get_top_node())
         nodes.append(self)
         return nodes
-    
+
     def get_folder_tree(self):
         return self._tree_manager.all().filter(node_type=FileNode.FOLDER)
 
@@ -257,7 +257,7 @@ class FileNode(ModelBase):
     def __get_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, list_method='append', max_depth=None, max_nodes=None, _depth=1, _node_count=0):
 
         if isinstance(nodes, models.query.QuerySet):
-            # pre-filter() and exclude() on QuerySet for fewer iterations  
+            # pre-filter() and exclude() on QuerySet for fewer iterations
             if filter_media_types:
                 nodes = nodes.filter(media_type__in=tuple(filter_media_types)+(FileNode.FOLDER,))
             if exclude_media_types:
@@ -270,14 +270,14 @@ class FileNode(ModelBase):
                 nodes = nodes.order_by(*ordering)
 
         result_list = []
-        if max_depth is None or _depth <= max_depth: 
+        if max_depth is None or _depth <= max_depth:
             for node in nodes:
                 if max_nodes and _node_count > max_nodes:
                     break
                 # recursively get child nodes
                 if node.node_type == FileNode.FOLDER and node.get_descendant_count() > 0:
-                    child_nodes = FileNode.__get_list(node.get_children().all(), filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
-                        filter=filter, processors=processors, list_method=list_method, max_depth=max_depth, max_nodes=max_nodes, 
+                    child_nodes = FileNode.__get_list(node.get_children().all(), filter_media_types=filter_media_types, exclude_media_types=exclude_media_types,
+                        filter=filter, processors=processors, list_method=list_method, max_depth=max_depth, max_nodes=max_nodes,
                         _depth=_depth + 1, _node_count=_node_count)
                     child_count = len(child_nodes)
                 else:
@@ -312,25 +312,25 @@ class FileNode(ModelBase):
         Nested means that the resulting list will be multi-dimensional, i.e. each item in the list
         that is a folder containing child nodes will be followed by a sub-list containing those
         child nodes.
-        
+
         Example of returned list::
 
             [
-                <FileNode: Empty folder>, 
-                <FileNode: Photo folder>, 
-                    [<FileNode: photo1.jpg>, <FileNode: photo2.jpg>, 
+                <FileNode: Empty folder>,
+                <FileNode: Photo folder>,
+                    [<FileNode: photo1.jpg>, <FileNode: photo2.jpg>,
                      <FileNode: another subfolder>],
                         [<FileNode: photo3.jpg>]
                 <FileNode: file.txt>
             ]
-            
+
         You can use this list in conjunction with Django's built-in
         list template filters to output nested lists in templates::
-        
+
             {{ some_nested_list|unordered_list }}
-            
+
         would output::
-        
+
             <ul>
                 <li>Empty folder</li>
                 <li>Photo folder
@@ -346,7 +346,7 @@ class FileNode(ModelBase):
                 </li>
                 <li>file.txt</li>
             </ul>
-        
+
         :param nodes: A QuerySet or list of FileNode objects
         :param filter_media_types: A list of media types to include in the resulting list, e.g. ``media_types.DOCUMENT``
         :param exclude_media_types: A list of media types to exclude from the resulting list
@@ -355,7 +355,7 @@ class FileNode(ModelBase):
         :param max_depth: Can be used to limit the recursion depth (unlimited by default)
         :param max_nodes: Can be used to limit the number of items in the resulting list (unlimited by default)
         """
-        return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
+        return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types,
             filter=filter, ordering=ordering, processors=processors, list_method='append', max_depth=max_depth, max_nodes=max_nodes)
 
     @staticmethod
@@ -365,8 +365,8 @@ class FileNode(ModelBase):
         Using the same QuerySet as in the example for `get_nested_list`, this method would return::
 
             [
-                <FileNode: Empty folder>, 
-                <FileNode: Photo folder>, 
+                <FileNode: Empty folder>,
+                <FileNode: Photo folder>,
                 <FileNode: photo1.jpg>,
                 <FileNode: photo2.jpg>,
                 <FileNode: photo3.jpg>,
@@ -374,9 +374,9 @@ class FileNode(ModelBase):
             ]
 
         """
-        return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types, 
+        return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types,
             filter=filter, ordering=ordering, processors=processors, list_method='extend', max_depth=max_depth, max_nodes=max_nodes)
-                        
+
     def get_descendant_count_display(self):
         if self.node_type == FileNode.FOLDER:
             return self.get_descendant_count()
@@ -395,7 +395,7 @@ class FileNode(ModelBase):
 
     def get_admin_url(self):
         """Returns the URL for viewing a FileNode in the admin."""
-        
+
         if self.is_top_node():
             return reverse('admin:media_tree_filenode_changelist');
         if self.is_folder():
@@ -403,7 +403,7 @@ class FileNode(ModelBase):
         if self.pk:
             return reverse('admin:media_tree_filenode_change', args=(self.pk,));
         return ''
-        # ID Path no longer necessary 
+        # ID Path no longer necessary
         #url = reverse('admin:media_tree_filenode_changelist');
         #for node in self.get_node_path():
         #    if node.level >= 0:
@@ -411,7 +411,7 @@ class FileNode(ModelBase):
         #return url
 
     def get_admin_link(self):
-        return force_unicode(mark_safe(u'%s: <a href="%s">%s</a>' % 
+        return force_unicode(mark_safe(u'%s: <a href="%s">%s</a>' %
             (capfirst(self._meta.verbose_name), self.get_admin_url(), self.__unicode__())))
 
     # TODO: Refactor, move out of model
@@ -433,7 +433,7 @@ class FileNode(ModelBase):
                 extra += '<span class="file-size">%s</span>' % filesizeformat(node.size)
             if extra:
                 extra = ' (%s)' % extra
-            return force_unicode(mark_safe(u'<a class="file '+node.extension+'" href="%s">%s</a>%s' % 
+            return force_unicode(mark_safe(u'<a class="file '+node.extension+'" href="%s">%s</a>%s' %
                 (node.file.url, link_text, extra)))
 
     @staticmethod
@@ -447,7 +447,7 @@ class FileNode(ModelBase):
                 return mimetype
             else:
                 return fallback_type
-    
+
     @property
     def mime_supertype(self):
         if self.mimetype:
@@ -457,7 +457,7 @@ class FileNode(ModelBase):
     def mime_subtype(self):
         if self.mimetype:
             return self.mimetype.split('/')[1]
-    
+
     @staticmethod
     def mimetype_to_media_type(filename):
         mimetype = FileNode.get_mimetype(filename)
@@ -480,7 +480,7 @@ class FileNode(ModelBase):
     resolution_formatted.admin_order_field = 'width'
 
     def make_name_unique_numbered(self, name, ext=''):
-        # If file with same name exists in folder: 
+        # If file with same name exists in folder:
         qs = FileNode.objects.filter(parent=self.parent)
         if self.pk:
             qs = qs.exclude(pk=self.pk)
@@ -494,18 +494,18 @@ class FileNode(ModelBase):
         self.save_prevented = True
 
     def save(self, *args, **kwargs):
-        
+
         if getattr(self, 'save_prevented', False):
             from django.core.exceptions import ValidationError
             raise ValidationError('Saving was presented for this FileNode object.')
-        
+
         if self.node_type == FileNode.FOLDER:
             self.media_type = FileNode.FOLDER
             # Admin asserts that folder name is unique under parent. For other inserts:
             self.make_name_unique_numbered(self.name)
         else:
-            # TODO: If file was not changed, this field will nevertheless be changed to 
-            # the name of the renamed file on disk. Do not do this unless a new file is being saved. 
+            # TODO: If file was not changed, this field will nevertheless be changed to
+            # the name of the renamed file on disk. Do not do this unless a new file is being saved.
             file_changed = True
             if self.pk:
                 try:
@@ -517,9 +517,9 @@ class FileNode(ModelBase):
             if file_changed:
                 self.name = os.path.basename(self.file.name)
                 # using os.path.splitext(), foo.tar.gz would become foo.tar_2.gz instead of foo_2.tar.gz
-                split = multi_splitext(self.name)  
+                split = multi_splitext(self.name)
                 self.make_name_unique_numbered(split[0], split[1])
-                
+
                 # Determine various file parameters
                 self.size = self.file.size
                 self.extension = split[2].lstrip('.').lower()
@@ -538,7 +538,7 @@ class FileNode(ModelBase):
 
         self.slug = slugify(self.name)
         self.has_metadata = self.check_minimal_metadata()
-        
+
         super(FileNode, self).save(*args, **kwargs)
 
     # TODO: Move to extension
@@ -546,7 +546,7 @@ class FileNode(ModelBase):
         self.saved_image = Image.open(self.file)
         self.media_type = media_types.SUPPORTED_IMAGE
         self.width, self.height = self.saved_image.size
-    
+
     def path(self):
         return self.file.path if self.file else ''
 
@@ -590,11 +590,11 @@ class FileNode(ModelBase):
         return t
     get_metadata_display.allow_tags = True
 
-    def get_metadata_formatted(self, field_formats = app_settings.MEDIA_TREE_METADATA_FORMATS):
+    def get_caption_formatted(self, field_formats = app_settings.MEDIA_TREE_METADATA_FORMATS):
         """Returns object metadata that has been selected to be displayed to
         users, compiled as a string including default formatting, for examples
         bold titles.
-        
+
         You can use this method in templates where you want to output image
         captions.
         """
@@ -602,16 +602,16 @@ class FileNode(ModelBase):
             return self.override_caption
         else:
             return self.get_metadata_display(field_formats)
-    get_metadata_formatted.allow_tags = True
-    get_metadata_formatted.short_description = _('displayed metadata')
+    get_caption_formatted.allow_tags = True
+    get_caption_formatted.short_description = _('displayed metadata')
 
     @property
     def alt(self):
         """Returns object metadata suitable for use as the HTML ``alt``
         attribute. You can use this method in templates::
-        
+
             <img src="node.file.url" alt="node.alt" />
-            
+
         """
         if self.override_alt != '':
             return self.override_alt
@@ -624,7 +624,7 @@ class FileNode(ModelBase):
 if ModelBase == models.Model:
     FileNode._mptt_meta = FileNode._meta
     try:
-        mptt.register(FileNode, 
+        mptt.register(FileNode,
             order_insertion_by=FileNode.MPTTMeta.order_insertion_by)
     except mptt.AlreadyRegistered:
         pass
