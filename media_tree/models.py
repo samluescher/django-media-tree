@@ -277,7 +277,7 @@ class FileNode(ModelBase):
                 # recursively get child nodes
                 if node.node_type == FileNode.FOLDER and node.get_descendant_count() > 0:
                     child_nodes = FileNode.__get_list(node.get_children().all(), filter_media_types=filter_media_types, exclude_media_types=exclude_media_types,
-                        filter=filter, processors=processors, list_method=list_method, max_depth=max_depth, max_nodes=max_nodes,
+                        filter=filter, ordering=ordering, processors=processors, list_method=list_method, max_depth=max_depth, max_nodes=max_nodes,
                         _depth=_depth + 1, _node_count=_node_count)
                     child_count = len(child_nodes)
                 else:
@@ -303,6 +303,7 @@ class FileNode(ModelBase):
                     _node_count += child_count
                     method = getattr(result_list, list_method)
                     method(child_nodes)
+
         return result_list
 
     @staticmethod
