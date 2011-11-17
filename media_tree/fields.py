@@ -37,20 +37,20 @@ class FileNodeChoiceField(TreeNodeChoiceField):
         result = super(FileNodeChoiceField, self).clean(value)
         errors = []
         if result != None:
-            if self.allowed_node_types != None and not result.node_type in self.allowed_node_types:
+            if self.allowed_node_types and not result.node_type in self.allowed_node_types:
                 if len(self.allowed_node_types) == 1 and FileNode.FILE in self.allowed_node_types:
                     errors.append(_('Please select a file.'))
                 elif len(self.allowed_node_types) == 1 and FileNode.FOLDER in self.allowed_node_types:
                     errors.append(_('Please select a folder.'))
                 else:
                     errors.append(_('You cannot select this node type.'))
-            if self.allowed_media_types != None and not result.media_type in self.allowed_media_types:
+            if self.allowed_media_types and not result.media_type in self.allowed_media_types:
                 if len(self.allowed_media_types) == 1:
                     label = app_settings.MEDIA_TREE_CONTENT_TYPES[self.allowed_media_types[0]]
                     errors.append(_('The required media type is %s.') % label)
                 else:
                     errors.append(_('You cannot select this media type.'))
-            if self.allowed_extensions != None and not result.extension in self.allowed_extensions:
+            if self.allowed_extensions and not result.extension in self.allowed_extensions:
                 if len(self.allowed_extensions) == 1:
                     errors.append(_('The required file type is %s.') % self.allowed_extensions[0])
                 else:

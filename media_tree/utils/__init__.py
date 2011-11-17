@@ -92,21 +92,22 @@ def multi_splitext(basename):
     return groups
 
 
-def join_formatted(text, new_text, glue_format_if_true = u'%s%s', glue_format_if_false = u'%s%s', condition=None, format = u'%s'):
+def join_formatted(text, new_text, glue_format_if_true = u'%s%s', glue_format_if_false = u'%s%s', condition=None, format = u'%s', escape=False):
     """
-    Joins two strings, escaping the second, and using one of two string
-    formats for glueing them together, depending on whether a condition is True 
-    or False.
+    Joins two strings, optionally escaping the second, and using one of two
+    string formats for glueing them together, depending on whether a condition
+    is True or False.
     
-    This function is a shorthand for complicated code blocks when you
-    want to format some strings and link them together. A typical use
-    case might be: Wrap string B with <strong> tags, but only if it is
-    not empty, and join it with A with a comma in between, but only if
-    A is not empty, etc. 
+    This function is a shorthand for complicated code blocks when you want to
+    format some strings and link them together. A typical use case might be:
+    Wrap string B with <strong> tags, but only if it is not empty, and join it
+    with A with a comma in between, but only if A is not empty, etc. 
     """
     if condition is None:
         condition = text and new_text
-    add_text = conditional_escape(new_text)
+    add_text = new_text
+    if escape:
+        add_text = conditional_escape(add_text)
     if add_text:
         add_text = format % add_text
     glue_format = glue_format_if_true if condition else glue_format_if_false

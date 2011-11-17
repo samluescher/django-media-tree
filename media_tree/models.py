@@ -571,7 +571,7 @@ class FileNode(ModelBase):
             result = self.has_metadata_including_descendants()
         return result
 
-    def get_metadata_display(self, field_formats = {}):
+    def get_metadata_display(self, field_formats = {}, escape=False):
         """Returns object metadata that has been selected to be displayed to
         users, compiled as a string.
         """
@@ -579,15 +579,15 @@ class FileNode(ModelBase):
             if field in field_formats:
                 return field_formats[field]
             return u'%s'
-        t = join_formatted('', self.title, format=field_format('title'))
-        t = join_formatted(t, self.description, u'%s: %s')
+        t = join_formatted('', self.title, format=field_format('title'), escape=escape)
+        t = join_formatted(t, self.description, u'%s: %s', escape=escape)
         if self.publish_author:
-            t = join_formatted(t, self.author, u'%s' + u' – ' + u'Author: %s', u'%s' + u'Author: %s')
+            t = join_formatted(t, self.author, u'%s' + u' – ' + u'Author: %s', u'%s' + u'Author: %s', escape=escape)
         if self.publish_copyright:
-            t = join_formatted(t, self.copyright, u'%s, %s')
+            t = join_formatted(t, self.copyright, u'%s, %s', escape=escape)
         if self.publish_date_time and self.date_time:
             date_time_formatted = dateformat.format(self.date_time, get_format('DATE_FORMAT'))
-            t = join_formatted(t, date_time_formatted, u'%s (%s)', '%s%s')
+            t = join_formatted(t, date_time_formatted, u'%s (%s)', '%s%s', escape=escape)
         return t
     get_metadata_display.allow_tags = True
 
@@ -602,7 +602,7 @@ class FileNode(ModelBase):
         if self.override_caption != '':
             return self.override_caption
         else:
-            return self.get_metadata_display(field_formats)
+            return mark_safe(self.get_metadata_display(field_formats, escape=True))
     get_caption_formatted.allow_tags = True
     get_caption_formatted.short_description = _('displayed metadata')
 
