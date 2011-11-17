@@ -564,7 +564,8 @@ class FileNode(ModelBase):
         return self.name
 
     def check_minimal_metadata(self):
-        result = (self.node_type == FileNode.FOLDER and self.name != '') or  \
+        result = (self.media_type in app_settings.MEDIA_TREE_METADATA_LESS_MEDIA_TYPES  \
+            and self.name != '') or  \
             (self.title != '' or self.description != '' or  \
             self.override_alt != '' or self.override_caption != '')
         if result and self.node_type == FileNode.FOLDER and self.pk:

@@ -185,3 +185,9 @@ MEDIA_TREE_CONTENT_TYPES = dict(MEDIA_TREE_CONTENT_TYPE_CHOICES)
 MEDIA_TREE_LEVEL_INDICATOR = unichr(0x00A0) * 3;
 
 MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT = '%(name)s_%(number)i%(ext)s'
+
+"""
+For the following 
+"""
+MEDIA_TREE_METADATA_LESS_MEDIA_TYPES = (
+    media_types.FOLDER, media_types.DOCUMENT, media_types.ARCHIVE, media_types.TEXT)
