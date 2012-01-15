@@ -433,9 +433,14 @@ class FileNode(ModelBase):
                     extra += ', '
                 extra += '<span class="file-size">%s</span>' % filesizeformat(node.size)
             if extra:
-                extra = ' (%s)' % extra
-            return force_unicode(mark_safe(u'<a class="file '+node.extension+'" href="%s">%s</a>%s' %
-                (node.file.url, link_text, extra)))
+                extra = ' <span class="details">(%s)</span>' % extra
+            link = u'<a class="file '+node.extension+'" href="%s">%s</a>%s' % (
+                node.file.url, link_text, extra)
+            if include_icon:
+                icon = node.get_icon_file()
+                link = '<a class="icon" href="%s"><img src="%s" alt="%s" /></a>%s' % (
+                    node.file.url, icon.url, node.alt, link)
+            return force_unicode(mark_safe(link))
 
     @staticmethod
     def get_mimetype(filename, fallback_type='application/x-unknown'):
