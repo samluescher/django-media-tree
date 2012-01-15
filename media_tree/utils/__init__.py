@@ -9,6 +9,7 @@ import re
 def get_media_storage():
     klass = get_storage_class()
     return klass()
+ 
     
 # TODO: This function should probably cache all imported modules
 def get_module_attr(path):
@@ -121,3 +122,4 @@ def widthratio(value, max_value, max_width):
     """
     ratio = float(value) / float(max_value)
     return int(round(ratio * max_width))
+

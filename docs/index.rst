@@ -29,6 +29,7 @@ Table of Contents
    fields
    templates
    configuration
+   utils
    extending 
    bundled
    

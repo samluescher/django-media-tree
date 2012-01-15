@@ -2,6 +2,7 @@ from media_tree.models import FileNode
 from media_tree.admin.actions.utils import get_actions_context
 from media_tree.admin.actions.forms import MoveSelectedForm, CopySelectedForm, ChangeMetadataForSelectedForm
 from media_tree.forms import MetadataForm
+from media_tree.utils.filenode import get_nested_filenode_list
 from django import forms
 from django.utils.translation import ungettext, ugettext as _
 from django.template import RequestContext
@@ -51,7 +52,7 @@ def filenode_admin_action(modeladmin, request, queryset, form_class, extra_conte
             max_depth = None
         else:
             max_depth = 1
-        context['node_list'] = FileNode.get_nested_list(form.selected_nodes, 
+        context['node_list'] = get_nested_filenode_list(form.selected_nodes, 
             processors=[FileNode.get_admin_link], max_depth=max_depth)
     return render_to_response('admin/media_tree/filenode/actions_form.html', context, context_instance=RequestContext(request))
 

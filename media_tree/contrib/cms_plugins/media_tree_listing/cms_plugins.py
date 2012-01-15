@@ -6,6 +6,7 @@ from media_tree import media_types
 from media_tree.media_backends import get_media_backend
 from media_tree import settings as media_tree_settings
 from media_tree.utils import widthratio
+from media_tree.utils.filenode import get_file_link, get_merged_filenode_list, get_nested_filenode_list
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import ugettext_lazy as _
@@ -62,7 +63,7 @@ class MediaTreeListingPlugin(CMSPluginBase):
     @staticmethod
     def list_str_callback(node):
         # ??? Use this method, and include icon
-        return FileNode.get_file_link(node, use_metadata=True, include_size=True, include_extension=True, include_icon=True)
+        return get_file_link(node, use_metadata=True, include_size=True, include_extension=True, include_icon=True)
 
     list_max_depth = None
     list_filter_media_types = None
@@ -88,10 +89,10 @@ class MediaTreeListingPlugin(CMSPluginBase):
             self.list_type = instance.list_type
 
         if self.list_type == MediaTreeListing.LIST_MERGED:
-            list_method = getattr(FileNode, 'get_merged_list')
+            list_method = get_merged_filenode_list
             exclude_media_types = (FileNode.FOLDER,)
         else:
-            list_method = getattr(FileNode, 'get_nested_list')
+            list_method = get_nested_filenode_list
             exclude_media_types = None
 
         if self.list_str_callback:

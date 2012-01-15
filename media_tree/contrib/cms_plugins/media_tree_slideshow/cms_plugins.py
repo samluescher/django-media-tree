@@ -41,7 +41,7 @@ class MediaTreeSlideshowPlugin(MediaTreeListingPlugin):
 
     class PluginMedia:
         js = [
-            'lib/jquery.cycle/jquery.cycle.all.js',
+            'lib/jquery.cycle/jquery.cycle.all.min.js',
         ]
 
     model = MediaTreeSlideshow

@@ -3,6 +3,7 @@ from media_tree.contrib.cms_plugins.media_tree_slideshow.cms_plugins import Medi
 from media_tree.contrib.cms_plugins.media_tree_listing.models import MediaTreeListing
 from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormBase
 from media_tree.models import FileNode
+from media_tree.utils.filenode import get_nested_filenode_list
 from cms.plugin_pool import plugin_pool
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
@@ -25,7 +26,7 @@ class MediaTreeGalleryPlugin(MediaTreeSlideshowPlugin):
 
     class PluginMedia:
         js = [
-            'lib/jquery.cycle/jquery.cycle.all.js',
+            'lib/jquery.cycle/jquery.cycle.all.min.js',
         ]
 
     module = _('Media Tree')
@@ -82,7 +83,7 @@ class MediaTreeGalleryPlugin(MediaTreeSlideshowPlugin):
                 filter = None
                 max_depth = 1
 
-            folders = FileNode.get_nested_list(top_nodes, filter_media_types=(FileNode.FOLDER,), filter=filter,
+            folders = get_nested_filenode_list(top_nodes, filter_media_types=(FileNode.FOLDER,), filter=filter,
                 max_depth=max_depth, processors=[self.FolderLink])
             if not self.single_folder_selected and self.current_folder and self.files_selected:
                 folders = [self.FolderLink({'name': 'Back to top', 'pk': None}, count_descendants=False).__unicode__(),

@@ -14,7 +14,6 @@
 #
 # TODO: Metadata output is too wrapped
 # TODO: Add icon for change and add folder
-# TODO: Change default folder icons to open source or custom graphics
 #
 # ** maybe **
 # TODO: Refactor PIL stuff, width|height as extension?

@@ -1,12 +1,8 @@
 #encoding=utf-8
 
-#TODO: move get_*_list to utility class that executes lazily when used.
-#    https://docs.djangoproject.com/en/dev/ref/models/querysets/#when-querysets-are-evaluated
-
 from media_tree import settings as app_settings, media_types
 from media_tree.utils import multi_splitext, join_formatted
 from media_tree.utils.staticfiles import get_icon_finders
-from django.template.defaultfilters import filesizeformat
 
 try:
     from mptt.models import MPTTModel as ModelBase
@@ -31,8 +27,8 @@ from django.db import models
 from PIL import Image
 import os
 import mimetypes
-from copy import copy
 import uuid
+
 
 MIMETYPE_CONTENT_TYPE_MAP = app_settings.MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP
 EXT_MIMETYPE_MAP = app_settings.MEDIA_TREE_EXT_MIMETYPE_MAP
@@ -253,131 +249,6 @@ class FileNode(ModelBase):
                         break
         return is_descendant
 
-    @staticmethod
-    def __get_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, list_method='append', max_depth=None, max_nodes=None, _depth=1, _node_count=0):
-
-        if isinstance(nodes, models.query.QuerySet):
-            # pre-filter() and exclude() on QuerySet for fewer iterations
-            if filter_media_types:
-                nodes = nodes.filter(media_type__in=tuple(filter_media_types)+(FileNode.FOLDER,))
-            if exclude_media_types:
-                for exclude_media_type in exclude_media_types:
-                    if exclude_media_type != FileNode.FOLDER:
-                        nodes = nodes.exclude(media_type__exact=exclude_media_type)
-            if filter:
-                nodes = nodes.filter(**filter)
-            if ordering:
-                nodes = nodes.order_by(*ordering)
-
-        result_list = []
-        if max_depth is None or _depth <= max_depth:
-            for node in nodes:
-                if max_nodes and _node_count > max_nodes:
-                    break
-                # recursively get child nodes
-                if node.node_type == FileNode.FOLDER and node.get_descendant_count() > 0:
-                    child_nodes = FileNode.__get_list(node.get_children().all(), filter_media_types=filter_media_types, exclude_media_types=exclude_media_types,
-                        filter=filter, ordering=ordering, processors=processors, list_method=list_method, max_depth=max_depth, max_nodes=max_nodes,
-                        _depth=_depth + 1, _node_count=_node_count)
-                    child_count = len(child_nodes)
-                else:
-                    child_count = 0
-                # add node itself if it matches the filter criteria, or, if result is a nested list
-                # (`list_method == 'append'`), it must include folders in order to make sense,
-                # but folders will only be added if they have any descendants matching the filter criteria
-                if ((not filter_media_types or node.media_type in filter_media_types) \
-                    and (not exclude_media_types or not node.media_type in exclude_media_types)) \
-                    or (child_count > 0 and list_method == 'append' and (max_depth is None or _depth < max_depth)):
-                        _node_count += 1
-                        if processors:
-                            node_copy = copy(node)
-                            for processor in processors:
-                                node_copy = processor(node_copy)
-                            if node_copy != None:
-                                result_list.append(node_copy)
-                        else:
-                            result_list.append(node)
-                # add child nodes using appropriate list method. `append` will result in a nested list,
-                # while `extend` produces a merged (flat) list.
-                if child_count > 0:
-                    _node_count += child_count
-                    method = getattr(result_list, list_method)
-                    method(child_nodes)
-
-        return result_list
-
-    @staticmethod
-    def get_nested_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
-        """
-        Returns a nested list of nodes, applying optional filters and processors to each node.
-        Nested means that the resulting list will be multi-dimensional, i.e. each item in the list
-        that is a folder containing child nodes will be followed by a sub-list containing those
-        child nodes.
-
-        Example of returned list::
-
-            [
-                <FileNode: Empty folder>,
-                <FileNode: Photo folder>,
-                    [<FileNode: photo1.jpg>, <FileNode: photo2.jpg>,
-                     <FileNode: another subfolder>],
-                        [<FileNode: photo3.jpg>]
-                <FileNode: file.txt>
-            ]
-
-        You can use this list in conjunction with Django's built-in
-        list template filters to output nested lists in templates::
-
-            {{ some_nested_list|unordered_list }}
-
-        would output::
-
-            <ul>
-                <li>Empty folder</li>
-                <li>Photo folder
-                    <ul>
-                        <li>photo1.jpg</li>
-                        <li>photo2.jpg</li>
-                        <li>another subfolder
-                            <ul>
-                                <li>photo3.jpg</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li>file.txt</li>
-            </ul>
-
-        :param nodes: A QuerySet or list of FileNode objects
-        :param filter_media_types: A list of media types to include in the resulting list, e.g. ``media_types.DOCUMENT``
-        :param exclude_media_types: A list of media types to exclude from the resulting list
-        :param filter: A dictionary of kwargs to be applied with ``QuerySet.filter()`` if ``nodes`` is a QuerySet
-        :param processors: A list of callables to be applied to each node, e.g. ``force_unicode`` if you want the list to contain strings instead of FileNode objects
-        :param max_depth: Can be used to limit the recursion depth (unlimited by default)
-        :param max_nodes: Can be used to limit the number of items in the resulting list (unlimited by default)
-        """
-        return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types,
-            filter=filter, ordering=ordering, processors=processors, list_method='append', max_depth=max_depth, max_nodes=max_nodes)
-
-    @staticmethod
-    def get_merged_list(nodes, filter_media_types=None, exclude_media_types=None, filter=None, ordering=None, processors=None, max_depth=None, max_nodes=None):
-        """
-        Almost the same as :func:`get_nested_list`, but returns a flat (one-dimensional) list.
-        Using the same QuerySet as in the example for `get_nested_list`, this method would return::
-
-            [
-                <FileNode: Empty folder>,
-                <FileNode: Photo folder>,
-                <FileNode: photo1.jpg>,
-                <FileNode: photo2.jpg>,
-                <FileNode: photo3.jpg>,
-                <FileNode: file.txt>
-            ]
-
-        """
-        return FileNode.__get_list(nodes, filter_media_types=filter_media_types, exclude_media_types=exclude_media_types,
-            filter=filter, ordering=ordering, processors=processors, list_method='extend', max_depth=max_depth, max_nodes=max_nodes)
-
     def get_descendant_count_display(self):
         if self.node_type == FileNode.FOLDER:
             return self.get_descendant_count()
@@ -414,33 +285,6 @@ class FileNode(ModelBase):
     def get_admin_link(self):
         return force_unicode(mark_safe(u'%s: <a href="%s">%s</a>' %
             (capfirst(self._meta.verbose_name), self.get_admin_url(), self.__unicode__())))
-
-    # TODO: Refactor, move out of model
-    def get_file_link(node, use_metadata=False, include_size=False, include_extension=False, include_icon=False):
-        link_text = None
-        if use_metadata:
-            link_text = node.get_metadata_display()
-        if not link_text:
-            link_text = node.__unicode__()
-        if node.node_type == FileNode.FOLDER:
-            return mark_safe(u'<span class="folder">%s</span>' % link_text)
-        else:
-            extra = ''
-            if include_extension:
-                extra = '<span class="file-extension">%s</span>' % node.extension.upper()
-            if include_size:
-                if extra != '':
-                    extra += ', '
-                extra += '<span class="file-size">%s</span>' % filesizeformat(node.size)
-            if extra:
-                extra = ' <span class="details">(%s)</span>' % extra
-            link = u'<a class="file '+node.extension+'" href="%s">%s</a>%s' % (
-                node.file.url, link_text, extra)
-            if include_icon:
-                icon = node.get_icon_file()
-                link = '<a class="icon" href="%s"><img src="%s" alt="%s" /></a>%s' % (
-                    node.file.url, icon.url, node.alt, link)
-            return force_unicode(mark_safe(link))
 
     @staticmethod
     def get_mimetype(filename, fallback_type='application/x-unknown'):
@@ -577,7 +421,7 @@ class FileNode(ModelBase):
             result = self.has_metadata_including_descendants()
         return result
 
-    def get_metadata_display(self, field_formats = {}, escape=False):
+    def get_metadata_display(self, field_formats = {}, escape=True):
         """Returns object metadata that has been selected to be displayed to
         users, compiled as a string.
         """
@@ -597,9 +441,17 @@ class FileNode(ModelBase):
         return t
     get_metadata_display.allow_tags = True
 
+    def get_metadata_display_unescaped(self):
+        """Returns object metadata that has been selected to be displayed to
+        users, compiled as a string with the original field values left unescaped,
+        i.e. they may contain tags.
+        """
+        return self.get_metadata_display(escape=False)
+    get_metadata_display_unescaped.allow_tags = True
+
     def get_caption_formatted(self, field_formats = app_settings.MEDIA_TREE_METADATA_FORMATS):
         """Returns object metadata that has been selected to be displayed to
-        users, compiled as a string including default formatting, for examples
+        users, compiled as a string including default formatting, for example
         bold titles.
 
         You can use this method in templates where you want to output image
@@ -608,7 +460,7 @@ class FileNode(ModelBase):
         if self.override_caption != '':
             return self.override_caption
         else:
-            return mark_safe(self.get_metadata_display(field_formats, escape=True))
+            return mark_safe(self.get_metadata_display(field_formats))
     get_caption_formatted.allow_tags = True
     get_caption_formatted.short_description = _('displayed metadata')
 
