@@ -3,6 +3,7 @@
 from media_tree import settings as app_settings, media_types
 from media_tree.utils import multi_splitext, join_formatted
 from media_tree.utils.staticfiles import get_icon_finders
+from media_tree.utils import get_media_storage
 
 try:
     from mptt.models import MPTTModel as ModelBase
@@ -63,10 +64,12 @@ class FileNode(ModelBase):
     FILE = media_types.FILE
     """The constant denoting a file node, used for the :attr:`node_type` attribute."""
 
+    STORAGE = get_media_storage()
+
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
     media_type = models.IntegerField(_('media type'), choices = app_settings.MEDIA_TREE_CONTENT_TYPE_CHOICES, blank=True, null=True, editable=False)
-    file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True)
-    preview_file = models.ImageField(_('preview'), upload_to=app_settings.MEDIA_TREE_PREVIEW_SUBDIR, blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'))
+    file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True, storage=STORAGE)
+    preview_file = models.ImageField(_('preview'), upload_to=app_settings.MEDIA_TREE_PREVIEW_SUBDIR, blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'), storage=STORAGE)
     published = models.BooleanField(_('is published'), blank=True, default=True, editable=False)
     mimetype = models.CharField(_('mimetype'), max_length=64, null=True, editable=False)
 
@@ -469,7 +472,7 @@ class FileNode(ModelBase):
         """Returns object metadata suitable for use as the HTML ``alt``
         attribute. You can use this method in templates::
 
-            <img src="node.file.url" alt="node.alt" />
+            <img src="{{ node.file.url }}" alt="{{ node.alt }}" />
 
         """
         if self.override_alt != '':

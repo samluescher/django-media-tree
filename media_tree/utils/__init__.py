@@ -1,3 +1,4 @@
+from media_tree import settings as app_settings
 from django.conf import settings
 from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
@@ -6,8 +7,11 @@ from django.utils.html import conditional_escape
 import re
 
 
+RE_SPLITEXT = re.compile('^(\.*.*?)((\.[^\.]+)*|\.)$')
+
+
 def get_media_storage():
-    klass = get_storage_class()
+    klass = get_storage_class(import_path=app_settings.MEDIA_TREE_STORAGE)
     return klass()
  
     
@@ -74,7 +78,7 @@ def multi_splitext(basename):
         multi_splitext('.foo.bar.')    # => ['.foo.bar', '.', '.']
 
     """
-    groups = list(re.compile('^(\.*.*?)((\.[^\.]+)*|\.)$').match(basename).groups())
+    groups = list(RE_SPLITEXT.match(basename).groups())
     if not groups[2]:
         groups[2] = groups[1]
     return groups

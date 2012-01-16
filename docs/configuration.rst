@@ -7,6 +7,16 @@ The following settings can be specified in your Django project's settings
 module.
 
 
+``MEDIA_TREE_STORAGE``
+    File storage class to be used for any file-related operations when dealing 
+    with media files. 
+
+    This is not set by default, meaning that Django's ``DEFAULT_FILE_STORAGE`` 
+    will be used. Please refer to the relevant Django documentation `on that setting <https://docs.djangoproject.com/en/dev/ref/settings/#default-file-storage>`_ and 
+    on `file storage in general
+    <https://docs.djangoproject.com/en/dev/ref/files/storage/#module-django.core.files.storage>`_.
+
+
 ``MEDIA_TREE_MEDIA_BACKENDS``
     A tuple of media backends for thumbnail generation and other media-related
     tasks, i.e. a list of wrappers for the 3rd-party applications that take
@@ -84,7 +94,7 @@ module.
     .. Warning::
        Just because a file extension may be considered “safe”, there is
        absolutely no guarantee that a skilled attacker couldn't find an exploit.
-       Only allow people you trust to upload files to your webserver.
+       You should only allow people you trust to upload files to your webserver.
        Be careful when adding potentially unsafe file extensions to this
        setting, such as executables or scripts, as this possibly opens a door to
        attackers. 
@@ -94,7 +104,7 @@ module.
     Default: ``('jpg', 'png')``
 
     A tuple of image extensions used for thumbnail files. Note that ``png`` is
-    in there since you might typically want to preserve the file type of PNG
+    in there since you typically might want to preserve the file type of PNG
     images instead of converting them to JPG.
 
 

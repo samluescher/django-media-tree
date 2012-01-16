@@ -3,6 +3,17 @@ from django.utils.translation import ugettext_lazy as _
 from media_tree import media_types
 
 
+MEDIA_TREE_STORAGE = getattr(settings, 'MEDIA_TREE_STORAGE', None)
+"""
+File storage class to be used for any file-related operations when dealing 
+with media files. 
+
+This is not set by default, meaning that Django's ```DEFAULT_FILE_STORAGE`` 
+<https://docs.djangoproject.com/en/dev/ref/settings/#default-file-storage>`_ 
+will be used. Please refer to the relevant Django documentation on `file storage 
+<https://docs.djangoproject.com/en/dev/ref/files/storage/#module-django.core.files.storage>`_.
+"""
+
 MEDIA_TREE_MEDIA_BACKENDS = getattr(settings, 'MEDIA_TREE_MEDIA_BACKENDS', ())
 """
 A tuple of media backends for thumbnail generation and other media-related

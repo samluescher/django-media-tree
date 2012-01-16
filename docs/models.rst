@@ -1,4 +1,4 @@
-The FileNode Model
+The FileNode model
 ******************
 
 .. automodule:: media_tree.models
