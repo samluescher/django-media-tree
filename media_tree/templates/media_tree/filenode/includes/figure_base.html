@@ -1,0 +1,25 @@
+{% load media_tree_thumbnail %}
+<span class="figure" id="figure-{{ image_node.pk }}">
+    <span class="image">{% spaceless %}
+    {% if image_node.link %}<a href="{{ image_node.link.href }}"{% if image_node.link.target %} target="{{ image_node.link.target }}{% endif %}"{% if image_node.link.rel %} rel="{{ image_node.link.rel }}{% endif %}">{% endif %}
+    {% block image %}
+    {% if thumbnail_size %}
+        {% thumbnail image_node thumbnail_size as thumb %}
+        <img src="{{ thumb.url }}" alt="{{ image_node.alt }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
+    {% else %}
+        <img src="{{ image_node.file.url }}" alt="{{ image_node.alt }}" width="{{ image_node.width }}" height="{{ image_node.height }}" />
+    {% endif %}
+    {% endblock %}
+    {% if image_node.link %}</a>{% endif %}
+    {% if thumbnail_size %}
+        <a style="display: none" rel="image-full" href="{{ image_node.file.url }}"></a>
+    {% endif %}
+    {% endspaceless %}</span>
+    {% if image_node.has_metadata %}
+    {% block caption %}
+    <span class="caption">
+        {{ image_node.get_caption_formatted }}
+    </span>
+    {% endblock %}
+    {% endif %}
+</span>

@@ -1,0 +1,13 @@
+{% extends request.current_page.template %}
+{% block content %}{% spaceless %}
+    {% if back_link_url %}
+        <p><a href="{{ back_link_url }}">{{ back_link_text }}</a></p>
+    {% endif %}
+    {% if not thumbnail_size %}
+        {% load media_tree_thumbnail %}
+        {% thumbnail_size "full" as thumbnail_size %}
+    {% endif %}
+    {% with object as image_node %}
+        <p>{% include "media_tree/filenode/includes/figure.html" %}</p>
+    {% endwith %}
+{% endspaceless %}{% endblock %}
