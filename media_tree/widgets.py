@@ -22,7 +22,7 @@ class FileNodeForeignKeyRawIdWidget(ForeignKeyRawIdWidget):
         key = self.rel.get_related_field().name
         try:
             obj = self.rel.to._default_manager.using(self.db).get(**{key: value})
-            preview = render_to_string('html/media_tree/filenode/includes/preview.html', 
+            preview = render_to_string('media_tree/filenode/includes/preview.html', 
                 {'node': obj, 'preview_file': obj.get_preview_file()})
             return '%s %s' % (preview, super(FileNodeForeignKeyRawIdWidget, self).label_for_value(value))
         except (ValueError, self.rel.to.DoesNotExist):

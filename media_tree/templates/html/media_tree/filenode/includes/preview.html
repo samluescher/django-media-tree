@@ -1,9 +1,0 @@
-{% spaceless %}
-{% if preview_file %}
-    {% if not preview_file.is_icon %}
-        {% include "html/media_tree/filenode/includes/thumbnail.html" %}
-    {% else %}
-        {% include "html/media_tree/filenode/includes/icon.html" %}
-    {% endif %}
-{% endif %}
-{% endspaceless %}

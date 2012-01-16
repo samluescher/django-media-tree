@@ -250,7 +250,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         template = 'admin/media_tree/filenode/includes/preview.html'
         if not get_media_backend():
             icons_only = True
-            template = 'html/media_tree/filenode/includes/icon.html'
+            template = 'media_tree/filenode/includes/icon.html'
             # TODO SPLIT preview.html in two: one that doesn't need media backend!
         preview = render_to_string(template, {
             'node': node,

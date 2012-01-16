@@ -14,3 +14,4 @@ def compress_nodes(file, nodes):
     write_nodes_recursive(archive, nodes)
     archive.close()
     return archive
+

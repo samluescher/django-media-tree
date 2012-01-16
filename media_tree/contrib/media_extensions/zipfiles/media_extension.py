@@ -4,7 +4,8 @@ from cStringIO import StringIO
 from django.http import HttpResponse
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-# TODO: Implement extract_selected_archives
+# TODO: Implement extract_selected_archives, which unzips the selected archives into
+# a selectable or new destination folder
 class ZipFileAdminExtender(extension.AdminExtender):
     
     def download_selected_as_archive(modeladmin, request, queryset):
