@@ -73,7 +73,7 @@ class MediaTreeListingPlugin(CMSPluginBase):
     def get_render_nodes(self, context, instance):
         if self.list_max_depth is None:
             if not instance.include_descendants:
-                max_depth = 1
+                max_depth = 2
             else:
                 max_depth = None
         else:
