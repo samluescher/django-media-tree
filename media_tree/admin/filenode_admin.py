@@ -6,7 +6,7 @@
 #   --> Actually, /folder_id/view/ should show zero-indented list and replace ?folder_id --> solves many problems
 # TODO: Metadata tooltip is too narrow and text gets too wrapped
 # TODO: Add icon for change and add folder
-# TODO: Order of tree by column (within parent) should be possible
+# TODO: Ordering of tree by column (within parent) should be possible
 # TODO: Refactor SWFUpload stuff as extension. This would require signals calls
 #   to be called in the FileNodeAdmin view methods.
 # TODO: Make renaming of files possible.

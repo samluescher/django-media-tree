@@ -15,6 +15,10 @@ class MediaTreeChangeList(MPTTChangeList):
     def is_filtered(self, request):
         return is_search_request(request) or self.params
 
+    def __init__(self, request, *args, **kwargs):
+        super(MediaTreeChangeList, self).__init__(request, *args, **kwargs)
+        # self.parent_folder is set in get_query_set()
+        self.title = self.parent_folder.name
 
     # TODO: Move filtering by open folders here
     def get_query_set(self, request=None):
@@ -34,17 +38,17 @@ class MediaTreeChangeList(MPTTChangeList):
         if not pagination_enabled:
             self.show_all = True
 
-        parent_folder = self.model_admin.get_parent_folder(request)
         # filter by currently expanded folders if list is not filtered by extension or media_type
-        if parent_folder and not pagination_enabled:
-            if parent_folder.is_top_node():
+        self.parent_folder = self.model_admin.get_parent_folder(request)
+        if self.parent_folder and not pagination_enabled:
+            if self.parent_folder.is_top_node():
                 expanded_folders_pk = self.model_admin.get_expanded_folders_pk(request)
                 if expanded_folders_pk:
                     qs = qs.filter(models.Q(parent=None) | models.Q(parent__pk__in=expanded_folders_pk))
                 else:
                     qs = qs.filter(parent=None)
             else:
-                qs = qs.filter(parent=parent_folder)
+                qs = qs.filter(parent=self.parent_folder)
 
         if request is not None and self.is_filtered(request):
             return qs.order_by('name')
