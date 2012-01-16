@@ -21,7 +21,6 @@ class FileNodeChoiceField(TreeNodeChoiceField):
     :param allowed_node_types: A list of node types that are allowed and will validate, e.g. ``(FileNode.FILE,)`` if the user should only be able to select files, but not folders
     :param allowed_media_types: A list of media types that are allowed and will validate, e.g. ``(media_types.DOCUMENT,)``
     :param allowed_extensions: A list of file extensions that are allowed and will validate, e.g. ``("jpg", "jpeg")``
-    :param level_indicator: String used for level indendation by the widget 
 
     Since this class is a subclass of ``ModelChoiceField``, you can also pass it that class' 
     parameters, such as ``queryset`` if you would like to restrict the objects that will
@@ -90,7 +89,6 @@ class FileNodeForeignKey(models.ForeignKey):
     :param allowed_node_types: A list of node types that are allowed and will validate, e.g. ``(FileNode.FILE,)`` if the user should only be able to select files, but not folders
     :param allowed_media_types: A list of media types that are allowed and will validate, e.g. ``(media_types.DOCUMENT,)``
     :param allowed_extensions: A list of file extensions that are allowed and will validate, e.g. ``("jpg", "jpeg")``
-    :param level_indicator: String used for level indendation by the widget 
 
     Since this class is a subclass of ``models.ForeignKey``, you can also pass it that class' 
     parameters, such as ``limit_choices_to`` if you would like to restrict the objects that will
@@ -135,8 +133,9 @@ class ImageFileNodeForeignKey(FileNodeForeignKey):
 
 class DimensionField(models.CharField):
     """
-    CharField for specifying image dimensions. Currently, this needs to be an integer > 0, but 
-    since it is a CharField, it might also contain units such as "px" or "%" in the future.
+    CharField for specifying image dimensions, i.e. width or height. Currently,
+    this needs to be an integer > 0, but since it is a CharField, it might also
+    contain units such as "px" or "%" in the future.
     """
     def __init__(self, verbose_name=None, name=None, **kwargs):
         if not 'max_length' in kwargs:
