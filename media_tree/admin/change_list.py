@@ -1,3 +1,4 @@
+from media_tree.models import FileNode
 from media_tree.admin.utils import get_current_request, is_search_request,  \
     get_request_attr
     
@@ -18,7 +19,7 @@ class MediaTreeChangeList(MPTTChangeList):
     def __init__(self, request, *args, **kwargs):
         super(MediaTreeChangeList, self).__init__(request, *args, **kwargs)
         # self.parent_folder is set in get_query_set()
-        self.title = self.parent_folder.name
+        self.title = self.parent_folder.name if self.parent_folder else FileNode.get_top_node().name
 
     # TODO: Move filtering by open folders here
     def get_query_set(self, request=None):
