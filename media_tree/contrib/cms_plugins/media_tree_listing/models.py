@@ -35,7 +35,7 @@ class MediaTreeListingItemBase(models.Model):
 
 
 class MediaTreeListing(MediaTreeListingBase):
-    list_type = models.CharField(_('List type'), max_length=1, default=MediaTreeListingBase.LIST_NESTED, choices=((MediaTreeListingBase.LIST_MERGED, _('merged')), (MediaTreeListingBase.LIST_NESTED, _('nested'))))
+    list_type = models.CharField(_('List type'), max_length=1, default=MediaTreeListingBase.LIST_MERGED, choices=((MediaTreeListingBase.LIST_MERGED, _('merged')), (MediaTreeListingBase.LIST_NESTED, _('nested'))))
 
 
 class MediaTreeListingItem(MediaTreeListingItemBase):
