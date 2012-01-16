@@ -14,7 +14,10 @@ def get_current_request():
     """ returns the request object for this thread """
     return getattr(_thread_locals, "request", None)
 
-# TODO: Document... since some methods don't have the arguments... thread-safety etc
+# Sometimes we need to pass around parameters between standard ModelAdmin methods,
+# and since the methods don't have these parameters, we are passing them through a
+# dictionary in the request object. This is hackish, but there currently is no
+# better solution. 
 def set_request_attr(request, attr, value):
     if not hasattr(request, 'media_tree'):
         request.media_tree = {}

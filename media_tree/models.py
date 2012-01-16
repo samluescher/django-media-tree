@@ -90,6 +90,7 @@ class FileNode(ModelBase):
 
     extension = models.CharField(_('type'), default='', max_length=10, null=True, editable=False)
     size = models.IntegerField(_('size'), null=True, editable=False)
+    # TODO: Refactor PIL stuff, width|height as extension?
     width = models.IntegerField(_('width'), null=True, blank=True, help_text=_('Detected automatically for supported images'))
     height = models.IntegerField(_('height'), null=True, blank=True, help_text=_('Detected automatically for supported images'))
     created = models.DateTimeField(_('created'), auto_now_add=True, editable=False)

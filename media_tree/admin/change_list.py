@@ -6,20 +6,45 @@ try:
 except ImportError:
     # Legacy mptt support
     from media_tree.contrib.legacy_mptt_support.admin import MPTTChangeList
+
+from django.db import models
+
     
 class MediaTreeChangeList(MPTTChangeList):
 
     def is_filtered(self, request):
         return is_search_request(request) or self.params
 
+
     # TODO: Move filtering by open folders here
     def get_query_set(self, request=None):
+
         # request arg was added in django r16144 (after 1.3)
         if request is not None and django.VERSION >= (1, 4):
             qs = super(MPTTChangeList, self).get_query_set(request)
         else:
             qs = super(MPTTChangeList, self).get_query_set()
             request = get_current_request()
+
+        # Pagination should be disabled by default, since it interferes
+        # with expanded folders and might display them partially.
+        # However, filtered results are presented as a flat list and 
+        # should be paginated.
+        pagination_enabled = self.is_filtered(request)
+        if not pagination_enabled:
+            self.show_all = True
+
+        parent_folder = self.model_admin.get_parent_folder(request)
+        # filter by currently expanded folders if list is not filtered by extension or media_type
+        if parent_folder and not pagination_enabled:
+            if parent_folder.is_top_node():
+                expanded_folders_pk = self.model_admin.get_expanded_folders_pk(request)
+                if expanded_folders_pk:
+                    qs = qs.filter(models.Q(parent=None) | models.Q(parent__pk__in=expanded_folders_pk))
+                else:
+                    qs = qs.filter(parent=None)
+            else:
+                qs = qs.filter(parent=parent_folder)
 
         if request is not None and self.is_filtered(request):
             return qs.order_by('name')

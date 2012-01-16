@@ -174,10 +174,10 @@ jQuery(function($) {
             }
         });
         
-        $(this).trigger('update', [$('tr', this)]);
+        $(this).trigger('update', [$('tr', this), true]);
     });
 
-    $('#changelist').bind('update', function(e, updatedRows) {
+    $('#changelist').bind('update', function(e, updatedRows, isInitial) {
         // Django calls actions() when document ready. Since the ChangeList  
         // was updated, actions() needs to be called again:
         django.jQuery("tr input.action-select").actions();
@@ -195,9 +195,19 @@ jQuery(function($) {
             }
         });
 
-        $('#changelist .paginator').text(ngettext('%i media object',
-            '%i media objects', rows.length).replace('%i', rows.length));
-        
+        if (!isInitial) {
+            /*$('#changelist .paginator').text(ngettext('%i media object',
+                '%i media objects', rows.length).replace('%i', rows.length));*/
+            // Look for text node containing numbers displaying current number of rows, and update with current number.
+            $('#changelist .paginator, #changelist-search .small.quiet').contents().each(function() {
+                if (this.nodeType == 3 && this.nodeValue.match('[0-9]')) {
+                    pat = /([^\s()]+\s*)*[0-9]+(\s*[^\s()]+)*/
+                    this.nodeValue = this.nodeValue.replace(pat, ngettext('%i media object',
+                        '%i media objects', rows.length).replace('%i', rows.length));
+                }
+            });
+        }
+
         if (updatedRows) {
             $(updatedRows).each(function() {
                 var _row = this;

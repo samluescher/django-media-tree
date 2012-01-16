@@ -1,26 +1,16 @@
 # TODO --- RELEASE
-# TODO: Move templates out of html/ dir, use Django convention
 
 # ** next **
-# TODO: Fix search inconsistencies. For example: Opening a folder and then searching for its name presents it with an expanded marker, but no children.
-# TODO: Search results should be ordered alphabetically
-# TODO: Folders shouldn't be expandable in search
-# TODO: Filter is not working correctly: Should work like search and show a flat list including ALL files, not just those in opened folders
-#   --> achieved moving open folder filtering to MediaTreeChangeList
 # TODO: http://localhost:8000/admin/media_tree/filenode/?folder_id=1 should have zero indent, AJAX-loaded items can be auto-indented
 #       TODO: Opening in new window etc. is currently unclear. Possibly ?folder_id=1 should be replaced with folder-path (real names!)
-#   --> Actually, /folder_id/ should show zero-indented list and replace ?folder_id --> solves many problems
-#
-# TODO: Metadata output is too wrapped
+#   --> Actually, /folder_id/view/ should show zero-indented list and replace ?folder_id --> solves many problems
+# TODO: Metadata tooltip is too narrow and text gets too wrapped
 # TODO: Add icon for change and add folder
-#
-# ** maybe **
-# TODO: Refactor PIL stuff, width|height as extension?
+# TODO: Order of tree by column (within parent) should be possible
 # TODO: Refactor SWFUpload stuff as extension. This would require signals calls
 #   to be called in the FileNodeAdmin view methods.
 # TODO: Make renaming of files possible.
 # TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt".
-# TODO: Order by column (within parent) should be possible
 
 from media_tree.fields import FileNodeChoiceField
 from media_tree.models import FileNode
@@ -110,10 +100,6 @@ class FileNodeAdmin(MPTTModelAdmin):
         models.ImageField: {'widget': AdminThumbWidget},
     }
 
-    # TODO: Really disable pagination since it does not work well with
-    # AJAX loading
-    list_per_page = 10000
-
     _registered_actions = []
 
     class Media:
@@ -193,22 +179,6 @@ class FileNodeAdmin(MPTTModelAdmin):
         Returns the ChangeList class for use on the changelist page.
         """
         return MediaTreeChangeList
-
-    def queryset(self, request):
-        #qs = super(FileNodeAdmin, self).queryset(request)
-        qs = FileNode.tree.all()
-        parent_folder = self.get_parent_folder(request)
-        if parent_folder:
-            if parent_folder.is_top_node():
-                expanded_folders_pk = self.get_expanded_folders_pk(request)
-                if expanded_folders_pk:
-                    qs = qs.filter(models.Q(parent=None) | models.Q(parent__pk__in=expanded_folders_pk))
-                else:
-                    qs = qs.filter(parent=None)
-            else:
-                qs = qs.filter(parent=parent_folder)
-
-        return qs
 
     def save_model(self, request, obj, form, change):
         """
@@ -346,8 +316,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         return get_request_attr(request, 'parent_folder', None)
 
     def get_expanded_folders_pk(self, request):
-        expanded_folders_pk = getattr(request, 'expanded_folders_pk', None)
-        if not expanded_folders_pk:
+        if not hasattr(request, 'expanded_folders_pk'):
             expanded_folders_pk = []
             cookie = request.COOKIES.get('expanded_folders_pk', None)
             if cookie:
@@ -364,7 +333,10 @@ class FileNodeAdmin(MPTTModelAdmin):
                         expanded_folders_pk.remove(folder.pk)
             setattr(request, 'expanded_folders_pk', expanded_folders_pk)
 
-        return expanded_folders_pk
+        return getattr(request, 'expanded_folders_pk', None)
+
+    def reset_expanded_folders_pk(self, request):
+        setattr(request, 'expanded_folders_pk', ())
 
     def folder_is_open(self, request, folder):
         return folder.pk in self.get_expanded_folders_pk(request)
@@ -379,6 +351,8 @@ class FileNodeAdmin(MPTTModelAdmin):
 
         if not is_search_request(request):
             self.init_parent_folder(request)
+        else:
+            self.reset_expanded_folders_pk(request)
         parent_folder = self.get_parent_folder(request)
         set_current_request(request)
 
