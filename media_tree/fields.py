@@ -1,4 +1,4 @@
-from media_tree import settings as app_settings
+from media_tree import settings as app_settings, media_types
 from media_tree.models import FileNode
 from media_tree.widgets import FileNodeForeignKeyRawIdWidget
 from mptt.forms import TreeNodeChoiceField
@@ -13,6 +13,20 @@ LEVEL_INDICATOR = app_settings.MEDIA_TREE_LEVEL_INDICATOR
 
 
 class FileNodeChoiceField(TreeNodeChoiceField):
+    """
+    A form field for selecting a ``FileNode`` object.
+
+    Its constructor takes the following arguments that are relevant when selecting ``FileNode`` objects: 
+
+    :param allowed_node_types: A list of node types that are allowed and will validate, e.g. ``(FileNode.FILE,)`` if the user should only be able to select files, but not folders
+    :param allowed_media_types: A list of media types that are allowed and will validate, e.g. ``(media_types.DOCUMENT,)``
+    :param allowed_extensions: A list of file extensions that are allowed and will validate, e.g. ``("jpg", "jpeg")``
+    :param level_indicator: String used for level indendation by the widget 
+
+    Since this class is a subclass of ``ModelChoiceField``, you can also pass it that class' 
+    parameters, such as ``queryset`` if you would like to restrict the objects that will
+    be available for selection.
+    """
 
     def __init__(self, allowed_node_types=None, allowed_media_types=None, allowed_extensions=None, level_indicator=LEVEL_INDICATOR, rel=None, *args, **kwargs):
         self.allowed_node_types = allowed_node_types
@@ -68,6 +82,20 @@ class FileNodeChoiceField(TreeNodeChoiceField):
 
 
 class FileNodeForeignKey(models.ForeignKey):
+    """
+    A model field for selecting a ``FileNode`` object.
+
+    Its constructor takes the following arguments that are relevant when selecting ``FileNode`` objects: 
+
+    :param allowed_node_types: A list of node types that are allowed and will validate, e.g. ``(FileNode.FILE,)`` if the user should only be able to select files, but not folders
+    :param allowed_media_types: A list of media types that are allowed and will validate, e.g. ``(media_types.DOCUMENT,)``
+    :param allowed_extensions: A list of file extensions that are allowed and will validate, e.g. ``("jpg", "jpeg")``
+    :param level_indicator: String used for level indendation by the widget 
+
+    Since this class is a subclass of ``models.ForeignKey``, you can also pass it that class' 
+    parameters, such as ``limit_choices_to`` if you would like to restrict the objects that will
+    be available for selection.
+    """
 
     def __init__(self, allowed_node_types=None, allowed_media_types=None, allowed_extensions=None, level_indicator=LEVEL_INDICATOR, *args, **kwargs):
         self.allowed_node_types = allowed_node_types
@@ -89,10 +117,26 @@ class FileNodeForeignKey(models.ForeignKey):
         return super(FileNodeForeignKey, self).formfield(**defaults)
 
 
+class ImageFileNodeForeignKey(FileNodeForeignKey):
+    """
+    A model field for selecting a ``FileNode`` object associated to a supported image format.
+
+    Using this field will ensure that only folders and image files will be visible in the widget, 
+    and will require the user to select an image node. 
+    """
+    def __init__(self, allowed_node_types=None, allowed_media_types=None, allowed_extensions=None, level_indicator=LEVEL_INDICATOR, *args, **kwargs):
+        self.allowed_node_types = allowed_node_types
+        if not allowed_media_types:
+            allowed_media_types = (media_types.SUPPORTED_IMAGE,)
+        kwargs['limit_choices_to'] = {'media_type__in': (FileNode.FOLDER, media_types.SUPPORTED_IMAGE)}
+        
+        super(ImageFileNodeForeignKey, self).__init__(allowed_node_types, allowed_media_types, allowed_extensions, level_indicator, *args, **kwargs)
+
+
 class DimensionField(models.CharField):
     """
-    CharField for image dimensions. Currently, this needs to be an integer > 0, but since it
-    is a CharField, it might also contain units such as "px" or "%" in the future.
+    CharField for specifying image dimensions. Currently, this needs to be an integer > 0, but 
+    since it is a CharField, it might also contain units such as "px" or "%" in the future.
     """
     def __init__(self, verbose_name=None, name=None, **kwargs):
         if not 'max_length' in kwargs:
