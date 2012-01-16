@@ -1,4 +1,7 @@
+from media_tree.utils.filenode import get_file_link
 from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
+ 
 
 class PluginLink(object):
     
@@ -69,6 +72,7 @@ class FolderLinkBase(object):
     def get_link_content(self):
         return self.node.__unicode__()
 
+    # TODO: This should include the default image for each folder as its icon
     def __unicode__(self):
         if self.count_descendants:
             descendants = self.node.get_descendants()
@@ -77,21 +81,8 @@ class FolderLinkBase(object):
             count = ' <span class="count">(%i)</span>' % descendants.count()
         else:
             count = ''
-
-        if issubclass(self.node.__class__, dict):
-            name = self.node['name']
-            pk = self.node['pk']
-        else:
-            name = self.get_link_content()
-            pk = self.node.pk
-        if pk:
-            query = '%s=%i' % (self.__class__.folder_param_name(self.plugin_instance), pk)
-        else:
-            query = ''
-
-        a_attrs = ''
+        extra_class = ''
         if self.node == self.current_folder:
-            a_attrs += ' class="selected"'
-
-        return mark_safe(u'<a%s href="?%s">%s</a>%s' % 
-            (a_attrs, query, name, count))
+            extra_class = 'selected'
+        query = '?%s=%i' % (self.__class__.folder_param_name(self.plugin_instance), self.node.pk)
+        return get_file_link(self.node, href=query, extra=count, extra_class=extra_class, include_icon=True)

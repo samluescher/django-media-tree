@@ -6,7 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class MediaTreeGallery(MediaTreeImageListingBase):
-    list_type = models.CharField(_('gallery type'), max_length=1, default=MediaTreeListingBase.LIST_NESTED, choices=((MediaTreeListingBase.LIST_MERGED, _('merged')), (MediaTreeListingBase.LIST_NESTED, _('nested'))))
+    list_type = models.CharField(_('gallery type'), max_length=1, default=MediaTreeListingBase.LIST_NESTED, 
+    	choices=((MediaTreeListingBase.LIST_MERGED, _('merged')), (MediaTreeListingBase.LIST_NESTED, _('nested'))),
+    	help_text=_('A nested gallery includes a browseable folder list. A merged gallery displays media from all folders merged into a flat list.'))
     auto_play = models.BooleanField('auto play', default=False)
 
 

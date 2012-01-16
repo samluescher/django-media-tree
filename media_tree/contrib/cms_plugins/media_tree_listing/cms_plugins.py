@@ -46,28 +46,25 @@ class MediaTreeListingPlugin(CMSPluginBase):
         }),
     ]
 
-    def init_folder(self, context, instance):
-        folder_id = context['request'].GET.get(self.FolderLink.folder_param_name(instance), None)
-
+    def init_nodes(self, context, instance):
         self.current_folder = None
         self.parent_folder = None
         self.selected_nodes = []
         self.files_selected = False
-        # TODO re-implement. This currently only sets variables GalleryPlugin not to choke
+        self.selected_nodes = [item.node for item in instance.media_items.all()]
+        self.visible_nodes = [node for node in self.selected_nodes]
 
-    def formfield_for_manytomany(self, db_field, request, **kwargs):
-        if db_field.attname != 'cmsplugin_ptr_id':
-            raise Exception(db_field.attname)
+    #def formfield_for_manytomany(self, db_field, request, **kwargs):
+    #    if db_field.attname != 'cmsplugin_ptr_id':
+    #        raise Exception(db_field.attname)
         #field = super(MediaTreeListPlugin, self)
 
     @staticmethod
     def list_str_callback(node):
-        # ??? Use this method, and include icon
         return get_file_link(node, use_metadata=True, include_size=True, include_extension=True, include_icon=True)
 
     list_max_depth = None
     list_filter_media_types = None
-    single_folder_selected = False
     files_selected = False
 
     class FolderLink(FolderLinkBase):
@@ -76,10 +73,7 @@ class MediaTreeListingPlugin(CMSPluginBase):
     def get_render_nodes(self, context, instance):
         if self.list_max_depth is None:
             if not instance.include_descendants:
-                if self.single_folder_selected:
-                    max_depth = 0
-                else:
-                    max_depth = 1
+                max_depth = 1
             else:
                 max_depth = None
         else:
@@ -109,8 +103,7 @@ class MediaTreeListingPlugin(CMSPluginBase):
             processors=processors, max_depth=max_depth, ordering=['position', 'name'])
 
     def render(self, context, instance, placeholder):
-        self.init_folder(context, instance)
-        self.visible_nodes = [item.node for item in instance.media_items.all()]
+        self.init_nodes(context, instance)
         context.update({
             'nodes': self.get_render_nodes(context, instance),
         })

@@ -5,9 +5,9 @@
     {% block image %}
     {% if thumbnail_size %}
         {% thumbnail image_node thumbnail_size as thumb %}
-        <img src="{{ thumb.url }}" alt="{{ image_node.alt|escape }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
+        <img src="{{ thumb.url }}" alt="{{ image_node.alt }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
     {% else %}
-        <img src="{{ image_node.file.url }}" alt="{{ image_node.alt|escape }}" width="{{ image_node.width }}" height="{{ image_node.height }}" />
+        <img src="{{ image_node.file.url }}" alt="{{ image_node.alt }}" width="{{ image_node.width }}" height="{{ image_node.height }}" />
     {% endif %}
     {% endblock %}
     {% if image_node.link %}</a>{% endif %}
