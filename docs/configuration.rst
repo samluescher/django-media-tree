@@ -12,9 +12,10 @@ module.
     with media files. 
 
     This is not set by default, meaning that Django's ``DEFAULT_FILE_STORAGE`` 
-    will be used. Please refer to the relevant Django documentation `on that setting <https://docs.djangoproject.com/en/dev/ref/settings/#default-file-storage>`_ and 
-    on `file storage in general
-    <https://docs.djangoproject.com/en/dev/ref/files/storage/#module-django.core.files.storage>`_.
+    will be used. Please refer to the relevant Django `documentation on that setting <https://docs.djangoproject.com/en/dev/ref/settings/#default-file-storage>`_ and 
+    on `file storage
+    <https://docs.djangoproject.com/en/dev/ref/files/storage/#module-django.core.files.storage>`_
+    in general.
 
 
 ``MEDIA_TREE_MEDIA_BACKENDS``
