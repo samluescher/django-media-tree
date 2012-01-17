@@ -60,10 +60,11 @@ Basic setup
      app <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_ if you 
      have not done that yet.   
 
-  If you are **not** going to use the ``staticfiles`` app, copy the contents 
-  of the ``static`` folder to the static root of your project.
+  If you are **not** going to use the ``staticfiles`` app, you will have to copy 
+  the contents of the ``static`` folder to the location you are serving static files 
+  from.
   
-- Create the database tables:
+- Create the database tables::
 
     $ python manage.py syncdb
 
