@@ -89,7 +89,7 @@ class FileNode(ModelBase):
     description = models.TextField(_('description'), default='', null=True, blank=True)
     """ Description for the file """
     author = models.CharField(_('author'), max_length=255, default='', null=True, blank=True)
-    """ Author of the file """
+    """ Author name of the file """
     publish_author = models.BooleanField(_('publish author'), default=False)
     """ Flag to toggle whether the author name should be displayed """
     copyright = models.CharField(_('copyright'), max_length=255, default='', null=True, blank=True)
