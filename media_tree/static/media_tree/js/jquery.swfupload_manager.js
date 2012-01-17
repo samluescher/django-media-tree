@@ -71,9 +71,9 @@ jQuery(function($) {
 
             ,fileDialogComplete: function(numFilesSelected, numFilesQueued) {
                 if (manager.targetFolder) {
-                    this.addPostParam('folder_id', manager.targetFolder.id);
+                    this.addPostParam('parent', manager.targetFolder.id);
                 } else {
-                    this.removePostParam('folder_id');
+                    this.removePostParam('parent');
                 }
                 this.startUpload();
             }

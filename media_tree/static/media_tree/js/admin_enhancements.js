@@ -32,12 +32,13 @@ jQuery(function($) {
         }
         
         var cols = [];
-        var targetFolder = $('#changelist').getFirstSelectedFolder();
+        var targetFolder = $('#changelist').data('targetFolder');
         
         cols[1] = $(
             '<td><form action="add_folder/" method="POST">'
                 +'<span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
                 +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
+                +'<input type="hidden" name="parent" value="' + (targetFolder ? targetFolder.id : '') + '" />'
                 +'<input type="hidden" name="csrfmiddlewaretoken" />'
                 +(targetFolder ? '<input type="hidden" name="folder_id" value="' + targetFolder.id + '" />' : '')
             +'</form></td>'
@@ -45,7 +46,7 @@ jQuery(function($) {
         
         cols[1].find('input[name=csrfmiddlewaretoken]').val($('input[name=csrfmiddlewaretoken]').val())
         
-        if (targetFolder) {
+        if (targetFolder && targetFolder.row) {
             // TODO: Copy padding, but add indent
             cols[1].css('padding-left', 
                 $($('td', targetFolder.row)[1]).css('padding-left'));
@@ -54,7 +55,7 @@ jQuery(function($) {
         var row = $.makeChangelistRow(cols, null, targetFolder ? targetFolder.row : null);
         row.attr('id', 'add-folder-row');
         
-        if (targetFolder) {
+        if (targetFolder && targetFolder.row) {
             $(targetFolder.row).after(row);
         } else {
             $('#changelist table tbody').prepend(row);
@@ -244,6 +245,11 @@ jQuery(function($) {
                 controls.removeClass('collapsed');
                 var tbody = $(data).find('#changelist tbody');
                 var rows =  $('tr', tbody);
+                if (rows.length > 0) {
+                    button.removeClass('empty');
+                } else {
+                    button.addClass('empty');
+                }
                 parentRow.addExpandedChildren(rows);
                 $('#changelist').trigger('update', [rows]);
             });

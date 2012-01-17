@@ -10,6 +10,14 @@ it is embedded here.
 <script type="text/javascript" src="{% url admin:media_tree_jsi18n %}"></script>
 {% endblock %}
 
+{% block breadcrumbs %}
+    {% if not node %}
+        {{ block.super }}
+    {% else %}
+        {% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
+    {% endif %}
+{% endblock %}
+
 {% block object-tools %}
     <ul class="object-tools">
     {% if has_add_permission %}
@@ -50,10 +58,18 @@ it is embedded here.
                 ,button_height: "30"
             });
             {% endif %}
-            
-            $('#changelist').delegate('input[name=_selected_action]', 'change', function() {
-                var targetFolder = $('#changelist').getFirstSelectedFolder();
+
+            var initialFolder, targetFolder;
+            {% if node and not node.is_top_node %} 
+            initialFolder = {name: '{{ node.name }}', id: '{{ node.pk }}'};
+            {% endif %}
+
+            var setTargetFolder = function(targetFolder) {
+                $('#changelist').data('targetFolder', targetFolder);
                 var targetId = '';
+                if (!targetFolder) {
+                    targetFolder = initialFolder;
+                }
                 if (targetFolder) {
                     $('.target-folder').html('{% trans "To %(folder)s:" %} '.replace('%(folder)s', targetFolder.name));
                     targetId= targetFolder.id;
@@ -65,6 +81,13 @@ it is embedded here.
                 {% if swfupload_upload_url %}
                 uploadManager.targetFolder = targetFolder;
                 {% endif %}
+            };
+
+            setTargetFolder(initialFolder);
+            
+            $('#changelist').delegate('input[name=_selected_action]', 'change', function() {
+                var targetFolder = $('#changelist').getFirstSelectedFolder();
+                setTargetFolder(targetFolder);
             });
         });
     // ]]></script>

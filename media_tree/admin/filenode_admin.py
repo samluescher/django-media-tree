@@ -1,9 +1,3 @@
-# TODO --- RELEASE
-
-# ** next **
-# TODO: http://localhost:8000/admin/media_tree/filenode/?folder_id=1 should have zero indent, AJAX-loaded items can be auto-indented
-#       TODO: Opening in new window etc. is currently unclear. Possibly ?folder_id=1 should be replaced with folder-path (real names!)
-#   --> Actually, /folder_id/view/ should show zero-indented list and replace ?folder_id --> solves many problems
 # TODO: Metadata tooltip is too narrow and text gets too wrapped
 # TODO: Add icon for change and add folder
 # TODO: Ordering of tree by column (within parent) should be possible
@@ -11,6 +5,8 @@
 #   to be called in the FileNodeAdmin view methods.
 # TODO: Make renaming of files possible.
 # TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt".
+# TODO: Bug: With child folder changelist view and child of child expanded -- after uploading a file, the child of child has the expanded triangle, 
+#   but no child child child objects are visible.
 
 from media_tree.fields import FileNodeChoiceField
 from media_tree.models import FileNode
@@ -41,7 +37,7 @@ from django.contrib.admin import actions
 from django.contrib.admin.options import csrf_protect_m
 from django.utils.encoding import force_unicode
 from django.contrib import messages
-from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404, render_to_response
 from django.contrib import admin
 from django.db import models, transaction
 from django.template.loader import render_to_string
@@ -212,8 +208,6 @@ class FileNodeAdmin(MPTTModelAdmin):
         if not change:
             if not obj.node_type:
                 obj.node_type = get_request_attr(request, 'save_node_type', None)
-            if not obj.parent:
-                obj.parent = get_request_attr(request, 'save_node_parent', None)
         super(FileNodeAdmin, self).save_model(request, obj, form, change)
 
     def metadata_check(self, node):
@@ -229,13 +223,14 @@ class FileNodeAdmin(MPTTModelAdmin):
             rel = 'parent:%i' % node.parent_id if node.parent_id else ''
         else:
             rel = ''
-        if hasattr(node, 'actual_level'):
-            actual_level = '&parent_level=%i' % node.actual_level
+        if hasattr(node, 'reduce_levels'):
+            reduce_param = '&reduce_levels=%i' % node.reduce_levels
         else:
-            actual_level = ''
+            reduce_param = ''
         if node.is_folder():
-            return '<a href="?folder_id=%i%s" class="folder-toggle" rel="%s"><span>%s</span></a>' %  \
-                (node.pk, actual_level, rel, '+')
+            empty = ' empty' if node.get_children().count() == 0 else ''
+            return '<a href="%s%s" class="folder-toggle%s" rel="%s"><span>%s</span></a>' %  \
+                (node.get_admin_url(), reduce_param, empty, rel, '+')
         else:
             return '<a class="folder-toggle dummy" rel="%s">&nbsp;</a>' % (rel,)
     expand_collapse.short_description = ''
@@ -311,35 +306,36 @@ class FileNodeAdmin(MPTTModelAdmin):
     size_formatted.allow_tags = True
 
     def init_parent_folder(self, request):
-        folder_id = request.GET.get('folder_id', None) or request.POST.get('folder_id', None)
-        parent_level = request.GET.get('parent_level', None) or request.POST.get('parent_level', None)
-        if folder_id or parent_level:
+        folder_id = request.GET.get('folder_id', None) or request.POST.get('parent', None)
+        reduce_levels = request.GET.get('reduce_levels', None) or request.POST.get('reduce_levels', None)
+        if folder_id or reduce_levels:
             request.GET = request.GET.copy()
-
-        if folder_id:
             try:
                 del request.GET['folder_id']
             except KeyError:
                 pass
             try:
-                parent_folder = FileNode.objects.get(pk=folder_id, node_type=FileNode.FOLDER)
-            except FileNode.DoesNotExist:
-                raise Http404
+                del request.GET['reduce_levels']
+            except KeyError:
+                pass
+
+        if folder_id:
+            parent_folder = get_object_or_404(FileNode, pk=folder_id, node_type=FileNode.FOLDER)
         else:
             parent_folder = FileNode.get_top_node()
 
-        if parent_level:
+        if reduce_levels:
             try:
-                del request.GET['parent_level']
-            except KeyError:
-                pass
-            try:
-                parent_level = int(parent_level)
+                reduce_levels = int(reduce_levels)
             except ValueError:
-                parent_level = None
+                reduce_levels = None
+
+        if not reduce_levels and not request.is_ajax() and parent_folder.level >= 0:
+            self.reset_expanded_folders_pk(request)
+            reduce_levels = parent_folder.level + 1
 
         set_request_attr(request, 'parent_folder', parent_folder)
-        set_request_attr(request, 'parent_level', parent_level)
+        set_request_attr(request, 'reduce_levels', reduce_levels)
 
     def get_parent_folder(self, request):
         return get_request_attr(request, 'parent_folder', None)
@@ -365,7 +361,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         return getattr(request, 'expanded_folders_pk', None)
 
     def reset_expanded_folders_pk(self, request):
-        setattr(request, 'expanded_folders_pk', ())
+        setattr(request, 'expanded_folders_pk', [])
 
     def folder_is_open(self, request, folder):
         return folder.pk in self.get_expanded_folders_pk(request)
@@ -404,6 +400,9 @@ class FileNodeAdmin(MPTTModelAdmin):
         if request.GET.get(IS_POPUP_VAR, None):
             extra_context.update({'select_button': True})
 
+        if parent_folder:
+            extra_context.update({'node': parent_folder})
+
         response = super(FileNodeAdmin, self).changelist_view(request, extra_context)
         if isinstance(response, HttpResponse) and parent_folder and not parent_folder.is_top_node():
             expanded_folders_pk = self.get_expanded_folders_pk(request)
@@ -412,8 +411,8 @@ class FileNodeAdmin(MPTTModelAdmin):
                 self.set_expanded_folders_pk(response, expanded_folders_pk)
         return response
 
-    def folder_view(self, request, object_id, extra_context=None):
-        node = FileNode.objects.get(pk=unquote(object_id), node_type=FileNode.FOLDER)
+    def folder_expand_view(self, request, object_id, extra_context=None):
+        node = get_object_or_404(FileNode, pk=unquote(object_id), node_type=FileNode.FOLDER)
         expand = list(node.get_ancestors())
         expand.append(node)
         response = HttpResponseRedirect('%s#%s' % (reverse('admin:media_tree_filenode_changelist'), self.anchor_name(node)));
@@ -429,10 +428,12 @@ class FileNodeAdmin(MPTTModelAdmin):
             'node': parent_folder,
             'breadcrumbs_title': _('Add')
         })
-        if not parent_folder.is_top_node():
-            set_request_attr(request, 'save_node_parent', parent_folder)
         set_request_attr(request, 'save_node_type', node_type)
-        return super(FileNodeAdmin, self).add_view(request, form_url, extra_context)
+        response = super(FileNodeAdmin, self).add_view(request, form_url, extra_context)
+        if isinstance(response, HttpResponseRedirect) and not parent_folder.is_top_node():
+            return HttpResponseRedirect(reverse('admin:media_tree_filenode_folder_expand', 
+                args=(parent_folder.pk,)))
+        return response
 
     @csrf_protect_m
     @transaction.commit_on_success
@@ -447,7 +448,7 @@ class FileNodeAdmin(MPTTModelAdmin):
             node_type=FileNode.FOLDER)
 
     def change_view(self, request, object_id, extra_context=None):
-        node = FileNode.objects.get(pk=unquote(object_id))
+        node = get_object_or_404(FileNode, pk=unquote(object_id))
         set_request_attr(request, 'save_node', node)
         set_request_attr(request, 'save_node_type', node.node_type)
         if not extra_context:
@@ -547,9 +548,9 @@ class FileNodeAdmin(MPTTModelAdmin):
             url(r'^add_folder/$',
                 self.admin_site.admin_view(self.add_folder_view),
                 name='%s_%s_add_folder' % info),
-            url(r'^(.+)/view/$',
-                self.admin_site.admin_view(self.folder_view),
-                name='%s_%s_folder' % info),
+            url(r'^(.+)/expand/$',
+                self.admin_site.admin_view(self.folder_expand_view),
+                name='%s_%s_folder_expand' % info),
         )
         url_patterns.extend(urls)
         return url_patterns

@@ -65,15 +65,20 @@ class MediaTreeChangeList(MPTTChangeList):
         order to prevent indendation when displaying them.
         """
         super(MediaTreeChangeList, self).get_results(request)
-        reduce_levels = get_request_attr(request, 'parent_level', 0)
+        try:
+            reduce_levels = abs(int(get_request_attr(request, 'reduce_levels', 0)))
+        except TypeError:
+            reduce_levels = 0
         is_filtered = self.is_filtered(request)
         if is_filtered or reduce_levels:
             for item in self.result_list:
                 item.prevent_save()
                 item.actual_level = item.level
                 if is_filtered:
+                    item.reduce_levels = item.level
                     item.level = 0
                 else:
+                    item.reduce_levels = reduce_levels
                     item.level = max(0, item.level - reduce_levels)
         
 
