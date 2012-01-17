@@ -1,7 +1,7 @@
 Installing Media Tree
 *********************
 
-This document assumes you are familiar with Python and Django.
+This install guide assumes you are familiar with Python and Django.
 
 
 Dependencies
@@ -17,13 +17,15 @@ Make sure to install these packages prior to installation:
 
 .. Note::
    All required Python packages can easily be installed using `pip <http://pypi.python.org/pypi/pip>`_ (or, alternatively, easy_install).
-   After installing it, enter the following command to install the dependencies::
+   After installing it, you may simply enter the following command to install
+   the dependencies::
 
     $ pip install django==1.3.1 South django-mptt==0.5.1 PIL
 
    In case you get a permission error, you will probably have to run the shell 
    commands in this install guide with root permissions, i.e. enter 
-   ``sudo pip install …`` and ``sudo python setup.py install``.
+   ``sudo pip install …`` instead, and ``sudo python setup.py install`` 
+   respectively.
 
 
 Getting the code
