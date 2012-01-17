@@ -18,7 +18,6 @@ from media_tree.widgets import AdminThumbWidget
 from media_tree.admin.actions import core_actions
 from media_tree.admin.actions import maintenance_actions
 from media_tree.admin.actions.utils import execute_empty_queryset_action
-from media_tree import defaults
 from media_tree import settings as app_settings, media_types
 from django.template.defaultfilters import filesizeformat
 
