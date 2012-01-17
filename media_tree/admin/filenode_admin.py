@@ -15,6 +15,7 @@
 from media_tree.fields import FileNodeChoiceField
 from media_tree.models import FileNode
 from media_tree.forms import FolderForm, FileForm, UploadForm
+from media_tree.fields import FileNodeChoiceField
 from media_tree.widgets import AdminThumbWidget
 from media_tree.admin.actions import core_actions
 from media_tree.admin.actions import maintenance_actions
@@ -56,6 +57,7 @@ from django.core.exceptions import ValidationError, ViewDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import Http404
 from django.contrib.admin.views.main import IS_POPUP_VAR
+from django.utils.text import capfirst
 import os
 
 try:
@@ -124,6 +126,29 @@ class FileNodeAdmin(MPTTModelAdmin):
         super(FileNodeAdmin, self).__init__(*args, **kwargs)
         # http://stackoverflow.com/questions/1618728/disable-link-to-edit-object-in-djangos-admin-display-list-only
         self.list_display_links = (None, )
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'parent' and issubclass(db_field.rel.to, FileNode):
+            # overriding formfield_for_dbfield, thus bypassign both Django's and mptt's
+            # formfield_for_foreignkey method, and also preventing Django from wrapping
+            # field with RelatedFieldWidgetWrapper ("add" button resulting in a file add form) 
+            valid_targets = FileNode.tree.filter(**db_field.rel.limit_choices_to)
+            request = kwargs['request']
+            node = get_request_attr(request, 'save_node', None)
+            if node:
+                # Exclude invalid folders, e.g. node cannot be a child of itself
+                # (ripped from mptt.forms.MoveNodeForm)
+                opts = node._mptt_meta
+                valid_targets = valid_targets.exclude(**{
+                    opts.tree_id_attr: getattr(node, opts.tree_id_attr),
+                    '%s__gte' % opts.left_attr: getattr(node, opts.left_attr),
+                    '%s__lte' % opts.right_attr: getattr(node, opts.right_attr),
+                })
+            field = FileNodeChoiceField(queryset=valid_targets, label=capfirst(db_field.verbose_name), required=not db_field.blank)
+            return field
+
+        return super(FileNodeAdmin, self).formfield_for_dbfield(db_field,
+             **kwargs)
 
     @staticmethod
     def register_action(func, required_perms=None):
@@ -419,6 +444,7 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     def change_view(self, request, object_id, extra_context=None):
         node = FileNode.objects.get(pk=unquote(object_id))
+        set_request_attr(request, 'save_node', node)
         set_request_attr(request, 'save_node_type', node.node_type)
         if not extra_context:
             extra_context = {}

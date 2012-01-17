@@ -12,6 +12,8 @@ except ImportError:
     import mptt
     from django.db.models import Model as ModelBase
 
+from mptt.models import TreeForeignKey
+
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
 from django.template.defaultfilters import slugify
@@ -66,6 +68,8 @@ class FileNode(ModelBase):
 
     STORAGE = get_media_storage()
 
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children', verbose_name=_('folder'), limit_choices_to={'node_type': FOLDER})
+    
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
     media_type = models.IntegerField(_('media type'), choices = app_settings.MEDIA_TREE_CONTENT_TYPE_CHOICES, blank=True, null=True, editable=False)
     file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True, storage=STORAGE)
@@ -96,7 +100,6 @@ class FileNode(ModelBase):
     created = models.DateTimeField(_('created'), auto_now_add=True, editable=False)
     modified = models.DateTimeField(_('modified'), auto_now=True, editable=False)
 
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='children_set', verbose_name = _('Folder'), editable=False)
     slug = models.CharField(_('slug'), max_length=255, null=True, editable=False)
     is_default = models.BooleanField(_('use as default object for folder'), blank=True, default=False, help_text=_('The default object of a folder can be used for folder previews etc.'))
 

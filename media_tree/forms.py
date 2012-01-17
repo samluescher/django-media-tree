@@ -13,7 +13,7 @@ class FolderForm(forms.ModelForm):
         model = FileNode
         fieldsets = [
             (_('Folder'), {
-                'fields': ['name',]
+                'fields': ['parent', 'name',]
             }),
             (_('Metadata'), {
                 'fields': ['title', 'description']
@@ -42,7 +42,7 @@ class FileForm(forms.ModelForm):
         fieldsets = [
             (_('File'), {
                 #'fields': ['name', 'file']
-                'fields': ['file']
+                'fields': ['parent', 'file']
             }),
             (_('Display'), {
                 'fields': ['preview_file', 'position', 'is_default'],
