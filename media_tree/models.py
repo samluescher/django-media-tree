@@ -70,47 +70,80 @@ class FileNode(ModelBase):
 
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children', verbose_name=_('folder'), limit_choices_to={'node_type': FOLDER})
     
+    """ Type of the node (``FileNode.FILE`` or ``FileNode.FOLDER``) """
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
+    """ Media type, i.e. broad category of the kind of media """
     media_type = models.IntegerField(_('media type'), choices = app_settings.MEDIA_TREE_CONTENT_TYPE_CHOICES, blank=True, null=True, editable=False)
+    """ The actual media file """
     file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True, storage=STORAGE)
+    """ An optional image file that will be used for previews. This is useful for video files. """
     preview_file = models.ImageField(_('preview'), upload_to=app_settings.MEDIA_TREE_PREVIEW_SUBDIR, blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'), storage=STORAGE)
+    """ Publish date and time """
     published = models.BooleanField(_('is published'), blank=True, default=True, editable=False)
+    """ The mime type of the media file """
     mimetype = models.CharField(_('mimetype'), max_length=64, null=True, editable=False)
-
+    """ Name of the file or folder """
     name = models.CharField(_('name'), max_length=255, null=True)
+    """ Title for the file """
     title = models.CharField(_('title'), max_length=255, default='', null=True, blank=True)
+    """ Description for the file """
     description = models.TextField(_('description'), default='', null=True, blank=True)
+    """ Author of the file """
     author = models.CharField(_('author'), max_length=255, default='', null=True, blank=True)
+    """ Flag to toggle whether the author name should be displayed """
     publish_author = models.BooleanField(_('publish author'), default=False)
+    """ Copyright information for the file """
     copyright = models.CharField(_('copyright'), max_length=255, default='', null=True, blank=True)
+    """ Flag to toggle whether copyright information should be displayed """
     publish_copyright = models.BooleanField(_('publish copyright'), default=False)
+    """ Date and time information for the file (authoring or publishing date) """
     date_time = models.DateTimeField(_('date/time'), null=True, blank=True)
+    """ Flag to toggle whether date and time information should be displayed """
     publish_date_time = models.BooleanField(_('publish date/time'), default=False)
+    """ Keywords for the file """
     keywords = models.CharField(_('keywords'), max_length=255, null=True, blank=True)
+    """ Alt text override. If empty, the alt text will be compiled from the all metadata that is available and flagged to be displayed. """
     override_alt = models.CharField(_('alternative text'), max_length=255, default='', null=True, blank=True, help_text=_('If you leave this blank, the alternative text will be compiled automatically from the available metadata.'))
+    """ Caption override. If empty, the caption will be compiled from the all metadata that is available and flagged to be displayed. """
     override_caption = models.CharField(_('caption'), max_length=255, default='', null=True, blank=True, help_text=_('If you leave this blank, the caption will be compiled automatically from the available metadata.'))
 
+    """ Flag specifying whether the absolute minimal metadata was entered """
     has_metadata = models.BooleanField(_('metadata entered'), editable=False)
 
+    """ File extension, lowercase """
     extension = models.CharField(_('type'), default='', max_length=10, null=True, editable=False)
+    """ File size in bytes """
     size = models.IntegerField(_('size'), null=True, editable=False)
     # TODO: Refactor PIL stuff, width|height as extension?
+    """ For images: width in pixels """
     width = models.IntegerField(_('width'), null=True, blank=True, help_text=_('Detected automatically for supported images'))
+    """ For images: height in pixels """
     height = models.IntegerField(_('height'), null=True, blank=True, help_text=_('Detected automatically for supported images'))
-    created = models.DateTimeField(_('created'), auto_now_add=True, editable=False)
-    modified = models.DateTimeField(_('modified'), auto_now=True, editable=False)
 
+    """ Slug for the object """
     slug = models.CharField(_('slug'), max_length=255, null=True, editable=False)
+    """ Flag whether the file is the default file in its parent folder """
     is_default = models.BooleanField(_('use as default object for folder'), blank=True, default=False, help_text=_('The default object of a folder can be used for folder previews etc.'))
 
+    """ Date and time when object was created """
+    created = models.DateTimeField(_('created'), auto_now_add=True, editable=False)
+    """ Date and time when object was last modified """
+    modified = models.DateTimeField(_('modified'), auto_now=True, editable=False)
+
+    """ User that created the object """
     created_by = models.ForeignKey(User, null=True, blank=True, related_name='created_by', verbose_name = _('created by'), editable=False)
+    """ User that last modified the object """
     modified_by = models.ForeignKey(User, null=True, blank=True, related_name='modified_by', verbose_name = _('modified by'), editable=False)
+
+    """ Position of the file among its siblings, for manual ordering """
     position = models.IntegerField(_('position'), default=0)
+
+    """ Extra metadata """
+    extra_metadata = models.TextField(_('extra metadata'), editable=None)
+
 
     is_ancestor_being_updated = False
 
-    # TODO: PickledField for media extenders
-    extra_metadata = models.TextField(_('extra metadata'), editable=None)
 
     class Meta:
         ordering = ['tree_id', 'lft']
