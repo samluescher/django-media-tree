@@ -97,7 +97,7 @@ Basic setup
 
 .. _install-swfupload:
 
-- **Optional (recommended)**: If you are planning to use a Flash uploader such as
+- **Configuring the uploader (optional, recommended)**: If you are planning to use a Flash uploader such as
   ``SWFUpload``, add ``SessionPostMiddleware`` to your ``MIDDLEWARE_CLASSES``::
 
     MIDDLEWARE_CLASSES = (
