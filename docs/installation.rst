@@ -9,16 +9,16 @@ Dependencies
 
 Make sure to install these packages prior to installation:
 
-- Django >= 1.2.5
-- south >= 0.7.2
-- django-mptt > 0.4.2 (see :ref:`install-mptt`)
-- PIL >= 1.1
+- `Django <>`_ >= 1.2.5
+- `South <http://south.aeracode.org/>`_ >= 0.7.2
+- `django-mptt <https://github.com/django-mptt/django-mptt>`_ > 0.4.2 (see :ref:`install-mptt`)
+- `PIL <http://www.pythonware.com/products/pil/>`_ >= 1.1
 
 
 Getting the code
 ================
 
-For the latest stable version (recommended), use ``pip`` or ``easy_install``::
+For the latest stable version (recommended), use `pip <http://pypi.python.org/pypi/pip>`_ (or, alternatively, easy_install)::
 
     $ pip install django-media-tree  
 
