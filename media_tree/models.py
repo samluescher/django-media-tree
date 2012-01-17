@@ -501,7 +501,7 @@ class FileNode(ModelBase):
         if self.override_caption != '':
             return self.override_caption
         else:
-            return mark_safe(self.get_metadata_display(field_formats))
+            return mark_safe(self.get_metadata_display(field_formats, escape=escape))
     get_caption_formatted.allow_tags = True
     get_caption_formatted.short_description = _('displayed metadata')
 
