@@ -53,7 +53,7 @@ Basic setup
 - If you are using ``django.contrib.staticfiles`` (recommended), just run the
   usual command to collect static files::
 
-    $ ./manage.py collectstatic
+    $ python manage.py collectstatic
 
   .. Note::
      Please refer to the Django documentation on how to `set up the static files
