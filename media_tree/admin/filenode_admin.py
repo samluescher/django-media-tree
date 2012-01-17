@@ -290,10 +290,14 @@ class FileNodeAdmin(MPTTModelAdmin):
     browse_controls.short_description = ''
     browse_controls.allow_tags = True
 
-    def size_formatted(self, node, descendants=True):
+    def size_formatted(self, node, with_descendants=True):
         if node.node_type == FileNode.FOLDER:
-            if descendants:
-                size = node.get_descendants().aggregate(models.Sum('size'))['size__sum']
+            if with_descendants:
+                descendants = node.get_descendants()
+                if descendants.count() > 0:
+                    size = descendants.aggregate(models.Sum('size'))['size__sum']
+                else:
+                    size = None
             else:
                 size = None
         else:
