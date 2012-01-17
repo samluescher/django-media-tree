@@ -173,33 +173,42 @@ class ChangeMetadataForSelectedForm(FileNodeActionsForm):
         self.save_nodes_rec(self.get_selected_nodes())
 
 
-class OrphanedFilesForm(FileNodeActionsForm):
+class StorageFilesForm(FileNodeActionsForm):
 
     def __init__(self, queryset, orphaned_files_choices, *args, **kwargs):
         self.success_files = []
         self.error_files = []
-        super(OrphanedFilesForm, self).__init__(queryset, *args, **kwargs)
-        self.fields['orphaned_selected'] = forms.MultipleChoiceField(label=self.orphaned_selected_label, choices=orphaned_files_choices, widget=forms.widgets.CheckboxSelectMultiple)
+        super(StorageFilesForm, self).__init__(queryset, *args, **kwargs)
+        self.fields['selected_files'] = forms.MultipleChoiceField(label=self.selected_files_label, choices=orphaned_files_choices, widget=forms.widgets.CheckboxSelectMultiple)
 
 
-class DeleteOrphanedFilesForm(OrphanedFilesForm):
-
-    action_name = 'delete_orphaned_files'
-    orphaned_selected_label = _('The following files exist in storage, but are not found in the database')
+class DeleteStorageFilesForm(StorageFilesForm):
 
     def __init__(self, *args, **kwargs):
-        super(DeleteOrphanedFilesForm, self).__init__(*args, **kwargs)
-        self.fields['confirm'] = confirm = forms.BooleanField(label=_('Yes, I am sure that I want to delete the selected files from disk:'))  
+        super(DeleteStorageFilesForm, self).__init__(*args, **kwargs)
+        self.fields['confirm'] = confirm = forms.BooleanField(label=_('Yes, I am sure that I want to delete the selected files from storage:'))  
 
     def save(self):
         """
         Deletes the selected files from storage
         """
         storage = get_media_storage()
-        for storage_name in self.cleaned_data['orphaned_selected']:
+        for storage_name in self.cleaned_data['selected_files']:
             full_path = storage.path(storage_name)
             try:
                 storage.delete(storage_name)
                 self.success_files.append(full_path)
             except OSError:
                 self.error_files.append(full_path)
+
+
+class DeleteOrphanedFilesForm(DeleteStorageFilesForm):
+
+    action_name = 'delete_orphaned_files'
+    selected_files_label = _('The following files exist in storage, but are not found in the database')
+
+
+class DeleteCacheFilesForm(DeleteStorageFilesForm):
+
+    action_name = 'clear_cache'
+    selected_files_label = _('Cache files')

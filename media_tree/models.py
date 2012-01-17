@@ -4,6 +4,7 @@ from media_tree import settings as app_settings, media_types
 from media_tree.utils import multi_splitext, join_formatted
 from media_tree.utils.staticfiles import get_icon_finders
 from media_tree.utils import get_media_storage
+from media_tree.utils.filenode import get_file_link
 
 try:
     from mptt.models import MPTTModel as ModelBase

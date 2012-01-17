@@ -34,6 +34,13 @@ module.
     more information.
 
 
+``MEDIA_TREE_MEDIA_BACKEND_DEBUG``
+    Specifies whether exceptions caused by media backends, such as ``ThumbnailError``, should be 
+    raised or silently ignored.
+
+    Default: ``settings.DEBUG``
+
+
 ``MEDIA_TREE_LIST_DISPLAY``
     A tuple containing the columns that should be displayed in the
     ``FileNodeAdmin``. Note that the ``browse_controls`` column is necessary for

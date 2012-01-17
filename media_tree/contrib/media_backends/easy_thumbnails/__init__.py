@@ -27,7 +27,10 @@ class EasyThumbnailsBackend(MediaBackend):
             thumbnail = get_thumbnailer(source).get_thumbnail(options)
         except Exception as inst:
             EasyThumbnailsBackend.check_conf()
-            raise ThumbnailError(inst)
+            if app_settings.MEDIA_TREE_MEDIA_BACKEND_DEBUG:
+                raise ThumbnailError(inst)
+            else:
+                return None
         return thumbnail
 
     @staticmethod
@@ -35,3 +38,9 @@ class EasyThumbnailsBackend(MediaBackend):
         options = utils.valid_processor_options()
         options.remove('size')
         return options
+
+    @staticmethod
+    def get_cache_paths(subdirs=None):
+        if hasattr(settings, 'THUMBNAIL_SUBDIR'):
+            return MediaBackend.get_cache_paths((settings.THUMBNAIL_SUBDIR,))
+        return ()

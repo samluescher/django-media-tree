@@ -1,6 +1,9 @@
 from media_tree import settings as app_settings
 from media_tree.utils import get_module_attr
 from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings
+import os
+
 
 class ThumbnailError(Exception):
     pass
@@ -56,11 +59,14 @@ class MediaBackend:
         raise NotImplementedError('Media backends need to implement the `get_valid_thumbnail_options()` method.')
 
     @staticmethod
-    def get_cache_paths():
-        if hasattr(settings, 'THUMBNAIL_SUBDIR'):
-            return (
-                get_media_storage().path(
-                os.path.join(app_settings.MEDIA_TREE_UPLOAD_SUBDIR,
-                    settings.THUMBNAIL_SUBDIR)),
-            )
-        return ()
+    def get_cache_paths(subdirs=None):
+        if not subdirs:
+            raise NotImplementedError('Media backends need to implement the `get_cache_paths()` method.')
+        paths = []
+        from media_tree.models import FileNode
+        from django.db import models
+        for field in FileNode._meta.fields:
+            if isinstance(field, models.FileField) and hasattr(field, 'upload_to'):
+                for subdir in subdirs:
+                    paths.append(os.path.join(field.upload_to, subdir))
+        return paths

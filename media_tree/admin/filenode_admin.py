@@ -561,9 +561,9 @@ FileNodeAdmin.register_action(core_actions.move_selected)
 FileNodeAdmin.register_action(core_actions.change_metadata_for_selected)
 
 FileNodeAdmin.register_action(maintenance_actions.delete_orphaned_files, ('media_tree.manage_filenode',))
-FileNodeAdmin.register_action(maintenance_actions.rebuild_tree, ('media_tree.manage_filenode',))
+if settings.DEBUG:
+    FileNodeAdmin.register_action(maintenance_actions.rebuild_tree, ('media_tree.manage_filenode',))
 
-# TODO: Add clear_cache action
-#FileNodeAdmin.register_action(maintenance_actions.clear_cache, ('media_tree.manage_filenode',))
+FileNodeAdmin.register_action(maintenance_actions.clear_cache, ('media_tree.manage_filenode',))
 
 admin.site.register(FileNode, FileNodeAdmin)

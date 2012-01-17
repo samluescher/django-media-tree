@@ -25,6 +25,12 @@ which depends on ``easy_thumbnails`` to be installed. Please refer to
 :ref:`media-backends` for more information.
 """
 
+MEDIA_TREE_MEDIA_BACKEND_DEBUG = getattr(settings, 'MEDIA_TREE_MEDIA_BACKEND_DEBUG', settings.DEBUG)
+"""
+Specifies whether exceptions caused by media backends, such as ``ThumbnailError``, should be 
+raised or silently ignored.
+"""
+
 MEDIA_TREE_LIST_DISPLAY = getattr(settings, 'MEDIA_TREE_LIST_DISPLAY',
     ('browse_controls', 'size_formatted', 'extension', 'resolution_formatted',
     'get_descendant_count_display', 'modified', 'modified_by', 'metadata_check',
