@@ -131,7 +131,7 @@ install a recent version::
 
     $ sudo pip install -e git://github.com/django-mptt/django-mptt.git@0.5.2#egg=django-mptt 
 
-**or**, if for some reason you can't install a current version, you can resolve the 
+**or**, if for some reason you can't install a recent version, you can resolve the 
 situation by putting ``legacy_mptt_support`` in your ``INSTALLED_APPS`` **before** 
 ``mptt``. This will be deprecated in the future::
 
