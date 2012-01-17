@@ -11,8 +11,9 @@ Make sure to install these packages prior to installation:
 
 - Django >= 1.2.5
 - south >= 0.7.2
-- django-mptt > 0.4.2
+- django-mptt > 0.4.2 (see :ref:`install-mptt`)
 - PIL >= 1.1
+
 
 Getting the code
 ================
@@ -21,14 +22,20 @@ For the latest stable version (recommended), use ``pip`` or ``easy_install``::
 
     $ pip install django-media-tree  
 
-**Alternatively**, you can also download the latest development version from 
-http://github.com/philomat/django-media-tree and run the installation script::
+**Alternatively**, if you would like to use the latest development version, 
+you can also install it using ``pip``::
+
+    $ pip install -e git://github.com/philomat/django-media-tree#egg=django-media-tree
+
+**or** download it from http://github.com/philomat/django-media-tree and run the 
+installation script::
 
     $ python setup.py install
 
-**or** use ``pip``::
-
-    $ pip install -e git://github.com/philomat/django-media-tree#egg=django-media-tree
+.. Note::
+   Should you get a permission error you will probably have to run the above commands
+   with root permissions, i.e. enter ``sudo pip install …`` and 
+   ``sudo python setup.py install``.
 
 
 Basic setup
@@ -43,35 +50,27 @@ Basic setup
         'media_tree',
     )
 
-- A version of ``django-mptt`` **newer than 0.4.2** is required because there is
-  an issue with older versions not indenting the folder list correctly. There
-  are two ways of resolving this. If you can't use a newer version, put
-  ``legacy_mptt_support`` in your ``INSTALLED_APPS`` **before** ``mptt``::
-
-    INSTALLED_APPS = (
-        # ... your other apps here
-        'media_tree.contrib.legacy_mptt_support',
-        'mptt',
-        'media_tree',
-    )
-  
-  Alternatively, you can use the current development version of
-  ``django-mptt``::
-
-    $ sudo pip install -e git://github.com/django-mptt/django-mptt#egg=django-mptt
-
 - If you are using ``django.contrib.staticfiles`` (recommended), just run the
   usual command to collect static files::
 
     $ ./manage.py collectstatic
 
-  If you are **not** using the ``staticfiles`` app, copy the contents of the
-  ``static`` folder to the static root of your project.
-  
   .. Note::
-     To learn about the ``staticfiles`` app please refer to the
-     `respective Django documentation
-     <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_.
+     Please refer to the Django documentation on how to `set up the static files
+     app <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_ if you 
+     have not done that yet.   
+
+  If you are **not** going to use the ``staticfiles`` app, copy the contents 
+  of the ``static`` folder to the static root of your project.
+  
+- Create the database tables:
+
+    $ python manage.py syncdb
+
+  Notice that if you are using South, you'll have to use a slightly different command::
+
+    $ python manage.py syncdb --all
+    $ python migrate media_tree --fake
 
 .. _configuring-media-backends:
 
@@ -118,6 +117,30 @@ Basic setup
 
   .. Note::
      See :ref:`bundled-extensions` for a list of default extensions included in the project.
+
+
+.. _install-mptt:
+
+
+Note on django-mptt
+===================
+
+A version of ``django-mptt`` **newer than 0.4.2** is required because there is
+an issue with older versions not indenting the folder list correctly. **Either**
+install a current version:
+
+    $ sudo pip install -e git://github.com/django-mptt/django-mptt.git@0.5.2#egg=django-mptt 
+
+**or**, if for some reason you can't install a current version, you can resolve the 
+situation by putting ``legacy_mptt_support`` in your ``INSTALLED_APPS`` **before** 
+``mptt``. This will be deprecated in the future::
+
+    INSTALLED_APPS = (
+      # ... your other apps here
+      'media_tree.contrib.legacy_mptt_support',
+      'mptt',
+      'media_tree',
+    )
 
 
 .. _install-icon-sets:
