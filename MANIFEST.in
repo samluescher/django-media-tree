@@ -1,6 +1,6 @@
 include AUTHORS
 include LICENSE
-include README.md
+include README.rst
 include CHANGELOG.txt
 recursive-include media_tree/locale *
 recursive-include media_tree/static *

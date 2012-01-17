@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-README = read('README.md')
+README = read('README.rst')
 
 setup(
     name = "django-media-tree",
