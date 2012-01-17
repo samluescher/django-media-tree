@@ -1,5 +1,6 @@
 from media_tree.contrib.cms_plugins.media_tree_image.models import MediaTreeImage
 from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormBase
+from media_tree import media_types
 from media_tree.media_backends import get_media_backend
 from media_tree.contrib.cms_plugins.helpers import PluginLink
 from media_tree.utils import widthratio
@@ -54,7 +55,9 @@ class MediaTreeImagePlugin(CMSPluginBase):
 
 
     def icon_src(self, instance):
-        thumb = get_media_backend().get_thumbnail(instance.node.file, {'size': (200, 200), 'sharpen': True})
+        media_backend = get_media_backend(fail_silently=False, handles_media_types=(
+            media_types.SUPPORTED_IMAGE,))
+        thumb = media_backend.get_thumbnail(instance.node.file, {'size': (200, 200)})
         return thumb.url
 
     def icon_alt(self, instance):

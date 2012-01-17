@@ -1,5 +1,6 @@
 from media_tree import settings as app_settings
 from django.contrib.admin.widgets import AdminFileWidget
+from media_tree import media_types
 from media_tree.media_backends import get_media_backend, ThumbnailError
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.utils.html import escape
@@ -38,13 +39,14 @@ class AdminThumbWidget(AdminFileWidget):
  
     def render(self, name, value, attrs=None):
         output = super(AdminThumbWidget, self).render(name, value, attrs)
-        backend = get_media_backend()
-        if backend and value and hasattr(value, "url"):
+        media_backend = get_media_backend(fail_silently=True, handles_media_types=(
+            media_types.SUPPORTED_IMAGE,))
+        if media_backend and value and hasattr(value, "url"):
             try:
                 thumb_extension = os.path.splitext(value.name)[1].lstrip('.').lower()
                 if not thumb_extension in THUMBNAIL_EXTENSIONS:
                     thumb_extension = None
-                thumb = backend.get_thumbnail(value, {'size': THUMBNAIL_SIZE, 'sharpen': True})
+                thumb = media_backend.get_thumbnail(value, {'size': THUMBNAIL_SIZE})
                 thumb_html = u'<img src="%s" alt="%s" width="%i" height="%i" />' % (thumb.url, os.path.basename(value.name), thumb.width, thumb.height) 
                 output = u'<div><p><span class="thumbnail">%s</span></p><p>%s</p></div>' % (thumb_html, output)
             except ThumbnailError as inst:
