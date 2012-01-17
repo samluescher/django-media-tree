@@ -68,7 +68,8 @@ Basic setup
 
     $ python manage.py syncdb
 
-  Notice that if you are using South, you'll have to use a slightly different command::
+  Alternatively, if you are using `South <http://south.aeracode.org/>`_ in your 
+  project, you'll have to use a slightly different command::
 
     $ python manage.py syncdb --all
     $ python migrate media_tree --fake
