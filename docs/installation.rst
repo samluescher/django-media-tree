@@ -33,8 +33,8 @@ installation script::
     $ python setup.py install
 
 .. Note::
-   Should you get a permission error you will probably have to run the above commands
-   with root permissions, i.e. enter ``sudo pip install …`` and 
+   In case you get a permission error, you will probably have to run the above 
+   commands with root permissions, i.e. enter ``sudo pip install …`` and 
    ``sudo python setup.py install``.
 
 
@@ -127,7 +127,7 @@ Note on django-mptt
 
 A version of ``django-mptt`` **newer than 0.4.2** is required because there is
 an issue with older versions not indenting the folder list correctly. **Either**
-install a current version:
+install a recent version::
 
     $ sudo pip install -e git://github.com/django-mptt/django-mptt.git@0.5.2#egg=django-mptt 
 
