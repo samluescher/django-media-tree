@@ -132,7 +132,7 @@ A version of ``django-mptt`` **newer than 0.4.2** is required because there is
 an issue with older versions not indenting the folder list correctly. **Either**
 install a recent version::
 
-    $ sudo pip install -e git://github.com/django-mptt/django-mptt.git@0.5.1#egg=django-mptt 
+    $ pip install -e git://github.com/django-mptt/django-mptt.git@0.5.1#egg=django-mptt 
 
 **or**, if for some reason you can't install a recent version, you can resolve the 
 situation by putting ``legacy_mptt_support`` in your ``INSTALLED_APPS`` **before** 
