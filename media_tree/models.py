@@ -485,12 +485,12 @@ class FileNode(ModelBase):
     def get_metadata_display_unescaped(self):
         """Returns object metadata that has been selected to be displayed to
         users, compiled as a string with the original field values left unescaped,
-        i.e. they may contain tags.
+        i.e. the original field values may contain tags.
         """
         return self.get_metadata_display(escape=False)
     get_metadata_display_unescaped.allow_tags = True
 
-    def get_caption_formatted(self, field_formats = app_settings.MEDIA_TREE_METADATA_FORMATS):
+    def get_caption_formatted(self, field_formats = app_settings.MEDIA_TREE_METADATA_FORMATS, escape=True):
         """Returns object metadata that has been selected to be displayed to
         users, compiled as a string including default formatting, for example
         bold titles.
@@ -504,6 +504,15 @@ class FileNode(ModelBase):
             return mark_safe(self.get_metadata_display(field_formats))
     get_caption_formatted.allow_tags = True
     get_caption_formatted.short_description = _('displayed metadata')
+
+    def get_caption_formatted_unescaped(self):
+        """Returns object metadata that has been selected to be displayed to
+        users, compiled as a string with the original field values left unescaped,
+        i.e. the original field values may contain tags.
+        """
+        return self.get_caption_formatted(escape=False)
+    get_caption_formatted_unescaped.allow_tags = True
+    get_caption_formatted_unescaped.short_description = _('displayed metadata')
 
     @property
     def alt(self):
