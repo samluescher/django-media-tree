@@ -15,10 +15,21 @@ Make sure to install these packages prior to installation:
 - `PIL <http://www.pythonware.com/products/pil/>`_ >= 1.1
 
 
+.. Note::
+   All required Python packages can easily be installed using `pip <http://pypi.python.org/pypi/pip>`_ (or, alternatively, easy_install).
+   After installing it, enter the following command to install the dependencies::
+
+    $ pip install django==1.3.1 South django-mptt==0.5.1 PIL
+
+   In case you get a permission error, you will probably have to run the shell 
+   commands in this install guide with root permissions, i.e. enter 
+   ``sudo pip install …`` and ``sudo python setup.py install``.
+
+
 Getting the code
 ================
 
-For the latest stable version (recommended), use `pip <http://pypi.python.org/pypi/pip>`_ (or, alternatively, easy_install)::
+For the latest stable version (recommended), use ``pip``::
 
     $ pip install django-media-tree  
 
@@ -31,11 +42,6 @@ you can also install it using ``pip``::
 installation script::
 
     $ python setup.py install
-
-.. Note::
-   In case you get a permission error, you will probably have to run the above 
-   commands with root permissions, i.e. enter ``sudo pip install …`` and 
-   ``sudo python setup.py install``.
 
 
 Basic setup
