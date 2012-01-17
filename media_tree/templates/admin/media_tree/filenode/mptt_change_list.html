@@ -23,7 +23,7 @@ it is embedded here.
           </li>
       {% else %}
           <li>
-            <a href="add/{% if is_popup %}?_popup=1{% endif %}" class="addlink">
+            <a href="add/?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
               {% trans "Add file" %}
             </a>
           </li>
@@ -53,11 +53,15 @@ it is embedded here.
             
             $('#changelist').delegate('input[name=_selected_action]', 'change', function() {
                 var targetFolder = $('#changelist').getFirstSelectedFolder();
+                var targetId = '';
                 if (targetFolder) {
                     $('.target-folder').html('{% trans "To %(folder)s:" %} '.replace('%(folder)s', targetFolder.name));
+                    targetId= targetFolder.id;
                 } else {
                     $('.target-folder').html('');
-                }    
+                }
+                var addlink = $('.addlink')[0];
+                addlink.href = addlink.href.replace(/parent=[0-9]*/, 'parent='+targetId);    
                 {% if swfupload_upload_url %}
                 uploadManager.targetFolder = targetFolder;
                 {% endif %}
