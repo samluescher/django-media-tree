@@ -1,3 +1,4 @@
+# TODO: If a file does not exist, generating a thumbnail causes an IOError, which should be caught if not MEDIA_TREE_MEDIA_BACKEND_DEBUG
 # TODO: Metadata tooltip is too narrow and text gets too wrapped
 # TODO: Add icon for change and add folder
 # TODO: Ordering of tree by column (within parent) should be possible
@@ -7,6 +8,7 @@
 # TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt".
 # TODO: Bug: With child folder changelist view and child of child expanded -- after uploading a file, the child of child has the expanded triangle, 
 #   but no child child child objects are visible.
+
 
 from media_tree.fields import FileNodeChoiceField
 from media_tree.models import FileNode
