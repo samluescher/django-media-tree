@@ -133,4 +133,9 @@ module.
 
 ``MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS``
     A dictionary of options that should be applied by default when generating
-    thumbnails. You might use this, for instance, to sharpen all thumbnails.
+    thumbnails. You might use this, for instance, to sharpen all thumbnails::
+
+        MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS = {
+            'sharpen': True 
+        }
+

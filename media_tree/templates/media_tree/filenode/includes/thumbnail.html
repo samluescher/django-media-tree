@@ -5,7 +5,7 @@
 {% endif %}
 {% if preview_file %}
 <span class="preview thumbnail{% if class %} {{ class }}{% endif %}">
-    {% thumbnail preview_file thumbnail_size sharpen as thumb %}
+    {% thumbnail preview_file thumbnail_size as thumb %}
     <img src="{{ thumb.url }}" alt="{{ node.alt }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
 </span>
 {% endif %}
