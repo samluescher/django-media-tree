@@ -24,7 +24,8 @@ class EasyThumbnailsBackend(MediaBackend):
     @staticmethod
     def get_thumbnail(source, options):
         try:
-            opts = app_settings.MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS or {}
+            opts = {}
+            opts.update(app_settings.MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS or {})
             opts.update(options)
             thumbnail = get_thumbnailer(source).get_thumbnail(opts)
         except Exception as inst:
