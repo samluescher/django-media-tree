@@ -161,8 +161,13 @@ Installing icon sets
 
 By default, Media Tree only comes with plain file and folder icons. If you would
 like to use custom icon sets that are more appropriate for your specific media
-types, you can install them like a Django application, and configure Media Tree
-to use them as follows.
+types, you can install them like a Django application.
+
+The following ready-to-use modules contain some nice icons:
+
+- `Teambox Icons` <https://github.com/philomat/django-teambox-icons>
+
+You will need to configure Media Tree to use an icon set as follows.
 
 - In order to install an icon set, simply add the respective module to your
   ``INSTALLED_APPS`` setting::
