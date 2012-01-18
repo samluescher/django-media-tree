@@ -2,8 +2,8 @@
 
 <div id="{{ plugin.id_attr }}" class="gallery">
 
-{% if folders %}
-<ul class="folders">
+{% if folders and folders|length > 1 %}
+<ul class="folders">asd
     {{ folders|unordered_list }}
 </ul>
 {% endif %}
