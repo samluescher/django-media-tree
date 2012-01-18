@@ -165,7 +165,7 @@ types, you can install them like a Django application.
 
 The following ready-to-use modules contain some nice icons:
 
-- `Teambox Icons` <https://github.com/philomat/django-teambox-icons>
+- `Teambox Icons <https://github.com/philomat/django-teambox-icons>`_
 
 You will need to configure Media Tree to use an icon set as follows.
 
