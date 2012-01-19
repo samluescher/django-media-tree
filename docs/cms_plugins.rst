@@ -6,7 +6,7 @@ Django CMS Plugins
 
 .. Note::
    Of course you can also create your own models and plugins using ``FileNode``
-   objects. Please take a look at :ref:fields for more information on how to
+   objects. Please take a look at :ref:`fields` for more information on how to
    integrate Media Tree in your own applications.
  
 .. automodule:: media_tree.contrib.cms_plugins.media_tree_listing
