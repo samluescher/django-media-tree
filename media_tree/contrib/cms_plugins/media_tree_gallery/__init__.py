@@ -4,7 +4,7 @@ Plugin: Gallery
 
 This plugin allows you to put an image gallery on a page. Galleries can include
 nested folder structures or display merged (flat) compositions of all images in 
-a range of subfolders. Pictures can be browsed back and forth or auto-played.
+a range of subfolders. Pictures can be browsed or auto-played.
 
 Installation
 ============
