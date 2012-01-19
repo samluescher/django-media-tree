@@ -22,7 +22,7 @@ class MediaTreeImagePlugin(CMSPluginBase):
     model = MediaTreeImage
     name = _("Image")
     admin_preview = False
-    render_template = 'cms/plugins/mediatreeimage.html'
+    render_template = 'cms/plugins/media_tree_image.html'
     text_enabled = True
     form = MediaTreeImagePluginForm
 

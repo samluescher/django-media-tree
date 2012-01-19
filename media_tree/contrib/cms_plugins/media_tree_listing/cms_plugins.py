@@ -36,7 +36,7 @@ class MediaTreeListingPlugin(CMSPluginBase):
     model = MediaTreeListing
     name = _('File listing')
     admin_preview = False
-    render_template = 'cms/plugins/mediatreelisting.html'
+    render_template = 'cms/plugins/media_tree_listing.html'
     list_type = MediaTreeListing.LIST_NESTED
     form = MediaTreeListingPluginForm
     fieldsets = [

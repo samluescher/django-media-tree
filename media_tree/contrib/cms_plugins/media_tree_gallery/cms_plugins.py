@@ -42,7 +42,7 @@ class MediaTreeGalleryPlugin(MediaTreeSlideshowPlugin):
     ]
     name = _('Gallery')
     admin_preview = False
-    render_template = 'cms/plugins/mediatreegallery.html'
+    render_template = 'cms/plugins/media_tree_gallery.html'
 
     def init_nodes(self, context, instance):
         super(MediaTreeGalleryPlugin, self).init_nodes(context, instance)

@@ -54,7 +54,7 @@ class MediaTreeSlideshowPlugin(MediaTreeListingPlugin):
     ]
     name = _('Slideshow')
     admin_preview = False
-    render_template = 'cms/plugins/mediatreeslideshow.html'
+    render_template = 'cms/plugins/media_tree_slideshow.html'
 
     def render(self, context, instance, placeholder):
         context = super(MediaTreeSlideshowPlugin, self).render(context, instance, placeholder)
