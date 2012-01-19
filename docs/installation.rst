@@ -4,7 +4,8 @@ Installing Media Tree
 This install guide assumes you are familiar with Python and Django.
 
 
-Dependencies ============
+Dependencies 
+============
 
 Make sure to install these packages prior to installation:
 
@@ -28,7 +29,8 @@ Make sure to install these packages prior to installation:
    install …`` instead, and ``sudo python setup.py install`` respectively.
 
 
-Getting the code ================
+Getting the code 
+================
 
 For the latest stable version (recommended), use ``pip``::
 
@@ -46,7 +48,8 @@ installation script::
     $ python setup.py install
 
 
-Basic setup ===========
+Basic setup
+===========
 
 - In your project settings, add ``mptt`` and ``media_tree`` to the
   ``INSTALLED_APPS``::
@@ -132,7 +135,8 @@ Basic setup ===========
 .. _install-mptt:
 
 
-Note on django-mptt ===================
+Note on django-mptt 
+===================
 
 A version of ``django-mptt`` **newer than 0.4.2** is required because there is
 an issue with older versions not indenting the folder list correctly. **Either**
@@ -153,7 +157,8 @@ the situation by putting ``legacy_mptt_support`` in your ``INSTALLED_APPS``
 
 .. _install-icon-sets:
 
-Installing icon sets ====================
+Installing icon sets 
+====================
 
 By default, Media Tree only comes with plain file and folder icons. If you would
 like to use custom icon sets that are more appropriate for your specific media
