@@ -64,10 +64,10 @@ class FileNode(ModelBase):
     You can access the actual media associated to a ``FileNode`` model instance 
     using the following to field attributes:
 
-    **``file``**
+    ``file``
         The actual media file
 
-    **``preview_file``**
+    ``preview_file``
         An optional image file that will be used for previews. This is useful 
         for visual media that PIL cannot read, such as video files.
     """
