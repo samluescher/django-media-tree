@@ -16,7 +16,7 @@ setup(
     long_description = README,
 
     author = u'Samuel Luescher',
-    author_email = 'philomat@popkultur.net',
+    author_email = 'sam at luescher dot org',
     
     packages = find_packages(),
     include_package_data=True,
