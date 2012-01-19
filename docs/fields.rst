@@ -1,3 +1,5 @@
+.. _fields:
+
 Fields and forms
 ****************
 
@@ -15,8 +17,9 @@ the widget::
     from django.db import models
 
     class MyModel(models.Model):
-        document_node = FileNodeForeignKey(allowed_media_types=(media_types.DOCUMENT,), null=True,
-                limit_choices_to={'media_type__in': (FileNode.FOLDER, media_types.DOCUMENT)})
+        document = FileNodeForeignKey(allowed_media_types=(media_types.DOCUMENT,),
+            null=True, limit_choices_to={'media_type__in':
+            (FileNode.FOLDER, media_types.DOCUMENT)})
 
 The following example model will allow the user to select a ``FileNode`` object
 associated to an image file::
@@ -27,15 +30,15 @@ associated to an image file::
     class MyModel(models.Model):
         image_node = ImageFileNodeForeignKey(null=True)
 
-The following example form will allow the user to select files that are under a specific parent 
-folder named “Projects”::
+The following example form will allow the user to select files that are under a
+specific parent folder named “Projects”::
 
     from media_tree.models import FileNode
     from media_tree.fields import FileNodeChoiceField
     from django import forms
 
     class MyForm(forms.Form):
-        node = FileNodeChoiceField(queryset=FileNode.objects.get(
+        file_node = FileNodeChoiceField(queryset=FileNode.objects.get(
             name="Projects", node_type=FileNode.FOLDER).get_descendants())
 
 For your own applications, the following field classes are available:

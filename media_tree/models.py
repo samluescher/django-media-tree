@@ -14,6 +14,7 @@ except ImportError:
     from django.db.models import Model as ModelBase
 
 from mptt.models import TreeForeignKey
+from mptt.managers import TreeManager
 
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
@@ -59,26 +60,41 @@ class FileNode(ModelBase):
        Since ``FileNode`` is a child class of ``MPTTModel``, it inherits many
        methods that facilitate queries and data manipulation when working with
        trees.
+
+    You can access the actual media associated to a ``FileNode`` model instance 
+    using the following to field attributes:
+
+    **``file``**
+        The actual media file
+
+    **``preview_file``**
+        An optional image file that will be used for previews. This is useful 
+        for visual media that PIL cannot read, such as video files.
     """
 
     FOLDER = media_types.FOLDER
-    """The constant denoting a folder node, used for the :attr:`node_type` attribute."""
+    """ The constant denoting a folder node, used for the :attr:`node_type` attribute. """
 
     FILE = media_types.FILE
-    """The constant denoting a file node, used for the :attr:`node_type` attribute."""
+    """ The constant denoting a file node, used for the :attr:`node_type` attribute. """
 
     STORAGE = get_media_storage()
 
+    tree = TreeManager()
+
+    # FileFields -- have no docstring since Sphinx cannot access these attributes
+    file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True, storage=STORAGE)
+    # The actual media file 
+    preview_file = models.ImageField(_('preview'), upload_to=app_settings.MEDIA_TREE_PREVIEW_SUBDIR, blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'), storage=STORAGE)
+    # An optional image file that will be used for previews. This is useful for video files. 
+
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children', verbose_name=_('folder'), limit_choices_to={'node_type': FOLDER})
+    """ The parent (folder) object of the node. """
     
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
     """ Type of the node (``FileNode.FILE`` or ``FileNode.FOLDER``) """
     media_type = models.IntegerField(_('media type'), choices = app_settings.MEDIA_TREE_CONTENT_TYPE_CHOICES, blank=True, null=True, editable=False)
     """ Media type, i.e. broad category of the kind of media """
-    file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True, storage=STORAGE)
-    """ The actual media file """
-    preview_file = models.ImageField(_('preview'), upload_to=app_settings.MEDIA_TREE_PREVIEW_SUBDIR, blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'), storage=STORAGE)
-    """ An optional image file that will be used for previews. This is useful for video files. """
     published = models.BooleanField(_('is published'), blank=True, default=True, editable=False)
     """ Publish date and time """
     mimetype = models.CharField(_('mimetype'), max_length=64, null=True, editable=False)

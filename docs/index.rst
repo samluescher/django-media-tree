@@ -32,6 +32,7 @@ Table of Contents
    utils
    extending 
    bundled
+   cms_plugins
    
    
 Indices and tables
