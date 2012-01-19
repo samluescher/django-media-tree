@@ -39,8 +39,7 @@ For the latest stable version (recommended), use ``pip``::
 **Alternatively**, if you would like to use the latest development version, you
 can also install it using ``pip``::
 
-    $ pip install -e
-    git://github.com/philomat/django-media-tree#egg=django-media-tree
+    $ pip install -e git://github.com/philomat/django-media-tree#egg=django-media-tree
 
 **or** download it from http://github.com/philomat/django-media-tree and run the
 installation script::
