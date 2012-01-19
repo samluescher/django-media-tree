@@ -97,7 +97,7 @@ Basic setup
           'media_tree.contrib.media_backends.easy_thumbnails.EasyThumbnailsBackend',
       )
 
-  .. Note::
+     .. Note::
      In principle, Media Tree can work together with any other thumbnail
      generating app, provided that you write the appropriate media backend class
      to support it. Please have a look at one of the backends under
