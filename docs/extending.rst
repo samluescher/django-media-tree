@@ -20,11 +20,12 @@ meaning that you can define several attributes such as model Fields or form
 Media, and they will be added to Media Tree during runtime. 
 
 .. Note::
-   You can :ref:`package and install <installing-extensions>` your extender classes as a regular Django 
-   application module, and have Media Tree auto-discover installed extensions by 
-   providing a ``media_extension.py`` module. An application containing one or 
-   more extenders and a ``media_extension.py`` that registers them is what is 
-   called a **Media Tree extension**. 
+   You can :ref:`package and install <installing-extensions>` your extender
+   classes as a regular Django application module, and have Media Tree
+   auto-discover installed extensions by providing a ``media_extension.py``
+   module. An application containing one or more extenders and a
+   ``media_extension.py`` that registers them is what is called a **Media Tree
+   extension**. 
 
 Media Tree already comes with some exemplary extensions in its 
 ``contrib.media_extensions`` module. You should inspect these examples in order 

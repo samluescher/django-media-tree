@@ -1,61 +1,58 @@
-Installing Media Tree
-*********************
+Installing Media Tree *********************
 
 This install guide assumes you are familiar with Python and Django.
 
 
-Dependencies
-============
+Dependencies ============
 
 Make sure to install these packages prior to installation:
 
 - `Django <http://www.djangoproject.com>`_ >= 1.2.5
 - `South <http://south.aeracode.org/>`_ >= 0.7.2
-- `django-mptt <https://github.com/django-mptt/django-mptt>`_ > 0.4.2 (see :ref:`install-mptt`)
+- `django-mptt <https://github.com/django-mptt/django-mptt>`_ > 0.4.2 (see
+  :ref:`install-mptt`)
 - `PIL <http://www.pythonware.com/products/pil/>`_ >= 1.1
 
 
 .. Note::
-   All required Python packages can easily be installed using `pip <http://pypi.python.org/pypi/pip>`_ (or, alternatively, easy_install).
-   After installing it, you may simply enter the following command to install
-   the dependencies::
+   All required Python packages can easily be installed using `pip
+   <http://pypi.python.org/pypi/pip>`_ (or, alternatively, easy_install). After
+   installing it, you may simply enter the following command to install the
+   dependencies::
 
     $ pip install django==1.3.1 South django-mptt==0.5.1 PIL
 
-   In case you get a permission error, you will probably have to run the shell 
-   commands in this install guide with root permissions, i.e. enter 
-   ``sudo pip install …`` instead, and ``sudo python setup.py install`` 
-   respectively.
+   In case you get a permission error, you will probably have to run the shell
+   commands in this install guide with root permissions, i.e. enter ``sudo pip
+   install …`` instead, and ``sudo python setup.py install`` respectively.
 
 
-Getting the code
-================
+Getting the code ================
 
 For the latest stable version (recommended), use ``pip``::
 
-    $ pip install django-media-tree  
+    $ pip install django-media-tree
 
-**Alternatively**, if you would like to use the latest development version, 
-you can also install it using ``pip``::
+**Alternatively**, if you would like to use the latest development version, you
+can also install it using ``pip``::
 
-    $ pip install -e git://github.com/philomat/django-media-tree#egg=django-media-tree
+    $ pip install -e
+    git://github.com/philomat/django-media-tree#egg=django-media-tree
 
-**or** download it from http://github.com/philomat/django-media-tree and run the 
+**or** download it from http://github.com/philomat/django-media-tree and run the
 installation script::
 
     $ python setup.py install
 
 
-Basic setup
-===========
+Basic setup ===========
 
 - In your project settings, add ``mptt`` and ``media_tree`` to the
   ``INSTALLED_APPS``::
 
     INSTALLED_APPS = (
         # ... your other apps here
-        'mptt',
-        'media_tree',
+        'mptt', 'media_tree',
     )
 
 - If you are using ``django.contrib.staticfiles`` (recommended), just run the
@@ -65,22 +62,21 @@ Basic setup
 
   .. Note::
      Please refer to the Django documentation on how to `set up the static files
-     app <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_ if you 
-     have not done that yet.   
+     app <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_ if
+     you have not done that yet.
 
-  If you are **not** going to use the ``staticfiles`` app, you will have to copy 
-  the contents of the ``static`` folder to the location you are serving static files 
-  from.
+  If you are **not** going to use the ``staticfiles`` app, you will have to copy
+  the contents of the ``static`` folder to the location you are serving static
+  files from.
   
 - Create the database tables::
 
     $ python manage.py syncdb
 
-  Alternatively, if you are using `South <http://south.aeracode.org/>`_ in your 
+  Alternatively, if you are using `South <http://south.aeracode.org/>`_ in your
   project, you'll have to use a slightly different command::
 
-    $ python manage.py syncdb --all
-    $ python migrate media_tree --fake
+    $ python manage.py syncdb --all $ python migrate media_tree --fake
 
 .. _configuring-media-backends:
 
@@ -102,18 +98,19 @@ Basic setup
      generating app, provided that you write the appropriate media backend class
      to support it. Please have a look at one of the backends under
      ``media_tree.contrib.media_backends`` if you are interested in using your
-     own specific 3rd-party app. 
+     own specific 3rd-party app.
 
 .. _install-swfupload:
 
-- **Configuring the uploader (optional, recommended)**: If you are planning to use a Flash uploader such as
-  ``SWFUpload``, add ``SessionPostMiddleware`` to your ``MIDDLEWARE_CLASSES``, before the standard
-  ``SessionMiddleware``::
+- **Configuring the uploader (optional, recommended)**: If you are planning to
+  use a Flash uploader such as ``SWFUpload``, add ``SessionPostMiddleware`` to
+  your ``MIDDLEWARE_CLASSES``, before the standard ``SessionMiddleware``::
 
     MIDDLEWARE_CLASSES = (
         # ...
         'media_tree.middleware.SessionPostMiddleware',
-        # Notice that ``SessionPostMiddleware`` goes before ``SessionMiddleware`` 
+        # Notice that ``SessionPostMiddleware`` goes before
+        # ``SessionMiddleware``
         'django.contrib.sessions.middleware.SessionMiddleware',
     )
 
@@ -127,37 +124,35 @@ Basic setup
     )
 
   .. Note::
-     See :ref:`bundled-extensions` for a list of default extensions included in the project.
+     See :ref:`bundled-extensions` for a list of default extensions included in
+     the project.
 
 
 .. _install-mptt:
 
 
-Note on django-mptt
-===================
+Note on django-mptt ===================
 
 A version of ``django-mptt`` **newer than 0.4.2** is required because there is
 an issue with older versions not indenting the folder list correctly. **Either**
 install a recent version::
 
-    $ pip install -e git://github.com/django-mptt/django-mptt.git@0.5.1#egg=django-mptt 
+    $ pip install -e
+    git://github.com/django-mptt/django-mptt.git@0.5.1#egg=django-mptt
 
-**or**, if for some reason you can't install a recent version, you can resolve the 
-situation by putting ``legacy_mptt_support`` in your ``INSTALLED_APPS`` **before** 
-``mptt``. This will be deprecated in the future::
+**or**, if for some reason you can't install a recent version, you can resolve
+the situation by putting ``legacy_mptt_support`` in your ``INSTALLED_APPS``
+**before** ``mptt``. This will be deprecated in the future::
 
     INSTALLED_APPS = (
       # ... your other apps here
-      'media_tree.contrib.legacy_mptt_support',
-      'mptt',
-      'media_tree',
+      'media_tree.contrib.legacy_mptt_support', 'mptt', 'media_tree',
     )
 
 
 .. _install-icon-sets:
 
-Installing icon sets
-====================
+Installing icon sets ====================
 
 By default, Media Tree only comes with plain file and folder icons. If you would
 like to use custom icon sets that are more appropriate for your specific media
@@ -173,7 +168,7 @@ You will need to configure Media Tree to use an icon set as follows.
   ``INSTALLED_APPS`` setting::
 
     INSTALLED_APPS = (
-        # ... your other apps here 
+        # ... your other apps here
         'my_custom_icon_set',
     )
 
@@ -189,13 +184,13 @@ You will need to configure Media Tree to use an icon set as follows.
   path containing the new icon files, e.g.::
 
     MEDIA_TREE_ICON_DIRS = (
-        'my_custom_icons/64x64px',  # the new folder under your static root 
-        'media_tree/img/icons/mimetypes',  # default icon folder
+        'my_custom_icons/64x64px', # the new folder under your static root
+        'media_tree/img/icons/mimetypes', # default icon folder
     )
 
   .. Note::
      You can add several icon sets to this tuple, and for each media file the
-     first appropriate icon that is encountered will be used. Please notice
-     that on the last line we are specifying the default icon location,
-     which will be used as a fallback in case no appropriate icon is found in
-     one of the custom sets.
+     first appropriate icon that is encountered will be used. Please notice that
+     on the last line we are specifying the default icon location, which will be
+     used as a fallback in case no appropriate icon is found in one of the
+     custom sets.
