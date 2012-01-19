@@ -6,7 +6,7 @@ This plugin allows you to put a file listing on a page, displaying download
 links for the selected ``FileNode`` objects in a folder tree.
 
 The folder tree does not have to be identical to the actual tree in your 
-media library. Instead, you can create arbitrary nested structures, or output
+media library. Instead, you can create arbitrarily nested structures, or output
 a merged (flat) list.
 
 Installation
