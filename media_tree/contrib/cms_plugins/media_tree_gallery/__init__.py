@@ -25,5 +25,5 @@ By default, images are rendered to the output using the template
 .. Note::
    The default template requires you to include `jQuery <http://jquery.com/>`_
    in your pages, since it uses the `jQuery Cycle Plugin 
-   <http://jquery.malsup.com/cycle/>`_ for image transitions.
+   <http://jquery.malsup.com/cycle/>`_ (bundled) for image transitions.
 """
