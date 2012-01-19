@@ -1,4 +1,5 @@
-Installing Media Tree *********************
+Installing Media Tree 
+*********************
 
 This install guide assumes you are familiar with Python and Django.
 
