@@ -55,7 +55,8 @@ Basic setup
 
     INSTALLED_APPS = (
         # ... your other apps here
-        'mptt', 'media_tree',
+        'mptt', 
+        'media_tree',
     )
 
 - If you are using ``django.contrib.staticfiles`` (recommended), just run the
