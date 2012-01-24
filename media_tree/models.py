@@ -81,6 +81,7 @@ class FileNode(ModelBase):
     STORAGE = get_media_storage()
 
     tree = TreeManager()
+    objects = models.Manager()
 
     # FileFields -- have no docstring since Sphinx cannot access these attributes
     file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True, storage=STORAGE)

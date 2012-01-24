@@ -49,8 +49,6 @@ class MediaTreeListingPlugin(CMSPluginBase):
     def init_nodes(self, context, instance):
         self.current_folder = None
         self.parent_folder = None
-        self.selected_nodes = []
-        self.files_selected = False
         self.selected_nodes = [item.node for item in instance.media_items.all()]
         self.visible_nodes = [node for node in self.selected_nodes]
 
@@ -65,7 +63,6 @@ class MediaTreeListingPlugin(CMSPluginBase):
 
     list_max_depth = None
     list_filter_media_types = None
-    files_selected = False
 
     class FolderLink(FolderLinkBase):
         pass
