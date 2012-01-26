@@ -47,7 +47,7 @@ class MediaTreeGalleryPlugin(MediaTreeSlideshowPlugin):
     def init_nodes(self, context, instance):
         super(MediaTreeGalleryPlugin, self).init_nodes(context, instance)
 
-        if instance.list_type == MediaTreeListing.LIST_NESTED or instance.include_descendants:
+        if instance.list_type == LISTING_NESTED or instance.include_descendants:
             filter = None
             if not instance.include_descendants:
                 max_depth = 1
@@ -60,7 +60,7 @@ class MediaTreeGalleryPlugin(MediaTreeSlideshowPlugin):
             self.folder_list = ()
 
         # fetch and validate parent folder:
-        if instance.list_type == MediaTreeListing.LIST_NESTED:
+        if instance.list_type == LISTING_NESTED:
             folder_id = context['request'].GET.get(self.FolderLink.folder_param_name(instance), None)
             if folder_id:
                 try:
@@ -74,7 +74,7 @@ class MediaTreeGalleryPlugin(MediaTreeSlideshowPlugin):
                 self.visible_nodes = self.current_folder.get_children()
 
     def render(self, context, instance, placeholder):
-        if instance.list_type == MediaTreeListing.LIST_NESTED:
+        if instance.list_type == LISTING_NESTED:
             self.list_max_depth = 1
         context = super(MediaTreeGalleryPlugin, self).render(context, instance, placeholder)
         self.FolderLink.plugin_instance = instance

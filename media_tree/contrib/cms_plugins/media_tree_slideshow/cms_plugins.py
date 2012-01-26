@@ -2,6 +2,7 @@ from media_tree.contrib.cms_plugins.media_tree_slideshow.models import MediaTree
 from media_tree.contrib.cms_plugins.media_tree_listing.cms_plugins import MediaTreeListingPlugin
 from media_tree.contrib.cms_plugins.media_tree_listing.models import MediaTreeListing
 from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormBase
+from media_tree.contrib.views.listing import LISTING_MERGED, LISTING_NESTED
 from media_tree import media_types
 from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
@@ -35,8 +36,8 @@ class MediaTreeSlideshowPlugin(MediaTreeListingPlugin):
 
     inlines = [MediaTreeSlideshowItemInline]
     module = _('Media Tree')
-    list_type = MediaTreeListing.LIST_MERGED
-    list_str_callback = None
+
+    list_type = LISTING_MERGED
     list_filter_media_types = (media_types.SUPPORTED_IMAGE,)
 
     class PluginMedia:
@@ -55,6 +56,7 @@ class MediaTreeSlideshowPlugin(MediaTreeListingPlugin):
     name = _('Slideshow')
     admin_preview = False
     render_template = 'cms/plugins/media_tree_slideshow.html'
+
 
     def render(self, context, instance, placeholder):
         context = super(MediaTreeSlideshowPlugin, self).render(context, instance, placeholder)
