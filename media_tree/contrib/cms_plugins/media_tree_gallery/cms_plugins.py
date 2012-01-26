@@ -1,7 +1,7 @@
 from media_tree.contrib.cms_plugins.media_tree_gallery.models import MediaTreeGallery, MediaTreeGalleryItem
 from media_tree.contrib.cms_plugins.media_tree_slideshow.cms_plugins import MediaTreeSlideshowPlugin
 from media_tree.contrib.cms_plugins.media_tree_listing.models import MediaTreeListing
-from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormBase
+from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormInlinePositioningBase
 from media_tree.models import FileNode
 from media_tree import media_types
 from media_tree.utils.filenode import get_nested_filenode_list
@@ -11,14 +11,14 @@ from django.contrib import admin
 from django.http import Http404
 
 
-class MediaTreeGalleryPluginForm(MediaTreePluginFormBase):
+class MediaTreeGalleryPluginForm(MediaTreePluginFormInlinePositioningBase):
     class Meta:
         model = MediaTreeGallery
 
 
 class MediaTreeGalleryItemInline(admin.StackedInline):
     model = MediaTreeGalleryItem
-    extra = 1
+    extra = 0
 
 
 # TODO The default output/template does not make much sense. Include: Previews, folder thumbnails, collapsible tree etc.

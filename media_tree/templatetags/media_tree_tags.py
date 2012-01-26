@@ -5,14 +5,21 @@ from django import template
 register = template.Library()
 
 def file_links(items, opts=None):
+	"""
+	Turns a (optionally nested) list of FileNode objects into a list of 
+	strings, linking to the associated files.
+	"""
 	result = []
 	kwargs = {
-		'use_metadata': True, 
-		'include_size': True, 
-		'include_extension': True, 
-		'include_icon': True
+		'use_metadata': False, 
+		'include_size': False, 
+		'include_extension': False, 
+		'include_icon': False
 	}
-	if opts:
+	if isinstance(opts, basestring):
+		for key in opts.split(' '):
+			kwargs[key] = True 
+	elif isinstance(opts, dict):
 		kwargs.update(opts)
 	for item in items:
 		if isinstance(item, FileNode):

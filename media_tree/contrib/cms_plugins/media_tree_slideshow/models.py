@@ -18,6 +18,9 @@ class MediaTreeImageListingBase(MediaTreeListingBase):
 
     class Meta:
         abstract = True
+        ordering = ['position', 'id']
+        verbose_name = _('media object')
+        verbose_name_plural = _('media objects')
 
 
 class MediaTreeSlideshow(MediaTreeImageListingBase):
@@ -32,6 +35,9 @@ class MediaTreeImageItemBase(MediaTreeListingItemBase):
 
     class Meta:
         abstract = True
+        ordering = ['position', 'id']
+        verbose_name = _('media object')
+        verbose_name_plural = _('media objects')
 
 
 class MediaTreeSlideshowItem(MediaTreeImageItemBase):

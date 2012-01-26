@@ -33,16 +33,12 @@ class MediaTreePluginFormBase(forms.ModelForm):
         return self.cleaned_data['link_page']
 
 
+class MediaTreePluginFormInlinePositioningBase(MediaTreePluginFormBase):
 
-
-
-
-
-
-
-
-
-
-
-
-
+    class Media:
+        js = [
+            'cms/js/plugins/admincompat.js',
+            'cms/js/libs/jquery.ui.core.js',
+            'cms/js/libs/jquery.ui.sortable.js',
+            'media_tree/js/jquery-inline-positioning.js'
+        ]

@@ -23,13 +23,21 @@ class MediaTreeListingBase(CMSPlugin):
 
 
 class MediaTreeListingItemBase(models.Model):
-    position = models.IntegerField(_('position'), default=1)
+    position = models.IntegerField(_('position'), blank=True)
 
     class Meta:
         abstract = True
         ordering = ['position', 'id']
         verbose_name = _('media object')
         verbose_name_plural = _('media objects')
+
+    def save(self, *args, **kwargs):
+        if self.position == None:
+            self.position = 0
+        super(MediaTreeListingItemBase, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.node.name
 
 
 class MediaTreeListing(MediaTreeListingBase):
