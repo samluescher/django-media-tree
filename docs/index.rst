@@ -33,7 +33,9 @@ Table of Contents
    templates
    configuration
    utils
-   extending 
+   extending
+   custom_plugins
+   views
    bundled
    cms_plugins
    

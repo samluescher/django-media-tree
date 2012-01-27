@@ -2,6 +2,7 @@ from media_tree.models import FileNode
 from media_tree.contrib.views.base import PluginMixin
 from media_tree.utils.filenode import get_file_link, get_merged_filenode_list, get_nested_filenode_list
 from django.views.generic.list import ListView
+from django.utils.translation import ugettext_lazy as _
 
 
 LISTING_MERGED = 'M'
@@ -9,21 +10,34 @@ LISTING_NESTED = 'N'
 
 
 class ListingView(ListView):
+    """
+    View class for implementing views that render a file listing. This class is
+    based on Django's generic ``ListView``. Please refer to the respective
+    Django documentation on subclassing and customizing `Class-based generic
+    views <https://docs.djangoproject.com/en/dev/topics/class-based-views/>`_.
 
-    selected_nodes = None
+    The following example ``urls.py`` would implement a view listing a folder
+    with the path ``some/folder`` and its immediate children, but not
+    descendants deeper down the hierarchy:: 
+
+        from media_tree.models import FileNode
+        from media_tree.contrib.views.listing import ListingView
+        from django.conf.urls.defaults import *
+
+        urlpatterns = patterns('',
+            (r'^listing/', ListingView.as_view(
+                # notice that queryset can be any iterable, for instance a list:
+                queryset=[FileNode.objects.get_by_path('some/folder')],
+                include_descendants=False
+            )),
+        )
+    """
+
     list_type = LISTING_NESTED
     list_max_depth = None
     list_filter_media_types = None
     include_descendants = True
-
-    def get_queryset(self):
-        """
-        Get the list of items for this view. This must be an interable, and may
-        be a queryset (in which qs-specific behavior will be enabled).
-        """
-        if self.selected_nodes is not None:
-        	return self.selected_nodes
-        return super(ListingView, self).get_queryset()
+    template_name = 'media_tree/filenode_list.html'
 
     def init_nodes(self):
         self.current_folder = None
@@ -59,16 +73,30 @@ class ListingView(ListView):
         context = super(ListingView, self).get_context_data(**kwargs)
         self.init_nodes()
         context['object_list'] = self.get_render_object_list(context.pop('object_list'))
+
+        if not 'title' in context:
+            context['title'] = _('media objects')
+
         return context
 
 
 class ListingMixin(PluginMixin):
+    """
+    A mixin that you can use as a superclass for your own custom plugins
+    for interfacing with third-party applications, such as Django CMS. Please
+    take a look at :ref:`custom-plugins` for more information.
+    """
 
-    def get_listing_view(self, selected_nodes, opts=None):
+    view_class = ListingView
+    """ The view class instantiated by ``get_listing_view()``. """
+
+    def get_listing_view(self, queryset, opts=None):
         """
         Instantiates and returns the view class that will generate the
         actual context for this plugin.
+
+        ``queryset`` can be an actual QuerySet or any iterable.
         """
-        view = self.get_view(ListingView, opts)
-        view.selected_nodes = selected_nodes
+        view = self.view_class(ListingView, opts)
+        view.queryset = selected_nodes
         return view 

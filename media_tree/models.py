@@ -48,6 +48,21 @@ def Property(func):
     return property(**func())
 
 
+class FileNodeManager(models.Manager):
+
+    def filter_args_for_path(self, path, **kwargs):
+        names = path.split('/')
+        names.reverse()
+        arg = 'name'
+        for name in names:
+            kwargs[arg] = name
+            arg = 'parent__%s' % arg
+        return kwargs
+
+    def get_by_path(self, path, **kwargs):
+        return self.get(**self.filter_args_for_path(path, **kwargs))
+
+
 class FileNode(ModelBase):
     """
     Each ``FileNode`` instance represents a node in the media object tree, that
@@ -81,7 +96,13 @@ class FileNode(ModelBase):
     STORAGE = get_media_storage()
 
     tree = TreeManager()
-    objects = models.Manager()
+    """ MPTT tree manager """
+
+    objects = FileNodeManager()
+    """ 
+    A special manager that implements the ``get_by_path`` method for retrieving ``FileNode``
+    objects by their full path.
+    """
 
     # FileFields -- have no docstring since Sphinx cannot access these attributes
     file = models.FileField(_('file'), upload_to=app_settings.MEDIA_TREE_UPLOAD_SUBDIR, null=True, storage=STORAGE)
