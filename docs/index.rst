@@ -20,8 +20,8 @@ Key features:
   image, slideshow, gallery, download list -- create your own! 
 
 
-Table of Contents
-=================
+The Media Tree application
+==========================
 
 .. toctree::
    :maxdepth: 2
@@ -29,13 +29,27 @@ Table of Contents
    installation
    admin
    models
-   fields
-   templates
    configuration
    utils
-   bundled
-   custom_apps
-   cms_plugins
+   bundled_extensions
+   
+
+Extending und using Media Tree with other applications
+======================================================
+
+Your choices range from implementing file listing and detail views based on the
+bundled generic view classes, extending Media Tree itself and its admin
+interface, or writing custom plugins for use with your own applications.
+
+.. toctree::
+   :maxdepth: 2
+
+   fields
+   templates
+   views
+   extending
+   custom_plugins
+   bundled_plugins
 
    
 Indices and tables
