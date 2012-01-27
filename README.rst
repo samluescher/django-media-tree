@@ -15,3 +15,8 @@ folder tree, and using them in your own applications.
 * Add metadata to all media to improve accessibility of your web sites.
 * Integration with `Django CMS <http://www.django-cms.org>`_. Plugins include:
   image, slideshow, gallery, download list -- create your own! 
+
+Full documentation
+==================
+
+http://readthedocs.org/docs/django-media-tree/
