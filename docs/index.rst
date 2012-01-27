@@ -33,12 +33,10 @@ Table of Contents
    templates
    configuration
    utils
-   extending
-   custom_plugins
-   views
    bundled
+   custom_apps
    cms_plugins
-   
+
    
 Indices and tables
 ==================
