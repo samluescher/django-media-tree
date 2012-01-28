@@ -49,18 +49,68 @@ def Property(func):
 
 
 class FileNodeManager(models.Manager):
+    """ 
+    A special manager that enables you to pass a ``path`` argument to 
+    :func:`get`, :func:`filter`, and :func:`exclude`, allowing you to 
+    retrieve ``FileNode`` objects by their full node path, 
+    which consists of the names of its parents and itself,
+    e.g. ``"path/to/folder/readme.txt"``.
+    """
 
-    def filter_args_for_path(self, path, **kwargs):
-        names = path.split('/')
+    def __init__(self, filter_args={}):
+        super(FileNodeManager, self).__init__()
+        self.filter_args = filter_args
+
+    def get_query_set(self):
+        return super(FileNodeManager, self).get_query_set().filter(**self.filter_args)
+
+    def get_filter_args_with_path(self, for_self, **kwargs):
+        names = kwargs['path'].strip('/').split('/')
         names.reverse()
-        arg = 'name'
-        for name in names:
-            kwargs[arg] = name
-            arg = 'parent__%s' % arg
-        return kwargs
+        parent_arg = '%s'
+        new_kwargs = {}
+        for index, name in enumerate(names):
+            if not for_self or index > 0:
+                parent_arg = 'parent__%s' % parent_arg
+            new_kwargs[parent_arg % 'name'] = name
+        new_kwargs[parent_arg % 'level'] = 0
+        new_kwargs.update(kwargs)
+        new_kwargs.pop('path')
+        return new_kwargs
 
-    def get_by_path(self, path, **kwargs):
-        return self.get(**self.filter_args_for_path(path, **kwargs))
+    def filter(self, *args, **kwargs):
+        """
+        Works just like the default Manager's :func:`filter` method, but
+        you can pass an additional keyword argument named ``path`` specifying
+        the full **path of the folder whose immediate child objects** you 
+        want to retrieve, e.g. ``"path/to/folder"``. 
+        """
+        if 'path' in kwargs:
+            kwargs = self.get_filter_args_with_path(False, **kwargs)
+        return super(FileNodeManager, self).filter(*args, **kwargs)
+
+    def exclude(self, *args, **kwargs):
+        """
+        Works just like the default Manager's :func:`exclude` method, but
+        you can pass an additional keyword argument named ``path`` specifying
+        the full **path of the folder whose immediate child objects** you 
+        want to exclude, e.g. ``"path/to/folder"``. 
+        """
+        if 'path' in kwargs:
+            kwargs = self.get_filter_args_with_path(False, **kwargs)
+        return super(FileNodeManager, self).exclude(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        """
+        Works just like the default Manager's :func:`get` method, but
+        you can pass an additional keyword argument named ``path`` specifying
+        the full path of the object you want to retrieve, e.g.
+        ``"path/to/folder/readme.txt"``. 
+        """
+        if 'path' in kwargs:
+            kwargs = self.get_filter_args_with_path(True, **kwargs)
+        return super(FileNodeManager, self).get(
+            *args, **kwargs)
 
 
 class FileNode(ModelBase):
@@ -79,10 +129,13 @@ class FileNode(ModelBase):
     You can access the actual media associated to a ``FileNode`` model instance 
     using the following to field attributes:
 
-    ``file``
+    .. role:: descname(literal)
+       :class: descname 
+
+    :descname:`file`
         The actual media file
 
-    ``preview_file``
+    :descname:`preview_file`
         An optional image file that will be used for previews. This is useful 
         for visual media that PIL cannot read, such as video files.
     """
@@ -100,8 +153,24 @@ class FileNode(ModelBase):
 
     objects = FileNodeManager()
     """ 
-    A special manager that implements the ``get_by_path`` method for retrieving ``FileNode``
-    objects by their full path.
+    An instance of the :class:`FileNodeManager` class, providing methods for retrieving ``FileNode`` objects by their full node path.
+    """
+
+    published_objects = FileNodeManager({'published': True})
+    """ 
+    A special manager with the same features as :attr:`objects`, but only displaying currently
+    published objects.
+    """
+
+    folders = FileNodeManager({'node_type': FOLDER})
+    """ 
+    A special manager with the same features as :attr:`objects`, but only displaying folder nodes.
+    """
+
+    files = FileNodeManager({'node_type': FILE})
+    """ 
+    A special manager with the same features as :attr:`objects`, but only displaying file nodes,
+    no folder nodes.
     """
 
     # FileFields -- have no docstring since Sphinx cannot access these attributes
@@ -114,10 +183,10 @@ class FileNode(ModelBase):
     """ The parent (folder) object of the node. """
     
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
-    """ Type of the node (``FileNode.FILE`` or ``FileNode.FOLDER``) """
+    """ Type of the node (:attr:`FileNode.FILE` or :attr:`FileNode.FOLDER`) """
     media_type = models.IntegerField(_('media type'), choices = app_settings.MEDIA_TREE_CONTENT_TYPE_CHOICES, blank=True, null=True, editable=False)
     """ Media type, i.e. broad category of the kind of media """
-    published = models.BooleanField(_('is published'), blank=True, default=True, editable=False)
+    published = models.BooleanField(_('is published'), blank=True, default=True)
     """ Publish date and time """
     mimetype = models.CharField(_('mimetype'), max_length=64, null=True, editable=False)
     """ The mime type of the media file """

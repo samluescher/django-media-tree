@@ -1,4 +1,8 @@
 {% extends "media_tree/base.html" %}
 {% block content %}
 {% include "media_tree/filenode/includes/figure.html" %}
+{% if link %}
+<p>
+	<a href="{{ link.href }}"{% if link.target %} target="{{ link.target }}{% endif %}"{% if link.rel %} rel="{{ link.rel }}{% endif %}">{{ link.text }}</a>{% endif %}
+</p>
 {% endblock %}

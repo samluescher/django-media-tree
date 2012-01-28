@@ -1,5 +1,5 @@
 from media_tree.models import FileNode
-from media_tree.contrib.views.base import PluginMixin
+from media_tree.contrib.views.mixin_base import PluginMixin
 from django.views.generic.detail import DetailView
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
@@ -30,9 +30,26 @@ class FileNodeDetailView(DetailView):
     """
 
     model = FileNode
+
     filter_media_types = None
+    """ An iterable containing media types to filter for. """
+
     filter_node_types = (FileNode.FILE,)
+    """ 
+    An iterable containing node types to filter for. By default this is
+    ``(FileNode.FILE,)``
+    """
+
     context_object_name = 'object'
+    """
+    The context_object_name attribute on a generic view specifies the 
+    context variable to use.
+    """
+
+    template_name = "media_tree/filenode_detail.html"
+    """
+    Name of the template.
+    """
 
     def get_object(self, queryset=None):
         """
@@ -50,7 +67,8 @@ class FileNodeDetailView(DetailView):
 
         # Next, try looking up by path.
         if path is not None:
-            queryset = queryset.filter(**FileNode.objects.filter_args_for_path(path))
+            queryset = queryset.filter(**FileNode.objects.get_filter_args_with_path(
+                for_self=True, path=path))
             try:
                 obj = queryset.get()
             except FileNode.DoesNotExist:
@@ -60,8 +78,8 @@ class FileNodeDetailView(DetailView):
 
         return super(FileNodeDetailView, self).get_object(queryset)
 
-    def get_queryset(self):
-        queryset = super(FileNodeDetailView, self).get_queryset()
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(FileNodeDetailView, self).get_queryset(*args, **kwargs)
         kwargs = {}
         if self.filter_node_types:
             kwargs['node_type__in'] = self.filter_node_types
@@ -77,20 +95,15 @@ class FileNodeDetailView(DetailView):
 
 
 class FileNodeDetailMixin(PluginMixin):
-    """
-    A mixin that you can use as a superclass for your own custom plugins
-    for interfacing with third-party applications, such as Django CMS. Please
-    take a look at :ref:`custom-plugins` for more information.
-    """
     
     view_class = FileNodeDetailView
     """ The view class instantiated by ``get_detail_view()``. """
 
-    def get_detail_view(self, object, opts=None):
+    def get_detail_view(self, request, object, opts=None):
         """
         Instantiates and returns the view class that will generate the actual
         context for this plugin.
         """
-        view = self.get_view(self.view_class, opts)
+        view = self.get_view(request, self.view_class, opts)
         view.object = object
         return view 

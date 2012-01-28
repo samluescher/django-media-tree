@@ -3,6 +3,7 @@ from media_tree.contrib.cms_plugins.helpers import PluginLink
 from django import forms
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import NoReverseMatch
 
 
 class MediaTreePluginFormBase(forms.ModelForm):
@@ -14,8 +15,10 @@ class MediaTreePluginFormBase(forms.ModelForm):
             if self.cleaned_data['link_type'] and self.cleaned_data['node'].node_type == FileNode.FOLDER:
                 raise forms.ValidationError(_('You can only link individual files, not folders.'))
             if self.cleaned_data['link_type'] == PluginLink.LINK_IMAGE_DETAIL:
-                if not PluginLink(self.cleaned_data['link_type'], obj=self.cleaned_data['node']).href():
-                    raise forms.ValidationError(_('You need to attach the Media Tree application to a page in order to link to full size images.'))
+                try:
+                    PluginLink(self.cleaned_data['link_type'], obj=self.cleaned_data['node']).href()
+                except NoReverseMatch:
+                    raise forms.ValidationError(_('You need to attach the Media Tree Image Detail application to a page in order to link to full size images.'))
         return self.cleaned_data['link_type']
 
     def clean_link_url(self):

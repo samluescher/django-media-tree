@@ -1,6 +1,6 @@
 from media_tree.contrib.cms_plugins.media_tree_image.models import MediaTreeImage
 from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormBase
-from media_tree.contrib.views.detail.image import ImageDetailMixin
+from media_tree.contrib.views.detail.image import ImageNodeDetailMixin
 from media_tree import media_types
 from media_tree.media_backends import get_media_backend
 from media_tree.contrib.cms_plugins.helpers import PluginLink
@@ -16,7 +16,7 @@ class MediaTreeImagePluginForm(MediaTreePluginFormBase):
         model = MediaTreeImage
 
 
-class MediaTreeImagePlugin(CMSPluginBase, ImageDetailMixin):
+class MediaTreeImagePlugin(CMSPluginBase, ImageNodeDetailMixin):
     model = MediaTreeImage
     module = _('Media Tree')
     name = _("Image")
@@ -41,8 +41,11 @@ class MediaTreeImagePlugin(CMSPluginBase, ImageDetailMixin):
     exclude = ('body', 'render_template')
 
     def render(self, context, instance, placeholder):
-        view = self.get_detail_view(instance.node, opts=instance)
+        view = self.get_detail_view(context['request'], instance.node, opts=instance)
         context.update(view.get_context_data())
+        if instance.link_type:
+            context[view.context_object_name].link = PluginLink.create_from(instance)
+
         return context
 
     def icon_src(self, instance):
