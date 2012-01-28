@@ -1,7 +1,8 @@
 from media_tree.utils.filenode import get_file_link
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
- 
+from django.core.urlresolvers import NoReverseMatch
+
 
 class PluginLink(object):
     
@@ -10,14 +11,15 @@ class PluginLink(object):
     LINK_IMAGE_DETAIL = 'I'
     LINK_URL_REVERSE = 'R'
     
-    def __init__(self, type, url=None, obj=None, rel=None, target=None, querystring=''):
+    def __init__(self, type=LINK_URL, url=None, text='', obj=None, rel=None, target=None, querystring=''):
         self.type = type
         self.url = url
         self.obj = obj
         self.target = target
         self.querystring = querystring
+        self.text = text
         if self.type == PluginLink.LINK_IMAGE_DETAIL:
-            self.url = ['media_tree_image_detail', self.obj.pk]
+            self.url = ['media_tree.contrib.cms_plugins.media_tree_image.ImagePluginDetailView', self.obj.pk]
             self.rel = 'image-detail'
 
     def href(self):
@@ -33,7 +35,7 @@ class PluginLink(object):
             try:
                 href = reverse(name, args=parts)
             except NoReverseMatch:
-                return False
+                raise
         if self.type == PluginLink.LINK_PAGE:
             href = self.obj.get_absolute_url()
         if href != None:
@@ -50,39 +52,8 @@ class PluginLink(object):
         elif instance.link_type == PluginLink.LINK_IMAGE_DETAIL:
             link_obj = instance.node
             if getattr(instance, 'page', None):
-                querystring = '?back_page='+str(instance.page.pk)
+                querystring = '?return_url=%s' % instance.page.get_absolute_url()
         else:
             link_obj = None
         return PluginLink(instance.link_type, url=instance.link_url, obj=link_obj, target=instance.link_target, querystring=querystring)
 
-
-class FolderLinkBase(object):
-    plugin_instance = None
-    filter_media_types = None
-    current_folder = None
-
-    def __init__(self, node, count_descendants=True):
-        self.node = node
-        self.count_descendants = count_descendants
-
-    @staticmethod
-    def folder_param_name(plugin_instance):
-        return 'folder-%i' % plugin_instance.pk
-
-    def get_link_content(self):
-        return self.node.__unicode__()
-
-    # TODO: This should include the default image for each folder as its icon
-    def __unicode__(self):
-        if self.count_descendants:
-            descendants = self.node.get_descendants()
-            if self.filter_media_types:
-                descendants = descendants.filter(media_type__in=self.filter_media_types)
-            count = ' <span class="count">(%i)</span>' % descendants.count()
-        else:
-            count = ''
-        extra_class = ''
-        if self.node == self.current_folder:
-            extra_class = 'selected'
-        query = '?%s=%i' % (self.__class__.folder_param_name(self.plugin_instance), self.node.pk)
-        return get_file_link(self.node, href=query, extra=count, extra_class=extra_class, include_icon=True)

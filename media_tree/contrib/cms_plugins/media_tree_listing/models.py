@@ -5,12 +5,10 @@ from media_tree.fields import FileNodeForeignKey
 from cms.models import CMSPlugin
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from media_tree.contrib.views.listing import LISTING_MERGED, LISTING_NESTED
 
 
 class MediaTreeListingBase(CMSPlugin):
-
-    LIST_MERGED = 'M'
-    LIST_NESTED = 'N'
 
     render_template = models.CharField(_('template'), max_length=100, choices=None, blank=True, null=True, help_text=_('Template used to render the plugin.'))
     filename_filter = models.CharField(_('filter file and folder names'), max_length=255, null=True, blank=True, help_text=_('Example: *.jpg; Documents.*;'), editable=False)
@@ -25,7 +23,7 @@ class MediaTreeListingBase(CMSPlugin):
 
 
 class MediaTreeListingItemBase(models.Model):
-    position = models.IntegerField(_('position'), default=1)
+    position = models.IntegerField(_('position'), blank=True)
 
     class Meta:
         abstract = True
@@ -33,9 +31,17 @@ class MediaTreeListingItemBase(models.Model):
         verbose_name = _('media object')
         verbose_name_plural = _('media objects')
 
+    def save(self, *args, **kwargs):
+        if self.position == None:
+            self.position = 0
+        super(MediaTreeListingItemBase, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.node.name
+
 
 class MediaTreeListing(MediaTreeListingBase):
-    list_type = models.CharField(_('List type'), max_length=1, default=MediaTreeListingBase.LIST_NESTED, choices=((MediaTreeListingBase.LIST_MERGED, _('merged')), (MediaTreeListingBase.LIST_NESTED, _('nested'))))
+    list_type = models.CharField(_('List type'), max_length=1, default=LISTING_NESTED, choices=((LISTING_MERGED, _('merged')), (LISTING_NESTED, _('nested'))))
 
 
 class MediaTreeListingItem(MediaTreeListingItemBase):

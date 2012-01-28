@@ -45,7 +45,7 @@ class FileForm(forms.ModelForm):
                 'fields': ['parent', 'file']
             }),
             (_('Display'), {
-                'fields': ['preview_file', 'position', 'is_default'],
+                'fields': ['published', 'preview_file', 'position', 'is_default'],
                 'classes': ['collapse']
             }),
             (_('Metadata'), {

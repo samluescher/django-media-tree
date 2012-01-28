@@ -1,0 +1,7 @@
+{% extends "media_tree/base.html" %}
+{% block content %}
+{% load media_tree_tags %}
+<h2>{{ object.title }}</h2>
+{% if object.description %}<p>{{ object.description }}</p>{% endif %}
+<p>{{ object|file_link:"include_icon include_size include_extension" }}</p>
+{% endblock %}

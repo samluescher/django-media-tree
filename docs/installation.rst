@@ -98,11 +98,11 @@ Basic setup
       )
 
   .. Note::
-  In principle, Media Tree can work together with any other thumbnail
-  generating app, provided that you write the appropriate media backend class
-  to support it. Please have a look at one of the backends under
-  ``media_tree.contrib.media_backends`` if you are interested in using your
-  own specific 3rd-party app.
+     In principle, Media Tree can work together with any other thumbnail
+     generating app, provided that you write the appropriate media backend class
+     to support it. Please have a look at one of the backends under
+     ``media_tree.contrib.media_backends`` if you are interested in using your
+     own specific 3rd-party app.
 
 .. _install-swfupload:
 
