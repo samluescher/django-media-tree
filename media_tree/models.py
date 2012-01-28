@@ -127,7 +127,7 @@ class FileNode(ModelBase):
        trees.
 
     You can access the actual media associated to a ``FileNode`` model instance 
-    using the following to field attributes:
+    using the following fields:
 
     .. role:: descname(literal)
        :class: descname 
@@ -138,6 +138,11 @@ class FileNode(ModelBase):
     :descname:`preview_file`
         An optional image file that will be used for previews. This is useful 
         for visual media that PIL cannot read, such as video files.
+
+    These fields are of the class ``FileField``. Please see :ref:`configuration`
+    for information on how to configure storage and media backend classes. By
+    default, media files are stored in a subfolder ``uploads`` under your media
+    root.
     """
 
     FOLDER = media_types.FOLDER
