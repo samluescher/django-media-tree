@@ -28,7 +28,7 @@ class FileNodeListingView(ListView):
         from django.conf.urls.defaults import *
 
         urlpatterns = patterns('',
-            (r'^listing/', FileNodeListingView.as_view(
+            (r'^listing/$', FileNodeListingView.as_view(
                 # notice that queryset can be any iterable, for instance a list:
                 queryset=[FileNode.objects.get_by_path('some/folder')],
                 max_depth=2
@@ -46,7 +46,7 @@ class FileNodeListingView(ListView):
         from django.conf.urls.defaults import *
 
         urlpatterns = patterns('',
-            (r'^listing/', FileNodeListingView.as_view(
+            (r'^listing/$', FileNodeListingView.as_view(
                 # notice that queryset can be any iterable, for instance a list:
                 queryset=FileNode.objects.filter(pk__in=(1, 2)),
                 list_type=LISTING_MERGED
