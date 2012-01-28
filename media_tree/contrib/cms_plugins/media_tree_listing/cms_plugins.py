@@ -37,6 +37,8 @@ class MediaTreeListingPlugin(CMSPluginBase, FileNodeListingFilteredByFolderMixin
 
     def render(self, context, instance, placeholder):
         selected_nodes = [item.node for item in instance.media_items.all()]
+        if hasattr(instance, 'filter_supported') and not getattr(instance, 'filter_supported'):
+            self.list_filter_media_types = None
         view = self.get_listing_view(context['request'], selected_nodes, opts=instance)
         view.folder_pk_param_name = 'folder-%i' % instance.pk
         context.update(view.get_context_data())
