@@ -10,6 +10,7 @@ from django.shortcuts import render_to_response
 from django.contrib.admin import helpers
 from django.http import HttpResponse, HttpResponseRedirect
 
+
 def get_current_node(form):
     selected_nodes = form.get_selected_nodes()
     if len(selected_nodes) > 0:
@@ -73,6 +74,26 @@ def copy_selected(modeladmin, request, queryset):
     })
     return filenode_admin_action(modeladmin, request, queryset, CopySelectedForm, extra_context, success_messages)
 copy_selected.short_description = _('Copy selected %(verbose_name_plural)s')
+
+def expand_selected(modeladmin, request, queryset):
+    expanded_folders_pk = modeladmin.get_expanded_folders_pk(request)
+    add_pks = [obj.pk for obj in queryset.filter(node_type=FileNode.FOLDER)]
+    expanded_folders_pk.extend(add_pks)
+    response = HttpResponseRedirect('') 
+    modeladmin.set_expanded_folders_pk(response, expanded_folders_pk)
+    return response
+expand_selected.short_description = _('Expand selected %(verbose_name_plural)s') % {
+    'verbose_name_plural': _('folders')}
+
+def collapse_selected(modeladmin, request, queryset):
+    expanded_folders_pk = modeladmin.get_expanded_folders_pk(request)
+    remove_pks = [obj.pk for obj in queryset.filter(node_type=FileNode.FOLDER)]
+    expanded_folders_pk = set(expanded_folders_pk).difference(set(remove_pks))
+    response = HttpResponseRedirect('') 
+    modeladmin.set_expanded_folders_pk(response, expanded_folders_pk)
+    return response
+collapse_selected.short_description = _('Collapse selected %(verbose_name_plural)s') % {
+    'verbose_name_plural': _('folders')}
 
 def change_metadata_for_selected(modeladmin, request, queryset):
     # TODO Use AdminDateTimeWidget etc

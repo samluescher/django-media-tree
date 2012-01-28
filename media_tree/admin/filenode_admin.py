@@ -560,6 +560,8 @@ class FileNodeAdmin(MPTTModelAdmin):
 FileNodeAdmin.register_action(core_actions.copy_selected)
 FileNodeAdmin.register_action(core_actions.move_selected)
 FileNodeAdmin.register_action(core_actions.change_metadata_for_selected)
+FileNodeAdmin.register_action(core_actions.expand_selected)
+FileNodeAdmin.register_action(core_actions.collapse_selected)
 
 FileNodeAdmin.register_action(maintenance_actions.delete_orphaned_files, ('media_tree.manage_filenode',))
 if settings.DEBUG:
