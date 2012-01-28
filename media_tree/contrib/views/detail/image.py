@@ -33,8 +33,10 @@ class ImageNodeDetailView(FileNodeDetailView):
     """ Maximum height of the thumbnail. If not set, default values will be used. """
 
     context_object_name = 'image_node'
+    """ Designates the name of the variable to use in the context. """
 
     template_name = "media_tree/image_detail.html"
+    """ Name of the template. """
 
     filter_media_types = (media_types.SUPPORTED_IMAGE,)
 

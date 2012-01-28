@@ -40,16 +40,11 @@ class FileNodeDetailView(DetailView):
     ``(FileNode.FILE,)``
     """
 
-    context_object_name = 'object'
-    """
-    The context_object_name attribute on a generic view specifies the 
-    context variable to use.
-    """
+    context_object_name = 'node'
+    """ Designates the name of the variable to use in the context. """
 
     template_name = "media_tree/filenode_detail.html"
-    """
-    Name of the template.
-    """
+    """ Name of the template. """
 
     def get_object(self, queryset=None):
         """

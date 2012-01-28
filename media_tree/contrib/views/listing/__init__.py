@@ -74,6 +74,9 @@ class FileNodeListingView(ListView):
     template_name = 'media_tree/filenode_list.html'
     """ Name of the template. """
 
+    context_object_name = 'node_list'
+    """ Designates the name of the variable to use in the context. """
+
     def get_render_object_list(self, object_list, folder_list=False, processors=None, exclude_media_types=None, max_depth=None):
         if max_depth is None:
             if self.list_max_depth is None:
@@ -104,7 +107,7 @@ class FileNodeListingView(ListView):
         if not 'object_list' in kwargs:
             kwargs['object_list'] = self.get_queryset()
         context = super(FileNodeListingView, self).get_context_data(**kwargs)
-        context['object_list'] = self.get_render_object_list(context.pop('object_list'))
+        context[self.context_object_name] = self.get_render_object_list(context.pop(self.context_object_name))
         
         if not 'title' in context:
             context['title'] = _('Media objects')
@@ -186,7 +189,7 @@ class FileNodeListingFilteredByFolderView(FileNodeListingView):
 
     def get_context_data(self, **kwargs):
         context = super(FileNodeListingFilteredByFolderView, self).get_context_data(**kwargs)
-        
+ 
         if self.can_filter_by_parent_folder():
             class FolderLink(FolderLinkBase):
                 selected_folder = self.parent_folder

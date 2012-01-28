@@ -2,6 +2,6 @@
 {% block content %}
 {% load media_tree_tags %}
 <ul class="file-list">
-{{ object_list|file_links:"use_metadata include_icon include_size include_extension"|unordered_list }}
+{{ node_list|file_links:"use_metadata include_icon include_size include_extension"|unordered_list }}
 </ul>
 {% endblock %}

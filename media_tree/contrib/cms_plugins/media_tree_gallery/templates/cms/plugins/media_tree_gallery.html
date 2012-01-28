@@ -8,15 +8,15 @@
 </ul>
 {% endif %}
 
-{% if object_list %}
+{% if node_list %}
 
 <div class="slideshow">
-{% for image_node in object_list %}
+{% for image_node in node_list %}
 {% include "cms/plugins/media_tree_image.html" %}
 {% endfor %}
 </div>
 
-{% ifnotequal object_list|length 1 %}
+{% ifnotequal node_list|length 1 %}
 <div class="nav">
 <ul>
     <li class="button"><a class="prev" href="javascript:void(0);">{% trans "Previous" %}</a></li>
@@ -32,9 +32,9 @@
 //<![CDATA[
 $(document).ready(function() {
     
-    {% ifnotequal object_list|length 1 %}
+    {% ifnotequal node_list|length 1 %}
     var thumbs = [
-    {% for node in object_list %}
+    {% for node in node_list %}
         {% if not forloop.first %},{% endif %}'<li><a href="#">{% if pager_thumbnails %}<img src="{% thumbnail node pager_thumbnail_size as thumb%}{{ thumb.url }}" alt="{{ node.get_alt }}"/>{% else %}{{ forloop.counter}}{% endif %}</a></li>'
     {% endfor %}
     ]
@@ -51,7 +51,7 @@ $(document).ready(function() {
 		fx: '{{ fx }}'
 		{% ifnotequal speed "normal" %},speed: '{{ speed }}'{% endifnotequal %}
 		,timeout: {{ timeout }} 
-        {% ifnotequal object_list|length 1 %}
+        {% ifnotequal node_list|length 1 %}
 	    ,prev: '#{{ plugin.id_attr }} .prev'
 	    ,next: '#{{ plugin.id_attr }} .next'
 	    ,pager: '#{{ plugin.id_attr }} .pager'
@@ -61,7 +61,7 @@ $(document).ready(function() {
         {% endifnotequal %}
 	});
 	
-	{% ifnotequal object_list|length 1 %}
+	{% ifnotequal node_list|length 1 %}
     {% if auto_play %}
     $('#{{ plugin.id_attr }} .play').closest('li').hide();
     {% else %}
