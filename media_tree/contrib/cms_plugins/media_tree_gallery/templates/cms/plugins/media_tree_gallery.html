@@ -3,6 +3,7 @@
 <div id="{{ plugin.id_attr }}" class="gallery">
 
 {% if folder_list and folder_list|length > 1 %}
+{{ folder_list|length }}
 <ul class="file-list folder_list">
     {{ folder_list|unordered_list }}
 </ul>

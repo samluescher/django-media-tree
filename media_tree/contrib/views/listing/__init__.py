@@ -133,6 +133,12 @@ class FileNodeListingFilteredByFolderView(FileNodeListingView):
     Name of the parameter added to the query string for the folder filter. 
     """
 
+    auto_merge_single_folder = True
+    """ 
+    Specifies whether the folder list should be suppressed and the list merged
+    if there is only one level of hierarchy in ``queryset``. 
+    """
+
     def init_parent_folder(self):
         if self.request:
             GET = self.request.GET
@@ -166,19 +172,23 @@ class FileNodeListingFilteredByFolderView(FileNodeListingView):
     def get_queryset(self, *args, **kwargs):
         queryset = super(FileNodeListingFilteredByFolderView, self).get_queryset(*args, **kwargs)
         if self.can_filter_by_parent_folder():
-            self.init_parent_folder()
-            self.folder_queryset = queryset
-            if self.parent_folder:
-                try:
-                    self.validate_parent_folder()
-                except (PermissionDenied, FileNode.DoesNotExist):
-                    raise Http404('Invalid parent folder')
-                return self.parent_folder.get_children()
+            if not self.auto_merge_single_folder or  \
+                (len(queryset) == 1 and queryset[0].is_folder()):
+                    self.init_parent_folder()
+                    self.folder_queryset = queryset
+                    if self.parent_folder:
+                        try:
+                            self.validate_parent_folder()
+                        except (PermissionDenied, FileNode.DoesNotExist):
+                            raise Http404('Invalid parent folder')
+                        return self.parent_folder.get_children()
+            else:
+                self.list_type = LISTING_MERGED
 
         return queryset
 
     def get_render_object_list(self, object_list, folder_list=False, processors=None, exclude_media_types=None, max_depth=None):
-        if not folder_list and self.can_filter_by_parent_folder():
+        if not folder_list and self.folder_queryset:
             max_depth = 1
             if not exclude_media_types:
                 exclude_media_types = ()
@@ -189,15 +199,17 @@ class FileNodeListingFilteredByFolderView(FileNodeListingView):
 
     def get_context_data(self, **kwargs):
         context = super(FileNodeListingFilteredByFolderView, self).get_context_data(**kwargs)
- 
-        if self.can_filter_by_parent_folder():
+        
+        if self.folder_queryset:
             class FolderLink(FolderLinkBase):
                 selected_folder = self.parent_folder
                 folder_param_name = self.folder_pk_param_name
                 count_children = True
                 filter_media_types = self.list_filter_media_types
-            context['folder_list'] = self.get_render_object_list(self.folder_queryset, folder_list=True,
+            folder_list = self.get_render_object_list(self.folder_queryset, folder_list=True,
                 processors=(FolderLink,))
+            if len(folder_list) > 0:
+                context['folder_list'] = folder_list
 
         return context
 
