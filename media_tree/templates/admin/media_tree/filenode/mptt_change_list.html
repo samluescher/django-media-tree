@@ -31,13 +31,13 @@ it is embedded here.
           </li>
       {% else %}
           <li>
-            <a href="add/?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
+            <a href="{% url admin:media_tree_filenode_add %}?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
               {% trans "Add file" %}
             </a>
           </li>
       {% endif %}
       <li>
-        <a id="object-tool-add-folder" href="add_folder/{% if is_popup %}?_popup=1{% endif %}" class="addlink folder">
+        <a id="object-tool-add-folder" href="{% url admin:media_tree_filenode_add_folder %}{% if is_popup %}?_popup=1{% endif %}" class="addlink folder">
           <span class="caption">{% trans "Add folder" %}</span>
         </a>
       </li>

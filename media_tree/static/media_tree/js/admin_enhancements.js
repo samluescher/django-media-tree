@@ -35,7 +35,7 @@ jQuery(function($) {
         var targetFolder = $('#changelist').data('targetFolder');
         
         cols[1] = $(
-            '<td><form action="add_folder/" method="POST">'
+            '<td><form action="' + $('#object-tool-add-folder').attr('href') + '" method="POST">'
                 +'<span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
                 +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
                 +'<input type="hidden" name="parent" value="' + (targetFolder ? targetFolder.id : '') + '" />'

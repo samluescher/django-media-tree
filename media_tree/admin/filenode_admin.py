@@ -1,4 +1,3 @@
-# TODO: If a file does not exist, generating a thumbnail causes an IOError, which should be caught if not MEDIA_TREE_MEDIA_BACKEND_DEBUG
 # TODO: Metadata tooltip is too narrow and text gets too wrapped
 # TODO: Add icon for change and add folder
 # TODO: Ordering of tree by column (within parent) should be possible
@@ -225,7 +224,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         else:
             rel = ''
         if hasattr(node, 'reduce_levels'):
-            reduce_param = '&reduce_levels=%i' % node.reduce_levels
+            reduce_param = '?reduce_levels=%i' % node.reduce_levels
         else:
             reduce_param = ''
         if node.is_folder():
@@ -449,6 +448,7 @@ class FileNodeAdmin(MPTTModelAdmin):
             node_type=FileNode.FOLDER)
 
     def change_view(self, request, object_id, extra_context=None):
+        object_id = str(object_id)
         node = get_object_or_404(FileNode, pk=unquote(object_id))
         set_request_attr(request, 'save_node', node)
         set_request_attr(request, 'save_node_type', node.node_type)
@@ -514,6 +514,20 @@ class FileNodeAdmin(MPTTModelAdmin):
             return render_to_response('admin/media_tree/filenode/upload_form.html',
                 {'form': form, 'node': self.get_parent_folder(request)}, context_instance=RequestContext(request))
 
+    def open_path_view(self, request, path=''):
+        if path is None or path == '':
+            return self.changelist_view(request)
+        try:
+            obj = FileNode.objects.get(path=path)
+        except FileNode.DoesNotExist:
+            raise Http404
+        if obj.is_folder():
+            request.GET = request.GET.copy()
+            request.GET['folder_id'] = obj.pk
+            return self.changelist_view(request)
+        else:
+            return self.change_view(request, obj.pk)
+
     def i18n_javascript(self, request):
         """
         Displays the i18n JavaScript that the Django admin requires.
@@ -549,6 +563,12 @@ class FileNodeAdmin(MPTTModelAdmin):
             url(r'^add_folder/$',
                 self.admin_site.admin_view(self.add_folder_view),
                 name='%s_%s_add_folder' % info),
+            url(r'^!/(?P<path>.*)/$',
+                self.admin_site.admin_view(self.open_path_view),
+                name='%s_%s_open_path' % info),
+            url(r'^!/$',
+                self.admin_site.admin_view(self.open_path_view),
+                name='%s_%s_open_root' % info),
             url(r'^(.+)/expand/$',
                 self.admin_site.admin_view(self.folder_expand_view),
                 name='%s_%s_folder_expand' % info),

@@ -418,22 +418,27 @@ class FileNode(ModelBase):
     has_metadata_including_descendants.short_description = _('Metadata')
     has_metadata_including_descendants.boolean = True
 
+    def get_path(self):
+        path = ''
+        for name in [node.name for node in self.get_ancestors()]:
+            path = '%s%s/' % (path, name) 
+        return '%s%s' % (path, self.name)
+
     def get_admin_url(self):
         """Returns the URL for viewing a FileNode in the admin."""
 
         if self.is_top_node():
             return reverse('admin:media_tree_filenode_changelist');
-        if self.is_folder():
-            return "%s?folder_id=%i" % (reverse('admin:media_tree_filenode_changelist', args=()), self.pk);
-        if self.pk:
-            return reverse('admin:media_tree_filenode_change', args=(self.pk,));
+
+        if self.is_folder() or self.pk:
+            return reverse('admin:media_tree_filenode_open_path', args=(self.get_path(),));
+
+        #if self.is_folder():
+        #    return "%s?folder_id=%i" % (reverse('admin:media_tree_filenode_changelist', args=()), self.pk);
+        #if self.pk:
+        #    return reverse('admin:media_tree_filenode_change', args=(self.pk,));
+
         return ''
-        # ID Path no longer necessary
-        #url = reverse('admin:media_tree_filenode_changelist');
-        #for node in self.get_node_path():
-        #    if node.level >= 0:
-        #        url += str(node.pk)+'/'
-        #return url
 
     def get_admin_link(self):
         return force_unicode(mark_safe(u'%s: <a href="%s">%s</a>' %
@@ -550,7 +555,7 @@ class FileNode(ModelBase):
         self.media_type = media_types.SUPPORTED_IMAGE
         self.width, self.height = self.saved_image.size
 
-    def path(self):
+    def file_path(self):
         return self.file.path if self.file else ''
 
     def is_folder(self):
