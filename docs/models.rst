@@ -1,10 +1,6 @@
 Models and Managers
 *******************
 
-
-The FileNode model
-==================
-
 .. automodule:: media_tree.models
    :members:
    :inherited-members:
