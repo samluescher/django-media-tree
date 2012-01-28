@@ -32,8 +32,6 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'dummy.settings'
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 
-autodoc_member_order = 'groupwise'
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -239,4 +237,5 @@ def cut_from_signature(app, what, name, obj, options, signature, return_annotati
     
 def setup(app):
     app.connect('autodoc-process-signature', cut_from_signature)
-    
+
+autodoc_member_order = 'groupwise'
