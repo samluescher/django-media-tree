@@ -1,3 +1,4 @@
+# TODO: use_path=True is implemented, but expanded_folders are not stored 
 # TODO: Metadata tooltip is too narrow and text gets too wrapped
 # TODO: Add icon for change and add folder
 # TODO: Ordering of tree by column (within parent) should be possible
@@ -224,13 +225,13 @@ class FileNodeAdmin(MPTTModelAdmin):
         else:
             rel = ''
         if hasattr(node, 'reduce_levels'):
-            reduce_param = '?reduce_levels=%i' % node.reduce_levels
+            qs_params = {'reduce_levels': node.reduce_levels}
         else:
-            reduce_param = ''
+            qs_params = None
         if node.is_folder():
             empty = ' empty' if node.get_children().count() == 0 else ''
-            return '<a href="%s%s" class="folder-toggle%s" rel="%s"><span>%s</span></a>' %  \
-                (node.get_admin_url(), reduce_param, empty, rel, '+')
+            return '<a href="%s" class="folder-toggle%s" rel="%s"><span>%s</span></a>' %  \
+                (node.get_admin_url(qs_params), empty, rel, '+')
         else:
             return '<a class="folder-toggle dummy" rel="%s">&nbsp;</a>' % (rel,)
     expand_collapse.short_description = ''
@@ -524,7 +525,7 @@ class FileNodeAdmin(MPTTModelAdmin):
             raise Http404
         if obj.is_folder():
             request.GET = request.GET.copy()
-            request.GET['folder_id'] = obj.pk
+            request.GET['folder_id'] = str(obj.pk)
             return self.changelist_view(request)
         else:
             return self.change_view(request, obj.pk)

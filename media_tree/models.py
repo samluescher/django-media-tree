@@ -424,21 +424,28 @@ class FileNode(ModelBase):
             path = '%s%s/' % (path, name) 
         return '%s%s' % (path, self.name)
 
-    def get_admin_url(self):
+    def get_admin_url(self, query_params=None, use_path=False):
         """Returns the URL for viewing a FileNode in the admin."""
 
+        if not query_params:
+            query_params = {}
+
+        url = ''
         if self.is_top_node():
-            return reverse('admin:media_tree_filenode_changelist');
+            url = reverse('admin:media_tree_filenode_changelist');
+        elif use_path and (self.is_folder() or self.pk):
+            url = reverse('admin:media_tree_filenode_open_path', args=(self.get_path(),));
+        elif self.is_folder():
+            url = reverse('admin:media_tree_filenode_changelist');
+            query_params['folder_id'] = self.pk
+        elif self.pk:
+            return reverse('admin:media_tree_filenode_change', args=(self.pk,));
 
-        if self.is_folder() or self.pk:
-            return reverse('admin:media_tree_filenode_open_path', args=(self.get_path(),));
+        if len(query_params):
+            params = ['%s=%s' % (key, value) for key, value in query_params.items()]
+            url = '%s?%s' % (url, "&".join(params))
 
-        #if self.is_folder():
-        #    return "%s?folder_id=%i" % (reverse('admin:media_tree_filenode_changelist', args=()), self.pk);
-        #if self.pk:
-        #    return reverse('admin:media_tree_filenode_change', args=(self.pk,));
-
-        return ''
+        return url
 
     def get_admin_link(self):
         return force_unicode(mark_safe(u'%s: <a href="%s">%s</a>' %
