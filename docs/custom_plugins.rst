@@ -31,7 +31,8 @@ information on the View classes themselves::
         # Assuming render() is a standard method of YourPluginSuperclass
         def render(self, request, options_instance):
     
-            # Get the generic view class using the Mixin
+            # Get the generic view class using the method inherited from
+            # the Mixin class.
             # Notice that get_detail_view() is inherited from the 
             # FileNodeListingMixin. We are also passing our options model 
             # instance for configuring the view instance.
