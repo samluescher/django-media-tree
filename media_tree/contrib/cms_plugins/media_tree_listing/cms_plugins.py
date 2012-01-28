@@ -40,6 +40,12 @@ class MediaTreeListingPlugin(CMSPluginBase, FileNodeListingFilteredByFolderMixin
         if hasattr(instance, 'filter_supported') and not getattr(instance, 'filter_supported'):
             self.list_filter_media_types = None
         view = self.get_listing_view(context['request'], selected_nodes, opts=instance)
+        if hasattr(instance, 'include_descendants'):
+            # For each selected folder, its children should be visible. 
+            # Hence override include_descendants and solve with max_depth
+            view.include_descendants = True
+            if not getattr(instance, 'include_descendants'):
+                self.max_depth = 2
         view.folder_pk_param_name = 'folder-%i' % instance.pk
         context.update(view.get_context_data())
         return context
