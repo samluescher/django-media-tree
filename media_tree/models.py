@@ -127,7 +127,7 @@ class FileNode(ModelBase):
        trees.
 
     You can access the actual media associated to a ``FileNode`` model instance 
-    using the following two fields:
+    using the following fields:
 
     .. role:: descname(literal)
        :class: descname 
