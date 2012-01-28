@@ -448,8 +448,11 @@ class FileNodeAdmin(MPTTModelAdmin):
             node_type=FileNode.FOLDER)
 
     def change_view(self, request, object_id, extra_context=None):
-        object_id = str(object_id)
-        node = get_object_or_404(FileNode, pk=unquote(object_id))
+        try:
+            object_id = str(object_id)
+            node = get_object_or_404(FileNode, pk=unquote(object_id))
+        except ValueError:
+            raise Http404
         set_request_attr(request, 'save_node', node)
         set_request_attr(request, 'save_node_type', node.node_type)
         if not extra_context:
@@ -511,8 +514,6 @@ class FileNodeAdmin(MPTTModelAdmin):
             from django.template import Template, RequestContext
             if request.method != 'POST':
                 form = UploadForm()
-            return render_to_response('admin/media_tree/filenode/upload_form.html',
-                {'form': form, 'node': self.get_parent_folder(request)}, context_instance=RequestContext(request))
 
     def open_path_view(self, request, path=''):
         if path is None or path == '':
