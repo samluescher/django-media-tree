@@ -55,7 +55,7 @@ might look like::
     class PluginOptions(models.Model):
         # These field names are derived from
         # media_tree.contrib.views.list.FileNodeListingView.
-        max_depth = models.IntegerField()
+        list_max_depth = models.IntegerField()
         include_descendants = models.BooleanField()
         
     class SelectedFolder(models.Model):
