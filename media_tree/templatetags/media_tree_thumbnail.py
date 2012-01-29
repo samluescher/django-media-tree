@@ -167,11 +167,14 @@ class ThumbnailNode(Node):
             if m:
                 opts['size'] = (int(m.group(1)), int(m.group(2)))
             else:
-                if raise_errors:
-                    raise TemplateSyntaxError("Variable '%s' was resolved "
-                            "but '%s' is not a valid size." %
-                            (self.size_var, size))
-                return self.bail_out(context)
+                if THUMBNAIL_SIZES.has_key(size):
+                    opts['size'] = THUMBNAIL_SIZES[size]
+                else:
+                    if raise_errors:
+                        raise TemplateSyntaxError("Variable '%s' was resolved "
+                                "but '%s' is not a valid size." %
+                                (self.size_var, size))
+                    return self.bail_out(context)
         try:
             thumbnail = MEDIA_BACKEND.get_thumbnail(source, opts)
         except:

@@ -1,4 +1,4 @@
-# TODO: use_path=True is implemented, but expanded_folders are not stored 
+# TODO: If in subfolder view, reset_expanded_folders_pk is called and expanded_folders are not stored 
 # TODO: Metadata tooltip is too narrow and text gets too wrapped
 # TODO: Add icon for change and add folder
 # TODO: Ordering of tree by column (within parent) should be possible
@@ -238,15 +238,20 @@ class FileNodeAdmin(MPTTModelAdmin):
     expand_collapse.allow_tags = True
 
     def admin_preview(self, node, icons_only=False):
+        request = get_current_request()
         template = 'admin/media_tree/filenode/includes/preview.html'
         if not get_media_backend():
             icons_only = True
             template = 'media_tree/filenode/includes/icon.html'
             # TODO SPLIT preview.html in two: one that doesn't need media backend!
+        
+        thumb_size_name = get_request_attr(request, 'thumbnail_size') or 'default'
+
         preview = render_to_string(template, {
             'node': node,
             'preview_file': node.get_icon_file() if icons_only else node.get_preview_file(),
-            'class': 'collapsed' if node.is_folder() else ''
+            'class': 'collapsed' if node.is_folder() else '',
+            'thumbnail_size': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_name]
         })
         if node.is_folder():
             preview += render_to_string(template, {
@@ -370,6 +375,22 @@ class FileNodeAdmin(MPTTModelAdmin):
     def set_expanded_folders_pk(self, response, expanded_folders_pk):
         response.set_cookie('expanded_folders_pk', '|'.join([str(pk) for pk in expanded_folders_pk]), path='/')
 
+    def init_changelist_view_options(self, request):
+        if 'thumbnail_size' in request.GET:
+            request.GET = request.GET.copy()
+            thumb_size_name = request.GET.get('thumbnail_size')
+            del request.GET['thumbnail_size']
+            if not thumb_size_name in app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES:
+                 thumb_size_name = None
+            request.session['thumbnail_size'] = thumb_size_name
+        thumb_size_name = request.session.get('thumbnail_size', 'default')
+        set_request_attr(request, 'thumbnail_size', thumb_size_name)
+        return {
+            'thumbnail_sizes': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES.keys(),
+            'thumbnail_size': thumb_size_name
+        }
+
+
     def changelist_view(self, request, extra_context=None):
         response = execute_empty_queryset_action(self, request)
         if response:
@@ -384,6 +405,9 @@ class FileNodeAdmin(MPTTModelAdmin):
 
         if not extra_context:
             extra_context = {}
+
+        extra_context.update(self.init_changelist_view_options(request))
+
         if app_settings.MEDIA_TREE_SWFUPLOAD:
             middleware = 'media_tree.middleware.SessionPostMiddleware'
             if not middleware in settings.MIDDLEWARE_CLASSES:

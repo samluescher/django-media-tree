@@ -12,7 +12,7 @@
 }
 
 .ui-slider-handle {
-    cursor: default;
+    cursor: pointer;
     height: 1.2em;
     position: absolute;
     width: 1.2em;
@@ -20,14 +20,37 @@
     background: #CCC;
 }
 
+.ui-slider.no-js .ui-slider-handle {
+    background: transparent;
+}
+
+.ui-slider-handle.ui-state-active {
+    background: #AAA !important;
+}
+
 .ui-slider-horizontal .ui-slider-handle {
     margin-left: -0.6em;
     top: -0.3em;
 }
 
+.ui-slider a span {
+    display: none;
+}
+
+.ui-slider.no-js a, .ui-slider.no-js .ui-slider-handle {
+    display: inline-block;
+    position: relative;
+}
+
+.thumbnail-size-slider.ui-slider.no-js .ui-slider-handle {
+    width: 20%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
 .ui-slider-horizontal {
     height: 0.6em;
-    width: 20em;
+    width: 10em;
     top: .2em;
 }
 
@@ -37,8 +60,37 @@
     
     border: 1px #CCC solid;
     display: inline-block;
+    cursor: pointer;
 }
 
+.view-options {
+    font-size: 10px;
+    font-weight: bold;
+    font-family: Arial,Helvetica,sans-serif;
+    padding-left: 0;
+    float: right;
+    position: relative;
+    margin-top: -2.4em;
+    margin-bottom: -2em;
+    margin-right: 0px;
+    width: 115px;
+}
+
+.thumbnail-size-slider {
+    width: 100px;
+}
+
+.object-tools.with-view-options {
+    margin-right: 120px;
+}
+
+.view-options li {
+    display: block;
+    float: left;
+    padding: 0 0 0 8px;
+    margin-left: 2px;
+    height: 16px;
+}
 
 .popup-buttons {
     position: fixed; 

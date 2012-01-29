@@ -19,29 +19,29 @@ it is embedded here.
 {% endblock %}
 
 {% block object-tools %}
-    <ul class="object-tools">
+    <ul class="object-tools with-view-options">
     {% if has_add_permission %}
-          <li class="target-folder"></li>
-      {% if swfupload_upload_url %}
-          <li class="swfupload-button-container">
-            <a href="javascript:void(0)" class="addlink swfupload">
-              <span class="caption">{% trans "Upload files" %}</span></span>
-              <span class="swfupload-button-overlay"><span id="swfupload-button"></span></span>
+        <li class="target-folder"></li>
+        {% if swfupload_upload_url %}
+            <li class="swfupload-button-container">
+                <a href="javascript:void(0)" class="addlink swfupload">
+                <span class="caption">{% trans "Upload files" %}</span></span>
+                <span class="swfupload-button-overlay"><span id="swfupload-button"></span></span>
+                </a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{% url admin:media_tree_filenode_add %}?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
+                {% trans "Add file" %}
+                </a>
+            </li>
+        {% endif %}
+        <li>
+            <a id="object-tool-add-folder" href="{% url admin:media_tree_filenode_add_folder %}{% if is_popup %}?_popup=1{% endif %}" class="addlink folder">
+            <span class="caption">{% trans "Add folder" %}</span>
             </a>
-          </li>
-      {% else %}
-          <li>
-            <a href="{% url admin:media_tree_filenode_add %}?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
-              {% trans "Add file" %}
-            </a>
-          </li>
-      {% endif %}
-      <li>
-        <a id="object-tool-add-folder" href="{% url admin:media_tree_filenode_add_folder %}{% if is_popup %}?_popup=1{% endif %}" class="addlink folder">
-          <span class="caption">{% trans "Add folder" %}</span>
-        </a>
-      </li>
-      {% endif %}
+        </li>
+    {% endif %}
     </ul>
 
     <script type="text/javascript">// <![CDATA[
@@ -92,6 +92,33 @@ it is embedded here.
         });
     // ]]></script>
 
+    <ul class="view-options">
+        <li>
+            <div class="thumbnail-size-slider ui-slider ui-slider-horizontal no-js">{% spaceless %}
+                {% for size in thumbnail_sizes %}
+                    <a class="ui-slider-handle{% if size == thumbnail_size %} ui-state-active{% endif %}" href="?thumbnail_size={{ size }}"><span>{{ size }}</span></a>
+                {% endfor %}
+            {% endspaceless %}</div>
+
+            <script type="text/javascript">// <![CDATA[
+                    jQuery(function($) {
+                        var thumbnailSizes = ['{{ thumbnail_sizes|join:"', '" }}'];
+                        $('.thumbnail-size-slider').html('');
+                        $('.thumbnail-size-slider').removeClass('no-js');
+                        $('.thumbnail-size-slider').slider({
+                            value: thumbnailSizes.indexOf('{{ thumbnail_size }}'),
+                            min: 0,
+                            max: thumbnailSizes.length - 1,  
+                            change: function(event, ui) {
+                                $.get('?thumbnail_size=' + thumbnailSizes[ui.value], function(data) {
+                                    $('#changelist').updateChangelist($(data).find('#changelist').html());
+                                })
+                            }
+                        });
+                    });
+            // ]]></script>
+        </li>
+    </ul>
 {% endblock %}
 
 {% block result_list %}

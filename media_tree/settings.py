@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from media_tree import media_types
+from django.utils.datastructures import SortedDict
 
 
 MEDIA_TREE_STORAGE = getattr(settings, 'MEDIA_TREE_STORAGE', None)
@@ -83,13 +84,18 @@ MEDIA_TREE_ICON_FINDERS = getattr(settings, 'MEDIA_TREE_ICON_FINDERS', (
     'media_tree.utils.staticfiles.MimetypeStaticIconFileFinder',
 ))
 
-MEDIA_TREE_THUMBNAIL_SIZES = {
-    'small': (80, 80),
-    'default': (100, 100),
-    'medium': (250, 250),
-    'large': (400, 400),
+MEDIA_TREE_ADMIN_THUMBNAIL_SIZES = SortedDict((
+    ('tiny', (20, 20)),
+    ('small', (70, 70)),
+    ('default', (100, 100)),
+    ('medium', (250, 250)),
+    ('large', (400, 400)),
+))
+
+MEDIA_TREE_THUMBNAIL_SIZES = MEDIA_TREE_ADMIN_THUMBNAIL_SIZES.copy()
+MEDIA_TREE_THUMBNAIL_SIZES.update({
     'full': None, # None means: use original size
-}
+})
 MEDIA_TREE_THUMBNAIL_SIZES.update(getattr(settings,
     'MEDIA_TREE_THUMBNAIL_SIZES', {}))
 """
