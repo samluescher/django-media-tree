@@ -136,7 +136,6 @@ it is embedded here.
 
                                 var req = $('#changelist').data('resizeReq');
                                 if (req) {
-                                    console.log(req);
                                     req.abort();
                                 }
                                 $('#changelist').data('resizeReq', $.get('?thumbnail_size=' + sizeKey, function(data) {
