@@ -53,7 +53,15 @@ class FileNodeActionsForm(forms.Form):
                     self.confirmed_data[key] = self.cleaned_data[key]
         return self.cleaned_data
 
-class MoveSelectedForm(FileNodeActionsForm):
+
+class FileNodeActionsWithUserForm(FileNodeActionsForm):
+
+    def __init__(self, queryset, user, *args, **kwargs):
+        super(FileNodeActionsWithUserForm, self).__init__(queryset, *args, **kwargs)
+        self.user = user
+
+
+class MoveSelectedForm(FileNodeActionsWithUserForm):
 
     action_name = 'move_selected'
     enable_target_node_field = True
@@ -64,6 +72,7 @@ class MoveSelectedForm(FileNodeActionsForm):
             node = node.__class__.objects.get(pk=node.pk)
             descendant_count = node.get_descendants().count()
             node.parent = target
+            node.attach_user(self.user, change=True)
             node.save()
             
             self.success_count += 1 + descendant_count
@@ -87,7 +96,7 @@ class MoveSelectedForm(FileNodeActionsForm):
             self.move_node(node, self.cleaned_data['target_node'])
 
 
-class CopySelectedForm(FileNodeActionsForm):
+class CopySelectedForm(FileNodeActionsWithUserForm):
 
     action_name = 'copy_selected'
     enable_target_node_field = True
@@ -114,6 +123,7 @@ class CopySelectedForm(FileNodeActionsForm):
         new_node = clone_node(node)
         make_uploaded_files(new_node, node)
         new_node.parent = target
+        new_node.attach_user(self.user, change=True)
         new_node.save()
         if new_node.node_type == FileNode.FOLDER:
             self.copy_nodes_rec(node.get_children(), new_node)
@@ -129,7 +139,7 @@ class CopySelectedForm(FileNodeActionsForm):
         self.copy_nodes_rec(self.get_selected_nodes(), self.cleaned_data['target_node'])
 
 
-class ChangeMetadataForSelectedForm(FileNodeActionsForm):
+class ChangeMetadataForSelectedForm(FileNodeActionsWithUserForm):
 
     action_name = 'change_metadata_for_selected'
     enable_target_node_field = False
@@ -158,6 +168,7 @@ class ChangeMetadataForSelectedForm(FileNodeActionsForm):
             if getattr(node, key) != metadata[key]:
                 setattr(node, key, metadata[key])
                 changed = True
+        node.attach_user(self.user, change=True)
         node.save()
         return changed
 

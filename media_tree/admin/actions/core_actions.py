@@ -1,6 +1,6 @@
 from media_tree.models import FileNode
 from media_tree.admin.actions.utils import get_actions_context
-from media_tree.admin.actions.forms import MoveSelectedForm, CopySelectedForm, ChangeMetadataForSelectedForm
+from media_tree.admin.actions.forms import FileNodeActionsWithUserForm, MoveSelectedForm, CopySelectedForm, ChangeMetadataForSelectedForm
 from media_tree.forms import MetadataForm
 from media_tree.utils.filenode import get_nested_filenode_list
 from django import forms
@@ -26,7 +26,10 @@ def filenode_admin_action(modeladmin, request, queryset, form_class, extra_conte
     execute = request.POST.get('execute')
     current_node = None
     if execute:
-        form = form_class(queryset, request.POST)
+        if not issubclass(form_class, FileNodeActionsWithUserForm):
+            form = form_class(queryset, request.POST)
+        else:
+            form = form_class(queryset, request.user, request.POST)
         if form.is_valid():
             form.save()
             redirect_node = form.cleaned_data.get('target_node', None)
@@ -39,7 +42,10 @@ def filenode_admin_action(modeladmin, request, queryset, form_class, extra_conte
             })
             return HttpResponseRedirect(redirect_node.get_admin_url())
     if not execute:
-        form = form_class(queryset, initial=form_initial)
+        if not issubclass(form_class, FileNodeActionsWithUserForm):
+            form = form_class(queryset, initial=form_initial)
+        else:
+            form = form_class(queryset, request.user, initial=form_initial)
 
     context = get_actions_context(modeladmin)
     context.update(extra_context)

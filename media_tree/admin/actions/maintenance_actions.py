@@ -81,6 +81,7 @@ def delete_orphaned_files(modeladmin, request, queryset=None):
 delete_orphaned_files.short_description = _('Find orphaned files')
 delete_orphaned_files.allow_empty_queryset = True
 
+
 def rebuild_tree(modeladmin, request, queryset=None):
     """
     Rebuilds whole tree in database using `parent` link.

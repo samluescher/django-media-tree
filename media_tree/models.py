@@ -300,8 +300,6 @@ class FileNode(ModelBase):
 
         return locals()
 
-    # TODO this should be called from FileNode.save(), not from admin (since there is no request on CopyFileNodesForm.save())
-    # -- look into threadlocals
     def attach_user(self, user, change):
         if not change:
             self.created_by = user

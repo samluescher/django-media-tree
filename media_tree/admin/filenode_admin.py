@@ -1,13 +1,16 @@
 # TODO: If in subfolder view, reset_expanded_folders_pk is called and expanded_folders are not stored 
 # TODO: Metadata tooltip is too narrow and text gets too wrapped
-# TODO: Add icon for change and add folder
-# TODO: Ordering of tree by column (within parent) should be possible
-# TODO: Refactor SWFUpload stuff as extension. This would require signals calls
-#   to be called in the FileNodeAdmin view methods.
 # TODO: Make renaming of files possible.
 # TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt".
-# TODO: Bug: With child folder changelist view and child of child expanded -- after uploading a file, the child of child has the expanded triangle, 
-#   but no child child child objects are visible.
+# TODO: Bug: With child folder changelist view and child of child expanded -- after uploading a file, the child 
+#       of child has the expanded triangle, 
+#       but no child child child objects are visible.
+#
+# Low priority:
+#
+# TODO: Ordering of tree by column (within parent) should be possible
+# TODO: Refactor SWFUpload stuff as extension. This would require signals calls
+#       to be called in the FileNodeAdmin view methods.
 
 
 from media_tree.fields import FileNodeChoiceField
@@ -209,6 +212,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         if not change:
             if not obj.node_type:
                 obj.node_type = get_request_attr(request, 'save_node_type', None)
+        obj.attach_user(request.user, change)
         super(FileNodeAdmin, self).save_model(request, obj, form, change)
 
     def metadata_check(self, node):
@@ -269,7 +273,7 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     def node_tools(self, node):
         tools = ''
-        tools += '<li><a class="change" href="%s">%s</a></li>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), ugettext('change'))
+        tools += '<li><a class="changelink" href="%s">%s</a></li>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), capfirst(ugettext('change')))
         #if node.is_folder():
         #    tools += '<li><a class="add-folder" href="%s?folder_id=%s">%s</a></li>' % (
         #        reverse('admin:media_tree_filenode_add_folder', args=()), str(node.pk), ugettext('add folder'))
@@ -487,7 +491,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         })
         if node.is_folder():
             extra_context.update({
-                'breadcrumbs_title': _('Change')
+                'breadcrumbs_title': capfirst(_('change'))
             })
 
         return super(FileNodeAdmin, self).change_view(request, object_id, extra_context=extra_context)
