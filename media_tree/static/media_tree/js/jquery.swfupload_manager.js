@@ -47,14 +47,20 @@ jQuery(function($) {
 
             ,fileQueued: function(file) 
             {
+                sizeFormatted = file.size > 1000000 ? 
+                    Math.round(file.size / 1000000, 1) + ' MB'
+                    : (file.size > 1000 ? 
+                        Math.round(file.size / 1000, 1) + ' KB'
+                        : file.size + ' bytes'); 
+                
                 cols = [];
                 cols[1] = $('<td class="nowrap"><span style="display: none;" class="upload-progress-bar-container">'
                     + '<span class="upload-progress-bar"></span></span><span class="queue-status">' 
                     + gettext('queued') + '</span>' 
                     + '&nbsp;<a href="javascript:void(0)">'+file.name+'</a></td>');
-                cols[2] = $('<td class="filesize">'+Math.round(file.size / 1024, 1) + ' KiB'+'</td>');
+                cols[2] = $('<td class="filesize">' + sizeFormatted + '</td>');
 
-                var row = $.makeChangelistRow(cols, manager.getQueueItem(file, 'row1'));
+                var row = $.makeChangelistRow(cols, manager.getQueueItem(file, 'queue'));
                 var firstRow = $('.changelist-first-row');
                 if (firstRow.length > 0) {
                     firstRow.before (row);

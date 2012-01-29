@@ -1,6 +1,8 @@
 {% extends "admin/mptt_change_list.html" %}
 {% load adminmedia admin_list i18n mptt_tags media_tree_admin %}
 
+
+
 {% block extrahead %}
 {{ block.super }}
 {% comment %}
@@ -95,24 +97,58 @@ it is embedded here.
     <ul class="view-options">
         <li>
             <div class="thumbnail-size-slider ui-slider ui-slider-horizontal no-js">{% spaceless %}
-                {% for size in thumbnail_sizes %}
-                    <a class="ui-slider-handle{% if size == thumbnail_size %} ui-state-active{% endif %}" href="?thumbnail_size={{ size }}"><span>{{ size }}</span></a>
+                {% for key, size in thumbnail_sizes.items %}
+                    <a class="ui-slider-handle{% if key == thumbnail_size_key %} ui-state-active{% endif %}" href="?thumbnail_size={{ key }}"><span>{{ size }}</span></a>
                 {% endfor %}
             {% endspaceless %}</div>
 
             <script type="text/javascript">// <![CDATA[
                     jQuery(function($) {
-                        var thumbnailSizes = ['{{ thumbnail_sizes|join:"', '" }}'];
+                        var thumbnailSizeKeys = ['{{ thumbnail_sizes.keys|join:"', '" }}'];
+                        var thumbnailSizes = {
+                            {% for key, size in thumbnail_sizes.items %}
+                            {{ key }}: [{{ size.0 }}, {{ size.1 }}]{% if not forloop.last %},{% endif %}
+                            {% endfor %}
+                        };
                         $('.thumbnail-size-slider').html('');
                         $('.thumbnail-size-slider').removeClass('no-js');
                         $('.thumbnail-size-slider').slider({
-                            value: thumbnailSizes.indexOf('{{ thumbnail_size }}'),
+                            value: thumbnailSizeKeys.indexOf('{{ thumbnail_size_key }}'),
                             min: 0,
-                            max: thumbnailSizes.length - 1,  
+                            max: thumbnailSizeKeys.length - 1,  
                             change: function(event, ui) {
-                                $.get('?thumbnail_size=' + thumbnailSizes[ui.value], function(data) {
-                                    $('#changelist').updateChangelist($(data).find('#changelist').html());
-                                })
+                                var sizeKey = thumbnailSizeKeys[ui.value];
+                                var nodes = $('#changelist .node');
+                                nodes.each(function() {
+                                    var img = $('.thumbnail img', this);
+                                    var newSize = thumbnailSizes[sizeKey];
+                                    var curSize = [img.width(), img.height()];
+                                    var ratio;
+                                    if (curSize[0] > curSize[1]) {
+                                        ratio = newSize[0] / curSize[0];
+                                    } else {
+                                        ratio = newSize[1] / curSize[1];
+                                    }
+
+                                    img.width(Math.round(curSize[0] * ratio)); 
+                                    img.height(Math.round(curSize[1] * ratio)); 
+                                });
+
+                                var req = $('#changelist').data('resizeReq');
+                                if (req) {
+                                    console.log(req);
+                                    req.abort();
+                                }
+                                $('#changelist').data('resizeReq', $.get('?thumbnail_size=' + sizeKey, function(data) {
+                                        var newChangeList = $('#changelist', data);
+                                        nodes.each(function() {
+                                            var img = $('.thumbnail img', this);
+                                            var newImg = $('#' + this.id + ' .thumbnail img', newChangeList);
+                                            if (newImg.length) {
+                                                img[0].src = newImg[0].src;
+                                            }
+                                        });
+                                }));
                             }
                         });
                     });

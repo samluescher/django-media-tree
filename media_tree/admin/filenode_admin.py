@@ -249,13 +249,13 @@ class FileNodeAdmin(MPTTModelAdmin):
             template = 'media_tree/filenode/includes/icon.html'
             # TODO SPLIT preview.html in two: one that doesn't need media backend!
         
-        thumb_size_name = get_request_attr(request, 'thumbnail_size') or 'default'
+        thumb_size_key = get_request_attr(request, 'thumbnail_size') or 'default'
 
         preview = render_to_string(template, {
             'node': node,
             'preview_file': node.get_icon_file() if icons_only else node.get_preview_file(),
             'class': 'collapsed' if node.is_folder() else '',
-            'thumbnail_size': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_name]
+            'thumbnail_size': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_key]
         })
         if node.is_folder():
             preview += render_to_string(template, {
@@ -289,7 +289,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         if node.is_folder():
             request = get_current_request()
             state = 'expanded' if self.folder_is_open(request, node) else 'collapsed'
-        return '<span id="%s" class="browse-controls %s %s">%s%s</span>' %  \
+        return '<span id="%s" class="node browse-controls %s %s">%s%s</span>' %  \
             (self.anchor_name(node), 'folder' if node.is_folder() else 'file',
             state, self.expand_collapse(node), self.admin_link(node, True))
     browse_controls.short_description = ''
@@ -382,16 +382,16 @@ class FileNodeAdmin(MPTTModelAdmin):
     def init_changelist_view_options(self, request):
         if 'thumbnail_size' in request.GET:
             request.GET = request.GET.copy()
-            thumb_size_name = request.GET.get('thumbnail_size')
+            thumb_size_key = request.GET.get('thumbnail_size')
             del request.GET['thumbnail_size']
-            if not thumb_size_name in app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES:
-                 thumb_size_name = None
-            request.session['thumbnail_size'] = thumb_size_name
-        thumb_size_name = request.session.get('thumbnail_size', 'default')
-        set_request_attr(request, 'thumbnail_size', thumb_size_name)
+            if not thumb_size_key in app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES:
+                 thumb_size_key = None
+            request.session['thumbnail_size'] = thumb_size_key
+        thumb_size_key = request.session.get('thumbnail_size', 'default')
+        set_request_attr(request, 'thumbnail_size', thumb_size_key)
         return {
-            'thumbnail_sizes': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES.keys(),
-            'thumbnail_size': thumb_size_name
+            'thumbnail_sizes': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES,
+            'thumbnail_size_key': thumb_size_key
         }
 
 

@@ -248,3 +248,11 @@ ul.node-tools li:last-child {
 #changelist td {
     text-align: left !important;
 }
+
+#changelist tr {
+    height: 2em;
+}
+
+.queue {
+    background: #F8F8F8;
+}
