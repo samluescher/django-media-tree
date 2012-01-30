@@ -88,7 +88,7 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     Special features:
 
-    * The AJAX-enhanced interface allows you to expand your folder tree without
+    * The AJAX-enhanced interface allows you to browse your folder tree without
       page reloads.
     * The file listing supports drag & drop. Drag files and folders to another
       folder to move them. Hold the Alt key to copy them.
