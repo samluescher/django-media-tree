@@ -327,7 +327,6 @@ jQuery(function($) {
                         var form = makeForm('', fields);
                         var selected = $(rowSelectInputSel + ':checked', _changelist);
                         form.append(selected.clone()); 
-                        console.log(form);
                         
                         //form.submit();
                         
