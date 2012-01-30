@@ -87,6 +87,7 @@ class FileNodeAdmin(MPTTModelAdmin):
     information about extending Media Tree.
 
     Special features:
+    =================
 
     * The AJAX-enhanced interface allows you to browse your folder tree without
       page reloads.
