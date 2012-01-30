@@ -158,9 +158,21 @@ jQuery(function($) {
                 }
             }
         }
-    }    
+    }
+
+    var dragHelper, draggedItem;
     
     $.fn.updateChangelist = function(html, restoreSelected) {
+        if (draggedItem) {
+            // TODO: This does not work. If the user is dragging while changelist is replaced,
+            // there will be JS errors.
+            $(draggedItem).draggable('destroy');
+        }
+        if (dragHelper) {
+            $(dragHelper).remove();
+            dragHelper = null;
+        }
+
         // Store checked rows
         var checked = $('input[name=_selected_action]:checked', this);
         // Update list
@@ -261,10 +273,7 @@ jQuery(function($) {
         rows.each(function() {
             $(this).draggable({
                 helper: function(event, ui) {
-
-                    // TODO: Should drag & drop all selected
                     // select dragged item
-                    
                     if (!$(rowSelectInputSel, this).is(':checked')) {
                         $(rowSelectInputSel, this).trigger('click');
                     }
@@ -292,6 +301,9 @@ jQuery(function($) {
                     $(helper).css('padding-left', handleOffset);
                     $(helper).css('padding-right', handleOffset);
 
+                    dragHelper = helper;
+                    draggedItem = this;
+
                     return helper;
                 },
                 opacity: .9,
@@ -302,6 +314,9 @@ jQuery(function($) {
             if ($('.node', this).is('.folder')) {
                 $(this).droppable({
                     drop: function(event, ui) {
+                        dragHelper = null;
+                        draggedItem = null;
+
                         var action = $(ui.draggable).data('copyDrag') ? 'copy_selected' : 'move_selected';
                         var fields = {
                             action: action,
