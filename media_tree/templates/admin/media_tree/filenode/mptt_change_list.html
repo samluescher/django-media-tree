@@ -134,11 +134,7 @@ it is embedded here.
                                     img.height(Math.round(curSize[1] * ratio)); 
                                 });
 
-                                var req = $('#changelist').data('resizeReq');
-                                if (req) {
-                                    req.abort();
-                                }
-                                $('#changelist').data('resizeReq', $.get('?thumbnail_size=' + sizeKey, function(data) {
+                                $('#changelist').setUpdateReq($.get('?thumbnail_size=' + sizeKey, function(data) {
                                         var newChangeList = $('#changelist', data);
                                         nodes.each(function() {
                                             var img = $('.thumbnail img', this);
@@ -162,4 +158,5 @@ it is embedded here.
     <input class="default popup-select-button" type="submit" value="Select" disabled="disabled" />
 </div>
 {% endif %}
+
 {% endblock %}

@@ -207,18 +207,7 @@ jQuery(function($) {
 
             ,addUserMessage: function(messageText, messageId) 
             {
-                var message = $('<li id="'+messageId+'">'+messageText+'</li>')
-                var currentMessage = $('#'+messageId);
-                if (currentMessage.length > 0) {
-                    currentMessage.replaceWith(message);
-                } else {
-                    var messageList = $('ul.messagelist');
-                    if (messageList.length == 0) {
-                        $('#content').before('<ul class="messagelist"></ul>');
-                        var messageList = $('ul.messagelist');
-                    }
-                    messageList.append(message);
-                }
+                $.addUserMessage(messageText, messageId);
             }
 
             ,queueComplete: function(numFilesUploaded) {
@@ -231,7 +220,7 @@ jQuery(function($) {
                     var message = gettext('loading...');
                     manager.addUserMessage(message, 'swfupload-queue-message');
 
-                    $.get(window.location.href, null, function(data, textStatus) {
+                    $('#changelist').setUpdateReq($.get(window.location.href, null, function(data, textStatus) {
                         stats = _this.getStats();
                         if (stats.files_queued == 0) {
                             // reload changelist contents
@@ -244,7 +233,7 @@ jQuery(function($) {
                             stats.successful_uploads = 0;
                             _this.setStats(stats);
                         }
-                    });
+                    }));
                 } else {
                     var message = gettext('There were errors during upload.');
                     manager.addUserMessage(message, 'swfupload-queue-message');

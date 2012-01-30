@@ -6,6 +6,7 @@ from media_tree.utils.filenode import get_nested_filenode_list
 from django import forms
 from django.utils.translation import ungettext, ugettext as _
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.contrib.admin import helpers
 from django.http import HttpResponse, HttpResponseRedirect
@@ -40,7 +41,10 @@ def filenode_admin_action(modeladmin, request, queryset, form_class, extra_conte
                 'verbose_name': FileNode._meta.verbose_name, 
                 'verbose_name_plural': FileNode._meta.verbose_name_plural
             })
-            return HttpResponseRedirect(redirect_node.get_admin_url())
+            
+            return HttpResponseRedirect(reverse('admin:media_tree_filenode_folder_expand', args=(redirect_node.pk,)))
+            #return HttpResponseRedirect(redirect_node.get_admin_url())
+
     if not execute:
         if not issubclass(form_class, FileNodeActionsWithUserForm):
             form = form_class(queryset, initial=form_initial)

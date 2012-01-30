@@ -24,6 +24,21 @@ jQuery(function($) {
 
         return row;
     }
+
+    var makeForm = function(action, hiddenFields) {
+        if (!hiddenFields) {
+            hiddenFields = {};
+        }
+        hiddenFields['csrfmiddlewaretoken'] = $('input[name=csrfmiddlewaretoken]').val();
+        hiddenHtml = '';
+        for (key in hiddenFields) {
+            hiddenHtml += '<input type="hidden" name="' + key + '" value="' + hiddenFields[key] + '" />';
+        }
+        return $( 
+            '<form action="' + action + '" method="POST">'
+                +'<div style="display: none">' + hiddenHtml + '</div>'
+            +'</form>');
+    };
     
     $('#object-tool-add-folder').click(function(event) {
         event.preventDefault();
@@ -35,16 +50,18 @@ jQuery(function($) {
         var targetFolder = $('#changelist').data('targetFolder');
         
         cols[1] = $(
-            '<td><form action="' + $('#object-tool-add-folder').attr('href') + '" method="POST">'
-                +'<span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
-                +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
-                +'<input type="hidden" name="parent" value="' + (targetFolder ? targetFolder.id : '') + '" />'
-                +'<input type="hidden" name="csrfmiddlewaretoken" />'
-                +(targetFolder ? '<input type="hidden" name="folder_id" value="' + targetFolder.id + '" />' : '')
-            +'</form></td>'
+            '<td></td>'
         );
-        
-        cols[1].find('input[name=csrfmiddlewaretoken]').val($('input[name=csrfmiddlewaretoken]').val())
+
+        var form = makeForm($('#object-tool-add-folder').attr('href'));
+        form.append(
+            '<span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
+            +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
+            +'<input type="hidden" name="parent" value="' + (targetFolder ? targetFolder.id : '') + '" />'
+            +(targetFolder ? '<input type="hidden" name="folder_id" value="' + targetFolder.id + '" />' : '')
+        );
+
+        cols[1].append(form);
         
         if (targetFolder && targetFolder.row) {
             // TODO: Copy padding, but add indent
@@ -178,7 +195,44 @@ jQuery(function($) {
         $(this).trigger('update', [$('tr', this), true]);
     });
 
+    $.fn.setUpdateReq = function(req) {
+        $(this).abortUpdateReq();
+        $(this).data('updateReq', req);
+    };
+
+    $.fn.abortUpdateReq = function(req) {
+        var req = $(this).data('updateReq');
+        if (req) {
+            req.abort();
+        }
+    };
+
+    $.addUserMessage = function(messageText, messageId, messageClass) {
+        if (!messageClass) {
+            messageClass = 'info';
+        }
+        var defaultMessageId = 'default-message';
+        if (!messageId) {
+            messageId = defaultMessageId;
+        }
+        $('#' + defaultMessageId).remove();
+        var message = $('<li id="'+messageId+'" class="' + messageClass + '">'+messageText+'</li>')
+        var currentMessage = $('#'+messageId);
+        if (currentMessage.length > 0) {
+            currentMessage.replaceWith(message);
+        } else {
+            var messageList = $('ul.messagelist');
+            if (messageList.length == 0) {
+                $('#content').before('<ul class="messagelist"></ul>');
+                var messageList = $('ul.messagelist');
+            }
+            messageList.append(message);
+        }
+    }
+
     $('#changelist').bind('update', function(e, updatedRows, isInitial) {
+        var _changelist = this;
+
         // Django calls actions() when document ready. Since the ChangeList  
         // was updated, actions() needs to be called again:
         django.jQuery("tr input.action-select").actions();
@@ -193,6 +247,76 @@ jQuery(function($) {
                 $(this).addClass('row2');
             } else {
                 $(this).addClass('row1');
+            }
+        });
+
+        // Set up drag & drop
+
+        var rowSel = '#changelist tbody tr';
+        rows.each(function() {
+            $(this).draggable({
+                helper: function(event, ui) {
+                    var copyDrag = event.altKey;
+                    $(this).data('copyDrag', copyDrag);
+                    var helper = $(
+                        '<div class="drag-helper collapsed' + (copyDrag ? ' copy' : '') + '">'
+                        + '<table><tr><td></td></tr></table>'
+                        + '</div>');
+                    $('td', helper).append($(this).closest('tr').find('.node-link').clone());
+                    return helper;
+                },
+                handle: '.node-link',
+                appendTo: 'body',
+            }).disableSelection();
+
+            if ($('.node', this).is('.folder')) {
+                $(this).droppable({
+                    drop: function(event, ui) {
+                        var inputName = '_selected_action';
+                        var inputSel = 'input[name=' + inputName + ']';
+                        var action = $(ui.draggable).data('copyDrag') ? 'copy_selected' : 'move_selected';
+                        var fields = {
+                            action: action,
+                            target_node: $(inputSel, this).val(),
+                            execute: 1
+                        };
+                        fields[inputName] = $(inputSel, ui.draggable).val();
+                        var form = makeForm('', fields);
+                        
+                        // form.submit();
+                        // instead:
+                        var row = $(this);
+                        row.addClass('loading');
+                        $(_changelist).setUpdateReq($.ajax({
+                            type: 'post',
+                            data: form.serialize(),  
+                            success: function(data) {
+                                row.removeClass('loading');
+                                var newChangelist = $(data).find('#changelist');
+                                if (newChangelist.length) {
+                                    // update table
+                                    $('#changelist').updateChangelist(newChangelist.html());
+                                    // display messages
+                                    $('.messagelist li', data).each(function() {
+                                        $.addUserMessage($(this).text(), null, this.className);
+                                    });
+                                } else {
+                                    // if the result is no changelist, the form did not validate.
+                                    // display error messages:
+                                    $('fieldset .errorlist li', data).each(function() {
+                                        $.addUserMessage($(this).text(), null, 'error');
+                                    });
+                                }
+                            }, 
+                            error: function() {
+                                row.removeClass('loading');
+                            }  
+                        }));
+                          
+                    },
+                    accept: rowSel,
+                    hoverClass: 'drop-hover'
+                });
             }
         });
 

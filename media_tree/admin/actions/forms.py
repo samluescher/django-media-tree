@@ -71,11 +71,12 @@ class MoveSelectedForm(FileNodeActionsWithUserForm):
             # Reload object because tree attributes may be out of date 
             node = node.__class__.objects.get(pk=node.pk)
             descendant_count = node.get_descendants().count()
-            node.parent = target
-            node.attach_user(self.user, change=True)
-            node.save()
             
-            self.success_count += 1 + descendant_count
+            if node.parent != target:
+                node.parent = target
+                node.attach_user(self.user, change=True)
+                node.save()
+                self.success_count += 1 + descendant_count
             return node
         except InvalidMove, e:
             self.errors[NON_FIELD_ERRORS] = ErrorList(e)

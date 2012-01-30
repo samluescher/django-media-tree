@@ -85,6 +85,19 @@ class FileNodeAdmin(MPTTModelAdmin):
     You can also extend the admin interface in many different fashions to suit
     your custom requirements. Please refer to :ref:`extending` for more
     information about extending Media Tree.
+
+    Special features:
+
+    * The AJAX-enhanced interface allows you to expand your folder tree without
+      page reloads.
+    * The file listing supports drag & drop. Drag files and folders to another
+      folder to move them. Hold the Alt key to copy them.
+    * You can set up an upload queue, which enables you to upload large files 
+      and monitor the corresponding progress bars. 
+    * Drag the slider above the file listing to dynamically resize thumbnails.
+    * You can select files and execute various special actions on them, for 
+      instance download the selection as a ZIP archive. 
+
     """
 
     change_list_template = 'admin/media_tree/filenode/mptt_change_list.html'
@@ -268,15 +281,12 @@ class FileNodeAdmin(MPTTModelAdmin):
     admin_preview.allow_tags = True
 
     def admin_link(self, node, include_preview=False):
-        return '<a href="%s">%s<span class="name">%s</span></a>' % (
+        return '<a class="node-link" href="%s">%s<span class="name">%s</span></a>' % (
             node.get_admin_url(), self.admin_preview(node) if include_preview else '', node.name)
 
     def node_tools(self, node):
         tools = ''
         tools += '<li><a class="changelink" href="%s">%s</a></li>' % (reverse('admin:media_tree_filenode_change', args=(node.pk,)), capfirst(ugettext('change')))
-        #if node.is_folder():
-        #    tools += '<li><a class="add-folder" href="%s?folder_id=%s">%s</a></li>' % (
-        #        reverse('admin:media_tree_filenode_add_folder', args=()), str(node.pk), ugettext('add folder'))
         return '<ul class="node-tools">%s</ul>' % tools
     node_tools.short_description = ''
     node_tools.allow_tags = True

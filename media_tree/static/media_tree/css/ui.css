@@ -254,5 +254,29 @@ ul.node-tools li:last-child {
 }
 
 .queue {
-    background: #F8F8F8;
+    background: #F0F0F0;
+}
+
+
+.drag-helper {
+    background: white;
+    border: 1px #CCC solid;
+    padding: .25em;
+    border-radius: 4px;
+    -moz-box-shadow: 0px 3px 7px #666;
+    -webkit-box-shadow: 0px 3px 7px #666;
+    box-shadow: 0px 3px 7px #666;
+}
+
+.drag-helper.copy {
+    padding-left: 1.5em;
+    background: white url(../img/icons/copy.png) no-repeat .4em center;
+}
+
+.drag-helper td {
+    border: none;
+}
+
+.drop-hover {
+    background: #D8D8D8;
 }
