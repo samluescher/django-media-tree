@@ -93,7 +93,7 @@ class FileNodeAdmin(MPTTModelAdmin):
     * The file listing supports drag & drop. Drag files and folders to another
       folder to move them. Hold the Alt key to copy them.
     * You can set up an upload queue, which enables you to upload large files 
-      and monitor the corresponding progress bars. 
+      and monitor the process via the corresponding progress bars. 
     * Drag the slider above the file listing to dynamically resize thumbnails.
     * You can select files and execute various special actions on them, for 
       instance download the selection as a ZIP archive. 
