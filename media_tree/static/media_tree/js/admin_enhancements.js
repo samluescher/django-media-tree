@@ -160,7 +160,7 @@ jQuery(function($) {
         }
     }    
     
-    $.fn.updateChangelist = function(html) {
+    $.fn.updateChangelist = function(html, restoreSelected) {
         // Store checked rows
         var checked = $('input[name=_selected_action]:checked', this);
         // Update list
@@ -168,10 +168,12 @@ jQuery(function($) {
         $(this).trigger('init');
         // Restore checked rows
         var _this = this;
-        checked.each(function() {
-            var tr = $('input[value='+this.value+']', _this).closest('tr');
-            tr.selectChangelistRow();
-        });
+        if (restoreSelected == null || restoreSelected) {
+            checked.each(function() {
+                var tr = $('input[value='+this.value+']', _this).closest('tr');
+                tr.selectChangelistRow();
+            });
+        }
     }
 
     $('#changelist').bind('init', function(scope) {
@@ -252,19 +254,47 @@ jQuery(function($) {
 
         // Set up drag & drop
 
+        var rowSelectInputName = '_selected_action';
+        var rowSelectInputSel = 'input[name=' + rowSelectInputName + ']';
+
         var rowSel = '#changelist tbody tr';
         rows.each(function() {
             $(this).draggable({
                 helper: function(event, ui) {
+
+                    // TODO: Should drag & drop all selected
+                    // select dragged item
+                    
+                    if (!$(rowSelectInputSel, this).is(':checked')) {
+                        $(rowSelectInputSel, this).trigger('click');
+                    }
+                    var selected = $(rowSelectInputSel + ':checked', _changelist);
+                    var selectedCount = selected.length;
+
                     var copyDrag = event.altKey;
                     $(this).data('copyDrag', copyDrag);
                     var helper = $(
-                        '<div class="drag-helper collapsed' + (copyDrag ? ' copy' : '') + '">'
+                        '<div class="drag-helper-wrapper"><div class="drag-helper collapsed' + (copyDrag ? ' copy' : '') + '">'
                         + '<table><tr><td></td></tr></table>'
-                        + '</div>');
-                    $('td', helper).append($(this).closest('tr').find('.node-link').clone());
+                        + '</div></div>');
+                    var nodeLink = $(this).closest('tr').find('.node-link');
+                    $('td', helper).append(nodeLink.clone());
+
+                    
+                    if (selectedCount > 1) {
+                        var counter = '<span class="drag-counter">' + selectedCount
+                            + '</span>';
+                        $('td', helper).prepend(counter);
+                    }
+                    
+
+                    var handleOffset = nodeLink.position().left+'px';
+                    $(helper).css('padding-left', handleOffset);
+                    $(helper).css('padding-right', handleOffset);
+
                     return helper;
                 },
+                opacity: .9,
                 handle: '.node-link',
                 appendTo: 'body',
             }).disableSelection();
@@ -272,18 +302,21 @@ jQuery(function($) {
             if ($('.node', this).is('.folder')) {
                 $(this).droppable({
                     drop: function(event, ui) {
-                        var inputName = '_selected_action';
-                        var inputSel = 'input[name=' + inputName + ']';
                         var action = $(ui.draggable).data('copyDrag') ? 'copy_selected' : 'move_selected';
                         var fields = {
                             action: action,
-                            target_node: $(inputSel, this).val(),
+                            target_node: $(rowSelectInputSel, this).val(),
                             execute: 1
                         };
-                        fields[inputName] = $(inputSel, ui.draggable).val();
+
                         var form = makeForm('', fields);
+                        var selected = $(rowSelectInputSel + ':checked', _changelist);
+                        form.append(selected.clone()); 
+                        console.log(form);
                         
-                        // form.submit();
+                        //form.submit();
+                        
+                        //return;
                         // instead:
                         var row = $(this);
                         row.addClass('loading');
@@ -295,7 +328,7 @@ jQuery(function($) {
                                 var newChangelist = $(data).find('#changelist');
                                 if (newChangelist.length) {
                                     // update table
-                                    $('#changelist').updateChangelist(newChangelist.html());
+                                    $(_changelist).updateChangelist(newChangelist.html(), false);
                                     // display messages
                                     $('.messagelist li', data).each(function() {
                                         $.addUserMessage($(this).text(), null, this.className);

@@ -42,7 +42,8 @@ def filenode_admin_action(modeladmin, request, queryset, form_class, extra_conte
                 'verbose_name_plural': FileNode._meta.verbose_name_plural
             })
             
-            return HttpResponseRedirect(reverse('admin:media_tree_filenode_folder_expand', args=(redirect_node.pk,)))
+            return HttpResponseRedirect(reverse('admin:media_tree_filenode_changelist'))
+            #return HttpResponseRedirect(reverse('admin:media_tree_filenode_folder_expand', args=(redirect_node.pk,)))
             #return HttpResponseRedirect(redirect_node.get_admin_url())
 
     if not execute:
