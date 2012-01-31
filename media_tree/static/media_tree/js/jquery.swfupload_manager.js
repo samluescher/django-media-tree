@@ -220,18 +220,25 @@ jQuery(function($) {
                     var message = gettext('loading...');
                     manager.addUserMessage(message, 'swfupload-queue-message');
 
-                    $('#changelist').setUpdateReq($.get(window.location.href, null, function(data, textStatus) {
-                        stats = _this.getStats();
-                        if (stats.files_queued == 0) {
-                            // reload changelist contents
-                            $('#changelist').updateChangelist($(data).find('#changelist').html());
-                            manager.markFirstChangelistRow();
-                            // insert success message
-                            message = ngettext('Successfully added %i file.', 'Successfully added %i files.', stats.successful_uploads).replace('%i', stats.successful_uploads);
-                            manager.addUserMessage(message, 'swfupload-queue-message');
-                            // reset stats
-                            stats.successful_uploads = 0;
-                            _this.setStats(stats);
+                    $('#changelist').addClass('loading');
+                    $('#changelist').setUpdateReq($.ajax({
+                        url: window.location.href, 
+                        success: function(data, textStatus) {
+                            stats = _this.getStats();
+                            if (stats.files_queued == 0) {
+                                // reload changelist contents
+                                $('#changelist').updateChangelist($(data).find('#changelist').html());
+                                manager.markFirstChangelistRow();
+                                // insert success message
+                                message = ngettext('Successfully added %i file.', 'Successfully added %i files.', stats.successful_uploads).replace('%i', stats.successful_uploads);
+                                manager.addUserMessage(message, 'swfupload-queue-message');
+                                // reset stats
+                                stats.successful_uploads = 0;
+                                _this.setStats(stats);
+                            }
+                        },
+                        complete: function(jqXHR, textStatus) {
+                            $('#changelist').removeClass('loading');
                         }
                     }));
                 } else {
