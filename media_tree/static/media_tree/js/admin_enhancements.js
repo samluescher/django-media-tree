@@ -268,13 +268,104 @@ jQuery(function($) {
 
         var rowSelectInputName = '_selected_action';
         var rowSelectInputSel = 'input[name=' + rowSelectInputName + ']';
-
         var rowSel = '#changelist tbody tr';
-        rows.each(function() {
+        var tableSel = '#changelist table';
+        var rootDroppable;
+        var dragDropScope = 'drag-filenode';
+
+        var initDroppable = function(target, loaderTarget) { 
+            return $(target).droppable({
+                drop: function(event, ui) {
+                    dragHelper = null;
+                    draggedItem = null;
+                    var targetId;
+
+                    console.log(this);
+                    console.log(rootDroppable);
+
+                    if (this != rootDroppable) {
+                        targetId = $(rowSelectInputSel, target).val();
+                        console.log('drop on '+targetId);                        
+                    } else {
+                        console.log('drop on root');                        
+                        targetId = '';
+                    }
+
+                    var action = $(ui.draggable).data('copyDrag') ? 'copy_selected' : 'move_selected';
+                    var fields = {
+                        action: action,
+                        target_node: targetId,
+                        execute: 1
+                    };
+
+                    var form = makeForm('', fields);
+                    var selected = $(rowSelectInputSel + ':checked', _changelist);
+                    form.append(selected.clone()); 
+                    
+                    //form.submit();
+                    
+                    //return;
+                    // instead:
+                    var _target = $(target);
+                    if (!loaderTarget) {
+                        loaderTarget = _target;
+                    }
+                    loaderTarget.addClass('loading');
+
+                    $(_changelist).setUpdateReq($.ajax({
+                        type: 'post',
+                        data: form.serialize(),  
+                        success: function(data) {
+                            loaderTarget.removeClass('loading');
+                            var newChangelist = $(data).find('#changelist');
+                            if (newChangelist.length) {
+                                // update table
+                                $(_changelist).updateChangelist(newChangelist.html(), false);
+                                // display messages
+                                $('.messagelist li', data).each(function() {
+                                    $.addUserMessage($(this).text(), null, this.className);
+                                });
+                            } else {
+                                // if the result is no changelist, the form did not validate.
+                                // display error messages:
+                                $('fieldset .errorlist li', data).each(function() {
+                                    $.addUserMessage($(this).text(), null, 'error');
+                                });
+                            }
+                        }, 
+                        error: function() {
+                            loaderTarget.removeClass('loading');
+                        }  
+                    }));
+                    
+                    return false;      
+                },
+                scope: dragDropScope,
+                hoverClass: 'drop-hover',
+                greedy: true,
+            });
+        };
+
+        // Init dropping on root.
+        // TODO: We can not use the table itself as droppable, since that would 
+        // accept a dragged row even when that row is dropped on itself (or actually
+        // the table, since jQuery prevents dropping on self and then propagates the
+        // event up the the table if the table is a droppable).
+        // Solution for now: The thead is the root droppable.
+        rootDroppable = initDroppable($('thead', _changelist), $(_changelist))[0];
+
+        $(rowSel).each(function() {
             $(this).draggable({
+                stop: function(event, ui) {
+                    if ($(this).data('deselectAfterDrop')) {
+                        $(this).data('deselectAfterDrop', false);
+                        $(rowSelectInputSel, this).trigger('click');
+                    }
+                },
                 helper: function(event, ui) {
                     // select dragged item
                     if (!$(rowSelectInputSel, this).is(':checked')) {
+                        $(this).data('deselectAfterDrop', true);
                         $(rowSelectInputSel, this).trigger('click');
                     }
                     var selected = $(rowSelectInputSel + ':checked', _changelist);
@@ -306,64 +397,14 @@ jQuery(function($) {
 
                     return helper;
                 },
+                scope: dragDropScope,
                 opacity: .9,
                 handle: '.node-link',
                 appendTo: 'body',
             }).disableSelection();
 
             if ($('.node', this).is('.folder')) {
-                $(this).droppable({
-                    drop: function(event, ui) {
-                        dragHelper = null;
-                        draggedItem = null;
-
-                        var action = $(ui.draggable).data('copyDrag') ? 'copy_selected' : 'move_selected';
-                        var fields = {
-                            action: action,
-                            target_node: $(rowSelectInputSel, this).val(),
-                            execute: 1
-                        };
-
-                        var form = makeForm('', fields);
-                        var selected = $(rowSelectInputSel + ':checked', _changelist);
-                        form.append(selected.clone()); 
-                        
-                        //form.submit();
-                        
-                        //return;
-                        // instead:
-                        var row = $(this);
-                        row.addClass('loading');
-                        $(_changelist).setUpdateReq($.ajax({
-                            type: 'post',
-                            data: form.serialize(),  
-                            success: function(data) {
-                                row.removeClass('loading');
-                                var newChangelist = $(data).find('#changelist');
-                                if (newChangelist.length) {
-                                    // update table
-                                    $(_changelist).updateChangelist(newChangelist.html(), false);
-                                    // display messages
-                                    $('.messagelist li', data).each(function() {
-                                        $.addUserMessage($(this).text(), null, this.className);
-                                    });
-                                } else {
-                                    // if the result is no changelist, the form did not validate.
-                                    // display error messages:
-                                    $('fieldset .errorlist li', data).each(function() {
-                                        $.addUserMessage($(this).text(), null, 'error');
-                                    });
-                                }
-                            }, 
-                            error: function() {
-                                row.removeClass('loading');
-                            }  
-                        }));
-                          
-                    },
-                    accept: rowSel,
-                    hoverClass: 'drop-hover'
-                });
+                initDroppable(this);
             }
         });
 

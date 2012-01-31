@@ -217,8 +217,16 @@ ul.node-tools li:last-child {
     background-position: 100% 100%;
 }
 
-.loading .folder-toggle {
+#changelist table .loading .folder-toggle {
     background-image: url(../img/icons/folder-toggle-loading.gif);
+}
+
+#changelist.loading th.action-checkbox-column {
+    background: url(../img/icons/folder-toggle-loading.gif) 50% 50% no-repeat;
+}
+
+#changelist.loading th.action-checkbox-column input {
+    display: none !important;
 }
 
 .folder-toggle.dummy {
@@ -277,8 +285,8 @@ ul.node-tools li:last-child {
     border: none;
 }
 
-.drop-hover {
-    background: #D8D8D8;
+.drop-hover, .drop-hover td {
+    background: #ccc;
 }
 
 .drag-counter {
