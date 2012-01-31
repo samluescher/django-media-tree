@@ -280,14 +280,11 @@ jQuery(function($) {
                     draggedItem = null;
                     var targetId;
 
-                    console.log(this);
-                    console.log(rootDroppable);
-
                     if (this != rootDroppable) {
+                        // drop on folder
                         targetId = $(rowSelectInputSel, target).val();
-                        console.log('drop on '+targetId);                        
                     } else {
-                        console.log('drop on root');                        
+                        // drop on root
                         targetId = '';
                     }
 

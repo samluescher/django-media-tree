@@ -644,9 +644,9 @@ class FileNode(ModelBase):
             <img src="{{ node.file.url }}" alt="{{ node.alt }}" />
 
         """
-        if self.override_alt != '':
+        if self.override_alt != '' and self.override_alt is not None:
             return self.override_alt
-        elif self.override_caption != '':
+        elif self.override_caption != '' and self.override_caption is not None:
             return self.override_caption
         else:
             return self.get_metadata_display()
