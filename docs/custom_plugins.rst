@@ -23,9 +23,8 @@ information on the View classes themselves::
     from third_party_app import YourPluginSuperclass
     from django.shortcuts import render_to_response
     
-    # Notice we are subclassing our third-party plugin class,
+    # Notice we are subclassing our third-party plugin class,    
     # as well as the FileNodeListingMixin
-    
     class CustomFileNodeListingPlugin(YourPluginSuperclass, FileNodeListingMixin):
     
         # Assuming render() is a standard method of YourPluginSuperclass
