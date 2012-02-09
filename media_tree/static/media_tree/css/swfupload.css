@@ -25,7 +25,7 @@
 .upload-progress-bar-container {
     display: inline-block;
     background: darkgray;
-    width: 200px;
+    width: 80px;
     margin: 0 1em 0 1em;
 }
 
@@ -33,7 +33,7 @@
     display: inline-block;
     background: #5B80B2;
     width: 1px;
-    padding-left: 2px;
+    padding: 0;
     font-size: .8em;
     color: white;
 }

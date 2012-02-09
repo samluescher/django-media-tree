@@ -123,11 +123,15 @@ class FileNodeAdmin(MPTTModelAdmin):
             os.path.join(STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10', 'swfupload.js'),
             os.path.join(STATIC_SUBDIR, 'lib/swfupload/plugins', 'swfupload.queue.js'),
             os.path.join(STATIC_SUBDIR, 'lib/swfupload/plugins', 'swfupload.cookies.js'),
-            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js'),
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js'),
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js'),
             os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js'),
+            os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js'),
+            
             os.path.join(STATIC_SUBDIR, 'js', 'jquery.swfupload_manager.js'),
+
+            os.path.join(STATIC_SUBDIR, 'lib', 'fileuploader.js'),
         ]
         css = {
             'all': (
@@ -523,11 +527,29 @@ class FileNodeAdmin(MPTTModelAdmin):
     # However, Flash Player should already be enforcing a same-domain policy.
     @csrf_view_exempt
     def upload_file_view(self, request):
-        self.init_parent_folder(request)
+
         if not self.has_add_permission(request):
             raise PermissionDenied
+
+        FILE_PARAM_NAME = 'qqfile'
+
+        self.init_parent_folder(request)
+
         if request.method == 'POST':
-            form = UploadForm(request.POST, request.FILES)
+
+            if request.is_ajax() and request.GET.get(FILE_PARAM_NAME, None):
+                from django.core.files.base import ContentFile
+                from django.core.files.uploadedfile import UploadedFile
+                content_file = ContentFile(request.raw_post_data)
+                uploaded_file = UploadedFile(content_file, request.GET.get(FILE_PARAM_NAME), None, content_file.size)
+
+                form = UploadForm(request.POST, {'file': uploaded_file})
+                
+                                                    
+            else:
+                form = UploadForm(request.POST, request.FILES)
+
+
             if form.is_valid():
                 node = FileNode(file=form.cleaned_data['file'], node_type=FileNode.FILE)
                 parent_folder = self.get_parent_folder(request)
@@ -538,22 +560,25 @@ class FileNodeAdmin(MPTTModelAdmin):
                 # request would not result in a HTTP error and look like a successful upload.
                 # For instance: When requesting the admin view without authentication, there is a redirect to the
                 # login form, which to SWFUpload looks like a successful upload request.
-                if request.is_ajax() or 'Adobe Flash' in request.META.get('HTTP_USER_AGENT', ''):
-                    return HttpResponse("ok", mimetype="text/plain")
+                if request.is_ajax():
+                    return HttpResponse('{"success": true}', mimetype="application/json")
                 else:
                     messages.info(request, _('Successfully uploaded file %s.') % node.name)
                     return HttpResponseRedirect(reverse('admin:media_tree_filenode_changelist'))
             else:
-                if not settings.DEBUG:
-                    raise ValidationError
-                    return
+                # invalid form data
+
+                if request.is_ajax():
+                    return HttpResponse('{"error": "%s"}' % ' '.join(
+                        [item for sublist in form.errors.values() for item in sublist]), 
+                        mimetype="application/json")
+
+        # Form is rendered for troubleshooting SWFUpload. If this form works, the problem is not server-side.
         if not settings.DEBUG:
             raise ViewDoesNotExist
-        else:
-            # Form is rendered for troubleshooting SWFUpload. If this form works, the problem is not server-side.
-            from django.template import Template, RequestContext
-            if request.method != 'POST':
-                form = UploadForm()
+        if request.method == 'GET':
+            form = UploadForm()
+        return render_to_response('admin/media_tree/filenode/upload_form.html', {'form': form})            
 
     def open_path_view(self, request, path=''):
         if path is None or path == '':

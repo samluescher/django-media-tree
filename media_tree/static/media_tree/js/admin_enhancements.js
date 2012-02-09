@@ -107,7 +107,7 @@ jQuery(function($) {
 
     /**
     Adds child rows after a row (which are actually just indented rows sitting
-    underneath it), and adds keeps track of them for later removal.
+    underneath it), and keeps track of them for later removal.
     */
     $.fn.addExpandedChildren = function(rows, appendAfter) {
         if (appendAfter == null || appendAfter) {
@@ -131,9 +131,13 @@ jQuery(function($) {
         $(this).each(function() {
             var expandedChildren = $(this).data('expandedChildren');
             if (expandedChildren) {
+                $(this).data('expandedChildren', null);
                 $(expandedChildren).closeExpandedChildren();
                 $(expandedChildren).remove();
-                $(this).data('expandedChildren', null);
+
+                /*$(expandedChildren).fadeOut('fast', function() {
+                    $(this).remove();
+                });*/
             }
         }); 
     };
@@ -398,6 +402,7 @@ jQuery(function($) {
                 opacity: .9,
                 handle: '.node-link',
                 appendTo: 'body',
+                delay: 200
             }).disableSelection();
 
             if ($('.node', this).is('.folder')) {
