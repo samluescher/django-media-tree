@@ -6,12 +6,12 @@ from django.utils.datastructures import SortedDict
 
 MEDIA_TREE_STORAGE = getattr(settings, 'MEDIA_TREE_STORAGE', None)
 """
-File storage class to be used for any file-related operations when dealing 
-with media files. 
+File storage class to be used for any file-related operations when dealing
+with media files.
 
-This is not set by default, meaning that Django's ```DEFAULT_FILE_STORAGE`` 
-<https://docs.djangoproject.com/en/dev/ref/settings/#default-file-storage>`_ 
-will be used. Please refer to the relevant Django documentation on `file storage 
+This is not set by default, meaning that Django's ```DEFAULT_FILE_STORAGE``
+<https://docs.djangoproject.com/en/dev/ref/settings/#default-file-storage>`_
+will be used. Please refer to the relevant Django documentation on `file storage
 <https://docs.djangoproject.com/en/dev/ref/files/storage/#module-django.core.files.storage>`_.
 """
 
@@ -28,7 +28,7 @@ which depends on ``easy_thumbnails`` to be installed. Please refer to
 
 MEDIA_TREE_MEDIA_BACKEND_DEBUG = getattr(settings, 'MEDIA_TREE_MEDIA_BACKEND_DEBUG', settings.DEBUG)
 """
-Specifies whether exceptions caused by media backends, such as ``ThumbnailError``, should be 
+Specifies whether exceptions caused by media backends, such as ``ThumbnailError``, should be
 raised or silently ignored.
 """
 
@@ -74,7 +74,7 @@ MEDIA_TREE_STATIC_SUBDIR = 'media_tree'
 
 MEDIA_TREE_ICON_DIRS = getattr(settings, 'MEDIA_TREE_ICON_DIRS', (
     'media_tree/img/icons/mimetypes',
-))    
+))
 """
 A tuple containing all icon directories. See :ref:`install-icon-sets`
 for more information.
@@ -115,11 +115,13 @@ Default::
 """
 
 MEDIA_TREE_ALLOWED_FILE_TYPES = getattr(settings, 'MEDIA_TREE_ALLOWED_FILE_TYPES', (
-    'aac', 'ace', 'ai', 'aiff', 'avi', 'bmp', 'dir', 'doc', 'docx', 'dmg', 'eps', 'fla', 'flv', 
-    'gif', 'gz', 'hqx', 'htm', 'html', 'ico', 'indd', 'inx', 'jpg', 'jar', 'jpeg', 'md', 'mov', 
-    'mp3', 'mp4', 'mpc', 'mkv', 'mpg', 'mpeg', 'ogg', 'odg', 'odf', 'odp', 'ods', 'odt', 'otf', 
-    'pdf', 'png', 'pps', 'ppsx', 'ps', 'psd', 'rar', 'rm', 'rtf', 'sit', 'swf', 'tar', 'tga', 
-    'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma', 'wmv', 'xls', 'xlsx', 'xml', 'zip'
+    'aac', 'ace', 'ai', 'aiff', 'avi', 'bmp', 'dir', 'doc', 'docx', 'dmg',
+    'eps', 'fla', 'flv', 'gif', 'gz', 'hqx', 'htm', 'html', 'ico', 'indd',
+    'inx', 'jpg', 'jar', 'jpeg', 'key', 'md', 'mov', 'mp3', 'mp4', 'mpc', 'mkv',
+    'mpg', 'mpeg', 'numbers', 'ogg', 'odg', 'odf', 'odp', 'ods', 'odt', 'otf',
+    'pages', 'pdf', 'png', 'pps', 'ppsx', 'ps', 'psd', 'rar', 'rm', 'rtf',
+    'sit', 'swf', 'tar', 'tga', 'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma',
+    'wmv', 'xls', 'xlsx', 'xml', 'zip'
 ))
 """
 A whitelist of file extensions that can be uploaded. By default, this is a
@@ -208,7 +210,8 @@ MEDIA_TREE_LEVEL_INDICATOR = unichr(0x00A0) * 3;
 MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT = '%(name)s_%(number)i%(ext)s'
 
 """
-For the following 
+For the following media types, no metadata is critically required apart from a name,
+since the files itself contain text and the filename should be descriptive already.
 """
 MEDIA_TREE_METADATA_LESS_MEDIA_TYPES = (
     media_types.FOLDER, media_types.DOCUMENT, media_types.ARCHIVE, media_types.TEXT)
