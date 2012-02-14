@@ -87,6 +87,9 @@ jQuery(function($) {
         _onComplete: function(id, fileName, result){
             qq.FileUploaderBasic.prototype._onComplete.apply(this, arguments);
 
+            // the request was aborted/cancelled
+            if (!this._files[id]) return;
+
             // mark completed
             var item = this._getItemByFileId(id);                
             qq.remove(this._find(item, 'cancel'));
