@@ -2,67 +2,87 @@ jQuery(function($) {
     DjangoAdminFileUploader = function(o){
         // call parent constructor
         qq.FileUploader.apply(this, arguments);
+    
+        // this method is completely replaced by showing messages in queue
+        // and/or errorlist
         this._options.showMessage = function(message) { };
+        
+        this._options.originalDocumentTitle = document.title;
+        this._options.stats = {
+            upload_errors: 0,
+            successful_uploads: 0
+        }
     }
 
     qq.extend(DjangoAdminFileUploader.prototype, qq.FileUploader.prototype);
 
     qq.extend(DjangoAdminFileUploader.prototype, {
 
+        // custom, change-list specific methods --------------------------------
 
-        /**
-         * Gets one of the elements listed in this._options.classes
-         **/
-        _find: function(parent, type){                                
-            var element = qq.getByClass(parent, this._options.classes[type])[0];        
-            if (!element){
-                throw new Error('element not found ' + type);
-            }
-            
-            return element;
-        },
-        _setupDragDrop: function(){
-            var self = this,
-                dropArea = this._find(this._element, 'drop');                        
-
-            var dz = new qq.UploadDropZone({
-                element: dropArea,
-                onEnter: function(e){
-                    qq.addClass(dropArea, self._classes.dropActive);
-                    e.stopPropagation();
-                },
-                onLeave: function(e){
-                    e.stopPropagation();
-                },
-                onLeaveNotDescendants: function(e){
-                    qq.removeClass(dropArea, self._classes.dropActive);  
-                },
-                onDrop: function(e){
-                    dropArea.style.display = 'none';
-                    qq.removeClass(dropArea, self._classes.dropActive);
-                    self._uploadFileList(e.dataTransfer.files);    
+        _updateStatusText: function(id, message, messageClass)
+        {
+            var row = this._getItemByFileId(id);
+            $(row).find('.queue-status').each(function() {
+                if (messageClass != null) {
+                    $(this).addClass(messageClass);
                 }
+                $(this).text(message);
             });
-                    
-            dropArea.style.display = 'none';
-
-            qq.attach(document, 'dragenter', function(e){     
-                if (!dz._isValidFileDrag(e)) return; 
-                
-                dropArea.style.display = 'block';            
-            });                 
-            qq.attach(document, 'dragleave', function(e){
-                if (!dz._isValidFileDrag(e)) return;            
-                
-                var relatedTarget = document.elementFromPoint(e.clientX, e.clientY);
-                // only fire when leaving document out
-                if ( ! relatedTarget || relatedTarget.nodeName == "HTML"){               
-                    dropArea.style.display = 'none';                                            
-                }
-            });                
         },
 
+        _setQueueMessage: function()
+        {
+            document.title = gettext('uploading… (%i in queue)').replace('%i', this._filesInProgress)+' – '+this._options.originalDocumentTitle;
+            var message = ngettext('%i file in queue.', '%i files in queue.', this._filesInProgress).replace('%i', this._filesInProgress);
+            console.log(message);
+            $.addUserMessage(message, 'upload-queue-message');
+        },
 
+        _formatSize: function(size) {
+            return size > 1000000 ? 
+                Math.round(size / 1000000, 1) + ' MB'
+                : (size > 1000 ? 
+                    Math.round(size / 1000, 1) + ' KB'
+                    : size + ' bytes'); 
+        },
+
+        _reloadAfterQueueComplete: function() {
+            document.title = this._options.originalDocumentTitle;
+            var stats = this._options.stats;
+            var _this = this;
+            if (stats.upload_errors == 0) {
+                /*window.location.reload();*/
+                // instead, replace change list only:
+                var message = gettext('loading…');
+                $.addUserMessage(message, 'upload-queue-message');
+
+                $('#changelist').addClass('loading');
+                $('#changelist').setUpdateReq($.ajax({
+                    url: window.location.href, 
+                    success: function(data, textStatus) {
+                        stats = _this._options.stats;
+                        if (_this._filesInProgress == 0) {
+                            // reload changelist contents
+                            $('#changelist').updateChangelist($(data).find('#changelist').html());
+                            // insert success message
+                            message = ngettext('Successfully added %i file.', 'Successfully added %i files.', stats.successful_uploads).replace('%i', stats.successful_uploads);
+                            $.addUserMessage(message, 'upload-queue-message');
+                            // reset stats
+                            _this._options.stats.successful_uploads = 0;
+                        }
+                    },
+                    complete: function(jqXHR, textStatus) {
+                        $('#changelist').removeClass('loading');
+                    }
+                }));
+            } else {
+                var message = gettext('There were errors during upload.');
+                $.addUserMessage(message, 'upload-queue-message');
+            }
+        },
+
+        // extended methods ----------------------------------------------------
 
         _onComplete: function(id, fileName, result){
             qq.FileUploaderBasic.prototype._onComplete.apply(this, arguments);
@@ -80,22 +100,18 @@ jQuery(function($) {
             if (result.error){
                 this._updateStatusText(id, result.error, 'upload-error');
                 $(item).find('.upload-progress-bar').text(gettext('failed'));
-            }             
+                this._options.stats.upload_errors++;    
+            } else {
+                this._options.stats.successful_uploads++;    
+            }    
+            
+            this._setQueueMessage();
+            
+            console.log('queue: '+this._filesInProgress);
+            if (this._filesInProgress == 0) {
+                this._reloadAfterQueueComplete();
+            }
         },
-
-        _updateStatusText: function(id, message, messageClass)
-        {
-            var row = this._getItemByFileId(id);
-            $(row).find('.queue-status').each(function() {
-                if (messageClass != null) {
-                    $(this).addClass(messageClass);
-                }
-                $(this).text(message);
-            });
-        },
-
-
-
 
         _onProgress: function(id, fileName, loaded, total){
             qq.FileUploaderBasic.prototype._onProgress.apply(this, arguments);
@@ -112,14 +128,7 @@ jQuery(function($) {
                 bar.addClass('complete');
             }
 
-        },
-
-        _formatSize: function(size) {
-            return size > 1000000 ? 
-                Math.round(size / 1000000, 1) + ' MB'
-                : (size > 1000 ? 
-                    Math.round(size / 1000, 1) + ' KB'
-                    : size + ' bytes'); 
+            this._setQueueMessage();        
         },
 
         _addToList: function(id, fileName){
