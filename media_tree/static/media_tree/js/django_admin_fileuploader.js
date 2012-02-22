@@ -33,9 +33,12 @@ jQuery(function($) {
 
         _setQueueMessage: function()
         {
-            document.title = gettext('uploading… (%i in queue)').replace('%i', this._filesInProgress)+' – '+this._options.originalDocumentTitle;
+            if (this._filesInProgress > 0) {
+                document.title = gettext('uploading… (%i in queue)').replace('%i', this._filesInProgress)+' – '+this._options.originalDocumentTitle;
+            } else {
+                document.title = this._options.originalDocumentTitle;
+            }
             var message = ngettext('%i file in queue.', '%i files in queue.', this._filesInProgress).replace('%i', this._filesInProgress);
-            console.log(message);
             $.addUserMessage(message, 'upload-queue-message');
         },
 
@@ -48,9 +51,9 @@ jQuery(function($) {
         },
 
         _reloadAfterQueueComplete: function() {
-            document.title = this._options.originalDocumentTitle;
+            this._setQueueMessage();
             var stats = this._options.stats;
-            var _this = this;
+            var self = this;
             if (stats.upload_errors == 0) {
                 /*window.location.reload();*/
                 // instead, replace change list only:
@@ -61,15 +64,15 @@ jQuery(function($) {
                 $('#changelist').setUpdateReq($.ajax({
                     url: window.location.href, 
                     success: function(data, textStatus) {
-                        stats = _this._options.stats;
-                        if (_this._filesInProgress == 0) {
+                        stats = self._options.stats;
+                        if (self._filesInProgress == 0) {
                             // reload changelist contents
                             $('#changelist').updateChangelist($(data).find('#changelist').html());
                             // insert success message
                             message = ngettext('Successfully added %i file.', 'Successfully added %i files.', stats.successful_uploads).replace('%i', stats.successful_uploads);
                             $.addUserMessage(message, 'upload-queue-message');
                             // reset stats
-                            _this._options.stats.successful_uploads = 0;
+                            self._options.stats.successful_uploads = 0;
                         }
                     },
                     complete: function(jqXHR, textStatus) {
@@ -86,9 +89,6 @@ jQuery(function($) {
 
         _onComplete: function(id, fileName, result){
             qq.FileUploaderBasic.prototype._onComplete.apply(this, arguments);
-
-            // the request was aborted/cancelled
-            if (!this._files[id]) return;
 
             // mark completed
             var item = this._getItemByFileId(id);                
@@ -110,7 +110,6 @@ jQuery(function($) {
             
             this._setQueueMessage();
             
-            console.log('queue: '+this._filesInProgress);
             if (this._filesInProgress == 0) {
                 this._reloadAfterQueueComplete();
             }
@@ -131,17 +130,10 @@ jQuery(function($) {
                 bar.addClass('complete');
             }
 
-            this._setQueueMessage();        
+            this._setQueueMessage();
         },
 
         _addToList: function(id, fileName){
-
-            var file = {
-                name: fileName,
-                size: 0,
-                id: id
-            };
-            
             var c = this._options.classes;
 
             cols = [];
@@ -149,12 +141,12 @@ jQuery(function($) {
                 '<td class="nowrap"><span style="display: none;" class="upload-progress-bar-container">'
                 + '<span class="upload-progress-bar"></span></span><span class="queue-status">' 
                 + gettext('queued') + '</span>' 
-                + '&nbsp;<a href="#">' + file.name + '</a>'
+                + '&nbsp;<a href="#">' + fileName + '</a>'
                 + '&nbsp;<a href="#" class="' + c['cancel'] + '">'+gettext('cancel')+'</a>'
                 + '</td>');
             cols[2] = $('<td class="filesize"><span class="' + c['size'] + '"></span></td>');
 
-            var row = $.makeChangelistRow(cols, this._getItemByFileId(id));
+            var row = $.makeChangelistRow(cols, this._getItemByFileId(id))[0];
             row.qqFileId = id;
 
             var queuedRows = $('tr.queue');
@@ -177,5 +169,30 @@ jQuery(function($) {
                 return $('<tr id="queue-'+id+'" class="queue"></tr>');
             }
         },
+
+        _bindCancelEvent: function() {
+            var self = this,
+                list = this._listElement;            
+            
+            qq.attach(list, 'click', function(e){            
+                e = e || window.event;
+                var target = e.target || e.srcElement;
+                
+                if (qq.hasClass(target, self._classes.cancel)){                
+                    qq.preventDefault(e);
+                   
+                    // patch: item is not a list item, but a table row, hence is not
+                    // the cancel button's parentNode:
+                    /* var item = target.parentNode; */
+                    var item = $(target).closest('tr')[0];
+
+                    self._handler.cancel(item.qqFileId);
+                    qq.remove(item);
+
+                    self._setQueueMessage();
+                }
+            });
+        }    
+
     });
 });
