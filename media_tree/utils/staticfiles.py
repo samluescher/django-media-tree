@@ -24,6 +24,7 @@ def get_static_storage():
 
 STATIC_STORAGE = get_static_storage()
 BUFFERED_ICON_SIZES = {}
+EXISTING_PATHS = {}
 
 
 class StaticFile(FieldFile):
@@ -75,6 +76,7 @@ class StaticIconFile(StaticFile):
             return self.instance.extension
         return _('folder')
 
+
 class StaticPathFinder:
 
     @staticmethod
@@ -93,7 +95,10 @@ class StaticPathFinder:
         for dir_name in dirs:
             for name in names:
                 path = os.path.join(dir_name, name + file_ext)
-                if STATIC_STORAGE.exists(path):
+                if not path in EXISTING_PATHS:
+                    # check on file system, then cache
+                    EXISTING_PATHS[path] = STATIC_STORAGE.exists(path)
+                if EXISTING_PATHS[path]:
                     return path
     
     
