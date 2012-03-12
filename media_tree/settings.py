@@ -122,7 +122,7 @@ MEDIA_TREE_ALLOWED_FILE_TYPES = getattr(settings, 'MEDIA_TREE_ALLOWED_FILE_TYPES
     'eps', 'fla', 'flv', 'gif', 'gz', 'hqx', 'htm', 'html', 'ico', 'indd',
     'inx', 'jpg', 'jar', 'jpeg', 'key', 'md', 'mov', 'mp3', 'mp4', 'mpc', 'mkv',
     'mpg', 'mpeg', 'numbers', 'ogg', 'odg', 'odf', 'odp', 'ods', 'odt', 'otf',
-    'pages', 'pdf', 'png', 'pps', 'ppsx', 'ps', 'psd', 'rar', 'rm', 'rtf',
+    'pages', 'pdf', 'png', 'pps', 'ppsx', 'ps', 'psd', 'rar', 'rm', 'rst', 'rtf',
     'sit', 'swf', 'tar', 'tga', 'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma',
     'wmv', 'xls', 'xlsx', 'xml', 'zip'
 ))

@@ -30,8 +30,8 @@ class FileNodeListingView(ListView):
         urlpatterns = patterns('',
             (r'^listing/$', FileNodeListingView.as_view(
                 # notice that queryset can be any iterable, for instance a list:
-                queryset=[FileNode.objects.get_by_path('some/folder')],
-                max_depth=2
+                queryset=[FileNode.objects.get(path='some/folder')],
+                list_max_depth=2
             )),
         )
 

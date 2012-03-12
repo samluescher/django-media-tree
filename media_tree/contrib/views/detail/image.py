@@ -21,7 +21,7 @@ class ImageNodeDetailView(FileNodeDetailView):
 
         urlpatterns = patterns('',
             (r'^images/(?P<pk>\d+)/$', ImageNodeDetailView.as_view(
-                queryset=FileNode.objects.get_by_path('some/folder').get_descendants()
+                queryset=FileNode.objects.get(path='some/folder').get_descendants()
             )),
         )
     """
