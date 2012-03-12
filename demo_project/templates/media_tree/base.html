@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!doctype html>
 <html lang="en"><head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="robots" content="NONE,NOARCHIVE"><title>Welcome to Django</title>
@@ -19,7 +19,7 @@
     tbody th { width:12em; text-align:right; color:#666; padding-right:.5em; }
     ul { margin-left: 2em; margin-top: 1em; margin-bottom: 1.5em; }
     p {
-    	margin: .5em 0 .5em 0;
+        margin: .5em 0 1.5em 0;
     }
     #summary { background: #e0ebff; }
     #summary h2 { font-weight: normal; color: #666; }
@@ -28,34 +28,34 @@
     #summary table { border:none; background:transparent; }
 
     .box {
-    	border: 1px solid #ddd;
-    	padding: 1em;
-    	background: lightyellow;
+        border: 1px solid #ddd;
+        padding: 1em;
+        background: lightyellow;
     }
 
     .box.white {
-    	background: white;
+        background: white;
     }
 
     .code {
-    	font-family: "Courier New", Courier, monospace;
+        font-family: "Courier New", Courier, monospace;
     }
 
     .image img {
-    	display: block;
-    	margin-bottom: .8em;
+        display: block;
+        margin-bottom: .8em;
     }
 
     .file-listing .icon, .file .icon {
-    	display: inline-block;
-    	margin: 0 .5em 0 0;
+        display: inline-block;
+        margin: 0 .5em 0 0;
     }
     ul.file-listing {
-    	margin-top: 0;
-    	line-height: 1.5em;
+        margin-top: 0;
+        line-height: 1.5em;
     }
     ul.file-listing ul{
-    	margin: 0 0 0 1em;
+        margin: 0 0 0 1em;
     }
   </style>
 </head>
@@ -69,19 +69,23 @@
 <div id="instructions">
   <h2>Administration</h2>
   <p>
-  	Please log into the administration site to see how <span class="code">FileNode</span> objects are administrated. 
+    Please log into the administration site to see how <span class="code">FileNode</span> objects are administrated. 
   </p>
   <p class="box">
-  	Username: <span class="code">admin</span>, Password: <span class="code">admin</span><br /> 
+    Username: <span class="code">admin</span>, Password: <span class="code">admin</span><br /> 
   </p>
   <ul>
     <li><a href="{% url admin:media_tree_filenode_changelist %}">Media Tree Admin</a></li>
   </ul>
+  <h2>Documentation</h2>
+  <p>
+    The <a href="http://readthedocs.org/docs/django-media-tree/">Media Tree Documentation</a> contains extensive information on how to use and extend this application.
+
   <h2>Generic Views</h2>
   <p>
-  	This application includes class-based generic views that enable you to access <span class="code">FileNode</span> objects through public URLs.
-  	Please see the Demo Project's <span class="code">urls.py</span> for an example of how to use them.
-  	Of course you can also extend the generic view classes to create views that suit your specific requirements.
+    This application includes class-based generic views that enable you to access <span class="code">FileNode</span> objects through public URLs.
+    Please see the Demo Project's <span class="code">urls.py</span> for an example of how to use them.
+    Of course you can also extend the generic view classes to create views that suit your specific requirements.
   </p>
   <ul>
     <li><a href="{% url demo_listing %}">Listing View</a></li>
@@ -91,8 +95,8 @@
 </div>
 
 <div id="detail">
-	<div class="box white">
-    {% block content %}Please select one of the example views above.{% endblock %}
-	</div>
+  <div class="box white">
+  {% block content %}Please select one of the example views above.{% endblock %}
+  </div>
 </div>
 </body></html>
