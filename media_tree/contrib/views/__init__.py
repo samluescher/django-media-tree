@@ -1,7 +1,8 @@
 """
 The module ``media_tree.contrib.views`` contains class-based generic views that
 enable you to access ``FileNode`` objects through public URLs. Please see below
-for specific examples.
+for specific examples. Of course you can also extend the generic view classes to 
+create views that suit your specific requirements.
 
 .. Note::
    As with any public views, you may want to restrict the objects that should be

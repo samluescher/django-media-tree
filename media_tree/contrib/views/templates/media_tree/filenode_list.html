@@ -1,7 +1,7 @@
 {% extends "media_tree/base.html" %}
 {% block content %}
 {% load media_tree_tags %}
-<ul class="file-list">
+<ul class="file-listing">
 {{ node_list|file_links:"use_metadata include_icon include_size include_extension"|unordered_list }}
 </ul>
 {% endblock %}
