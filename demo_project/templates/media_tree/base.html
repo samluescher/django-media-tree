@@ -19,7 +19,7 @@
     tbody th { width:12em; text-align:right; color:#666; padding-right:.5em; }
     ul { margin-left: 2em; margin-top: 1em; margin-bottom: 1.5em; }
     p {
-        margin: .5em 0 1.5em 0;
+        margin: .5em 0 0 0;
     }
     #summary { background: #e0ebff; }
     #summary h2 { font-weight: normal; color: #666; }
@@ -78,8 +78,11 @@
     <li><a href="{% url admin:media_tree_filenode_changelist %}">Media Tree Admin</a></li>
   </ul>
   <h2>Documentation</h2>
-  <p>
+  <ul>
+    <li>
     The <a href="http://readthedocs.org/docs/django-media-tree/">Media Tree Documentation</a> contains extensive information on how to use and extend this application.
+    </li>
+  </ul>
 
   <h2>Generic Views</h2>
   <p>
