@@ -60,6 +60,8 @@ server::
 Basic setup
 ===========
 
+Please follow these steps to use Media Tree with your own application.
+
 - In your project settings, add ``mptt`` and ``media_tree`` to the
   ``INSTALLED_APPS``::
 
