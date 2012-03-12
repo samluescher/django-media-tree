@@ -47,6 +47,16 @@ installation script::
     $ python setup.py install
 
 
+Demo project
+============
+
+A demo project is included for you to quickly test and evaluate Django Media 
+Tree. Just change into the folder ``demo_project`` and run the development 
+server::
+
+    $ python manage.py collectstatic
+
+
 Basic setup
 ===========
 
