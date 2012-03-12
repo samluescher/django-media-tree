@@ -1,0 +1,44 @@
+
+.swfupload-button-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.swfupload-button-container a {
+    display: block;
+}
+
+.swfupload-button-overlay {
+    position: absolute; 
+    top: 0px; 
+    left: 0px;
+}
+
+.upload-error {
+    color: red !important;
+}
+
+.upload-success {
+    color: inherit !important;
+}
+
+.upload-progress-bar-container {
+    display: inline-block;
+    background: darkgray;
+    width: 80px;
+    margin: 0 1em 0 1em;
+}
+
+.upload-progress-bar {
+    display: inline-block;
+    background: #5B80B2;
+    width: 1px;
+    padding: 0;
+    font-size: .8em;
+    color: white;
+}
+
+.upload-progress-bar.complete {
+    /*display: none !important;*/
+    background: lightgray;
+}
