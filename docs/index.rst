@@ -7,7 +7,7 @@ Introduction
 Django Media Tree is a Django app for managing your website's media files in a
 folder tree, and using them in your own applications.
 
-.. image:: admin-screenshot.png
+.. image:: _static/admin-screenshot.png
 
 Key features:
 
