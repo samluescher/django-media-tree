@@ -428,19 +428,16 @@ class FileNodeAdmin(MPTTModelAdmin):
         extra_context.update(self.init_changelist_view_options(request))
 
         if app_settings.MEDIA_TREE_SWFUPLOAD:
-            middleware = 'media_tree.middleware.SessionPostMiddleware'
-            if not middleware in settings.MIDDLEWARE_CLASSES:
-                request.user.message_set.create(message=_('You need to put %s in your MIDDLEWARE_CLASSES setting to use SWFUpload.') % middleware)
-            else:
-                swfupload_upload_url = reverse('admin:media_tree_filenode_upload')
-                #swfupload_flash_url = os.path.join(settings.MEDIA_URL, STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10/swfupload.swf')
-                swfupload_flash_url = reverse('admin:media_tree_filenode_static_swfupload_swf')
-                extra_context.update({
-                    'file_types': app_settings.MEDIA_TREE_ALLOWED_FILE_TYPES,
-                    'file_size_limit': app_settings.MEDIA_TREE_FILE_SIZE_LIMIT,
-                    'swfupload_flash_url': swfupload_flash_url,
-                    'swfupload_upload_url': swfupload_upload_url,
-                })
+            swfupload_upload_url = reverse('admin:media_tree_filenode_upload')
+            #swfupload_flash_url = os.path.join(settings.MEDIA_URL, STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10/swfupload.swf')
+            swfupload_flash_url = reverse('admin:media_tree_filenode_static_swfupload_swf')
+            extra_context.update({
+                'file_types': app_settings.MEDIA_TREE_ALLOWED_FILE_TYPES,
+                'file_size_limit': app_settings.MEDIA_TREE_FILE_SIZE_LIMIT,
+                'swfupload_flash_url': swfupload_flash_url,
+                'swfupload_upload_url': swfupload_upload_url,
+            })
+
         if request.GET.get(IS_POPUP_VAR, None):
             extra_context.update({'select_button': True})
 

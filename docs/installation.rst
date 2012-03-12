@@ -106,18 +106,6 @@ Basic setup
 
 .. _install-swfupload:
 
-- **Configuring the uploader (optional, recommended)**: If you are planning to
-  use a Flash uploader such as ``SWFUpload``, add ``SessionPostMiddleware`` to
-  your ``MIDDLEWARE_CLASSES``, before the standard ``SessionMiddleware``::
-
-    MIDDLEWARE_CLASSES = (
-        # ...
-        'media_tree.middleware.SessionPostMiddleware',
-        # Notice that ``SessionPostMiddleware`` goes before
-        # ``SessionMiddleware``
-        'django.contrib.sessions.middleware.SessionMiddleware',
-    )
-
 - **Optional**: Also add any Media Tree extensions that you are planning to use
   to your ``INSTALLED_APPS``::
 
