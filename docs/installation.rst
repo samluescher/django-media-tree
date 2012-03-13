@@ -56,7 +56,7 @@ server::
 
     $ python manage.py runserver
 
-Then open ``http://localhost:8000`` in your web browser.
+Then open `http://localhost:8000`_ in your web browser.
 
 
 Basic setup
