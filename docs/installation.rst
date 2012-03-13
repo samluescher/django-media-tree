@@ -54,7 +54,9 @@ A demo project is included for you to quickly test and evaluate Django Media
 Tree. Just change into the folder ``demo_project`` and run the development 
 server::
 
-    $ python manage.py collectstatic
+    $ python manage.py runserver
+
+Then open ``http://localhost:8000`` in your web browser.
 
 
 Basic setup
