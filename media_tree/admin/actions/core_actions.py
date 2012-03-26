@@ -4,6 +4,7 @@ from media_tree.admin.actions.forms import FileNodeActionsWithUserForm, MoveSele
 from media_tree.forms import MetadataForm
 from media_tree.utils.filenode import get_nested_filenode_list
 from django import forms
+from django.contrib import messages
 from django.utils.translation import ungettext, ugettext as _
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -36,7 +37,7 @@ def filenode_admin_action(modeladmin, request, queryset, form_class, extra_conte
             redirect_node = form.cleaned_data.get('target_node', None)
             if not redirect_node:
                 redirect_node = get_current_node(form)
-            request.user.message_set.create(message=ungettext(success_messages[0], success_messages[1], form.success_count) % {
+            messages.success(request, message=ungettext(success_messages[0], success_messages[1], form.success_count) % {
                 'count': form.success_count, 
                 'verbose_name': FileNode._meta.verbose_name, 
                 'verbose_name_plural': FileNode._meta.verbose_name_plural
