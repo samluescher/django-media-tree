@@ -1,3 +1,4 @@
+import django
 from media_tree.models import FileNode
 from media_tree.admin.utils import get_current_request, is_search_request,  \
     get_request_attr

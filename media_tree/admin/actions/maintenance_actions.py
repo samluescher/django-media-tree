@@ -11,6 +11,7 @@ from django.shortcuts import render_to_response
 from django.contrib.admin import helpers
 from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
+from django.contrib import messages
 from django.utils.safestring import mark_safe
 import os
 
@@ -49,7 +50,7 @@ def delete_orphaned_files(modeladmin, request, queryset=None):
             orphaned_files_choices.append((storage_name, link))
 
     if not len(orphaned_files_choices) and not len(nodes_with_missing_file_links):
-        request.user.message_set.create(message=_('There are no orphaned files.'))
+        messages.success(request, message=_('There are no orphaned files.'))
         return HttpResponseRedirect('')
 
     if execute:
@@ -57,9 +58,9 @@ def delete_orphaned_files(modeladmin, request, queryset=None):
         if form.is_valid():
             form.save()
             node = FileNode.get_top_node()
-            request.user.message_set.create(message=ungettext('Deleted %i file from storage.', 'Deleted %i files from storage.', len(form.success_files)) % len(form.success_files))
+            messages.success(request, message=ungettext('Deleted %i file from storage.', 'Deleted %i files from storage.', len(form.success_files)) % len(form.success_files))
             if form.error_files:
-                request.user.message_set.create(message=_('The following files could not be deleted from storage:')+' '+repr(form.error_files))
+                messages.error(request, message=_('The following files could not be deleted from storage:')+' '+repr(form.error_files))
             return HttpResponseRedirect(node.get_admin_url())
 
     if not execute:
@@ -87,7 +88,7 @@ def rebuild_tree(modeladmin, request, queryset=None):
     Rebuilds whole tree in database using `parent` link.
     """
     tree = FileNode.tree.rebuild()
-    request.user.message_set.create(message=_('The node tree was rebuilt.'))
+    messages.success(request, message=_('The node tree was rebuilt.'))
     return HttpResponseRedirect('')
 rebuild_tree.short_description = _('Repair node tree')
 rebuild_tree.allow_empty_queryset = True
@@ -118,7 +119,7 @@ def clear_cache(modeladmin, request, queryset=None):
                 cache_files_choices.append((storage_name, link))
 
     if not len(cache_files_choices):
-        request.user.message_set.create(message=_('There are no cache files.'))
+        messages.warning(request, message=_('There are no cache files.'))
         return HttpResponseRedirect('')
 
     if execute:
@@ -129,9 +130,9 @@ def clear_cache(modeladmin, request, queryset=None):
             message = ungettext('Deleted %i cache file.', 'Deleted %i cache files.', len(form.success_files)) % len(form.success_files)
             if len(form.success_files) == len(cache_files_choices):
                 message = '%s %s' % (_('The cache was cleared.'), message)
-            request.user.message_set.create(message=message)
+            messages.success(request, message=message)
             if form.error_files:
-                request.user.message_set.create(message=_('The following files could not be deleted:')+' '+repr(form.error_files))
+                messages.error(request, message=_('The following files could not be deleted:')+' '+repr(form.error_files))
             return HttpResponseRedirect(node.get_admin_url())
 
     if not execute:
