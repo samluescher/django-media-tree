@@ -29,7 +29,12 @@ from django.utils.encoding import force_unicode
 from django.conf import settings
 from django.utils.formats import get_format
 from django.db import models
-from PIL import Image
+
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 import os
 import mimetypes
 import uuid
