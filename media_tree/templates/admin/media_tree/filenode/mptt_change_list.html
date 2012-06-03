@@ -27,20 +27,11 @@ it is embedded here.
             <span class="caption">Uploader: {% trans "Upload files" %}</span></span>
             </a>
         </li>
-        {% if swfupload_upload_url %}
-            <li class="swfupload-button-container">
-                <a href="javascript:void(0)" class="addlink swfupload">
-                <span class="caption">{% trans "Upload files" %}</span>
-                <span class="swfupload-button-overlay"><span id="swfupload-button"></span></span>
-                </a>
-            </li>
-        {% else %}
-            <li>
-                <a href="{% url admin:media_tree_filenode_add %}?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
-                {% trans "Add file" %}
-                </a>
-            </li>
-        {% endif %}
+        <li>
+            <a href="{% url admin:media_tree_filenode_add %}?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
+            {% trans "Add file" %}
+            </a>
+        </li>
         <li>
             <a id="object-tool-add-folder" href="{% url admin:media_tree_filenode_add_folder %}{% if is_popup %}?_popup=1{% endif %}" class="addlink folder">
             <span class="caption">{% trans "Add folder" %}</span>
@@ -51,19 +42,7 @@ it is embedded here.
 
     <script type="text/javascript">// <![CDATA[
         jQuery(function($) {
-            var uploader = new DjangoAdminFileUploader({
-                element: $('.changelist-file-uploader')[0],
-                action: '{% url admin:media_tree_filenode_upload %}',
-                debug: true,
-                listElement: $('#changelist tbody')[0]
-            });
-                       
-        });           
-    // ]]></script>
-
-
-    <script type="text/javascript">// <![CDATA[
-        jQuery(function($) {
+            /*
             {% if swfupload_upload_url %}
             var uploadManager = $.SWFUploadManager({
                 upload_url: '{{ swfupload_upload_url }}'
@@ -76,11 +55,20 @@ it is embedded here.
                 ,button_height: "30"
             });
             {% endif %}
+            */
 
             var initialFolder, targetFolder;
             {% if node and not node.is_top_node %} 
             initialFolder = {name: '{{ node.name }}', id: '{{ node.pk }}'};
             {% endif %}
+
+            var uploader = new DjangoAdminFileUploader({
+                element: $('.changelist-file-uploader')[0],
+                action: '{% url admin:media_tree_filenode_upload %}',
+                debug: true,
+                listElement: $('#changelist tbody')[0],
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            });
 
             var setTargetFolder = function(targetFolder) {
                 $('#changelist').data('targetFolder', targetFolder);
@@ -94,11 +82,18 @@ it is embedded here.
                 } else {
                     $('.target-folder').html('');
                 }
+                
                 var addlink = $('.addlink')[0];
-                addlink.href = addlink.href.replace(/parent=[0-9]*/, 'parent='+targetId);    
+                addlink.href = addlink.href.replace(/parent=[0-9]*/, 'parent='+targetId);
+                uploaderParams = {parent: targetId};                
+                uploader.setParams(uploaderParams);
+
+
+                /*    
                 {% if swfupload_upload_url %}
                 uploadManager.targetFolder = targetFolder;
                 {% endif %}
+                */
             };
 
             setTargetFolder(initialFolder);

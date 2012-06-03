@@ -60,13 +60,6 @@ from django.contrib.admin.views.main import IS_POPUP_VAR
 from django.utils.text import capfirst
 import os
 
-try:
-    # Django 1.2
-    from django.views.decorators.csrf import csrf_view_exempt
-except ImportError:
-    # pre 1.2
-    from django.contrib.csrf.middleware import csrf_view_exempt
-
 
 STATIC_SUBDIR = app_settings.MEDIA_TREE_STATIC_SUBDIR
 
@@ -120,18 +113,12 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     class Media:
         js = [
-            os.path.join(STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10', 'swfupload.js'),
-            os.path.join(STATIC_SUBDIR, 'lib/swfupload/plugins', 'swfupload.queue.js'),
-            os.path.join(STATIC_SUBDIR, 'lib/swfupload/plugins', 'swfupload.cookies.js'),
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js'),
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js'),
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js'),
+            os.path.join(STATIC_SUBDIR, 'lib', 'fileuploader.js'),
             os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js'),
             os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js'),
-            
-            os.path.join(STATIC_SUBDIR, 'js', 'jquery.swfupload_manager.js'),
-
-            os.path.join(STATIC_SUBDIR, 'lib', 'fileuploader.js'),
         ]
         css = {
             'all': (
@@ -331,7 +318,8 @@ class FileNodeAdmin(MPTTModelAdmin):
     size_formatted.allow_tags = True
 
     def init_parent_folder(self, request):
-        folder_id = request.GET.get('folder_id', None) or request.POST.get('parent', None)
+        folder_id = request.GET.get('folder_id', None) or  \
+            request.GET.get('parent') or request.POST.get('parent', None)
         reduce_levels = request.GET.get('reduce_levels', None) or request.POST.get('reduce_levels', None)
         if folder_id or reduce_levels:
             request.GET = request.GET.copy()
@@ -522,60 +510,62 @@ class FileNodeAdmin(MPTTModelAdmin):
     # Upload view is exempted from CSRF protection since SWFUpload cannot send cookies (i.e. it can only
     # send cookie values as POST values, but that would render this check useless anyway).
     # However, Flash Player should already be enforcing a same-domain policy.
-    @csrf_view_exempt
+    @csrf_protect_m
+    @transaction.commit_on_success
     def upload_file_view(self, request):
+        try:
+            if not self.has_add_permission(request):
+                raise PermissionDenied
 
-        if not self.has_add_permission(request):
-            raise PermissionDenied
+            FILE_PARAM_NAME = 'qqfile'
+            self.init_parent_folder(request)
 
-        FILE_PARAM_NAME = 'qqfile'
+            if request.method == 'POST':
 
-        self.init_parent_folder(request)
-
-        if request.method == 'POST':
-
-            if request.is_ajax() and request.GET.get(FILE_PARAM_NAME, None):
-                from django.core.files.base import ContentFile
-                from django.core.files.uploadedfile import UploadedFile
-                content_file = ContentFile(request.raw_post_data)
-                uploaded_file = UploadedFile(content_file, request.GET.get(FILE_PARAM_NAME), None, content_file.size)
-
-                form = UploadForm(request.POST, {'file': uploaded_file})
-                
-                                                    
-            else:
-                form = UploadForm(request.POST, request.FILES)
-
-
-            if form.is_valid():
-                node = FileNode(file=form.cleaned_data['file'], node_type=FileNode.FILE)
-                parent_folder = self.get_parent_folder(request)
-                if not parent_folder.is_top_node():
-                    node.parent = parent_folder
-                self.save_model(request, node, None, False)
-                # Respond with 'ok' for the client to verify that the upload was successful, since sometimes a failed
-                # request would not result in a HTTP error and look like a successful upload.
-                # For instance: When requesting the admin view without authentication, there is a redirect to the
-                # login form, which to SWFUpload looks like a successful upload request.
-                if request.is_ajax():
-                    return HttpResponse('{"success": true}', mimetype="application/json")
+                if request.is_ajax() and request.GET.get(FILE_PARAM_NAME, None):
+                    from django.core.files.base import ContentFile
+                    from django.core.files.uploadedfile import UploadedFile
+                    content_file = ContentFile(request.raw_post_data)
+                    uploaded_file = UploadedFile(content_file, request.GET.get(FILE_PARAM_NAME), None, content_file.size)
+                    form = UploadForm(request.POST, {'file': uploaded_file})
                 else:
-                    messages.info(request, _('Successfully uploaded file %s.') % node.name)
-                    return HttpResponseRedirect(reverse('admin:media_tree_filenode_changelist'))
+                    form = UploadForm(request.POST, request.FILES)
+
+                if form.is_valid():
+                    node = FileNode(file=form.cleaned_data['file'], node_type=FileNode.FILE)
+                    parent_folder = self.get_parent_folder(request)
+                    if not parent_folder.is_top_node():
+                        node.parent = parent_folder
+                    self.save_model(request, node, None, False)
+                    # Respond with 'ok' for the client to verify that the upload was successful, since sometimes a failed
+                    # request would not result in a HTTP error and look like a successful upload.
+                    # For instance: When requesting the admin view without authentication, there is a redirect to the
+                    # login form, which to SWFUpload looks like a successful upload request.
+                    if request.is_ajax():
+                        return HttpResponse('{"success": true}', mimetype="application/json")
+                    else:
+                        messages.info(request, _('Successfully uploaded file %s.') % node.name)
+                        return HttpResponseRedirect(reverse('admin:media_tree_filenode_changelist'))
+                else:
+                    # invalid form data
+                    if request.is_ajax():
+                        return HttpResponse('{"error": "%s"}' % ' '.join(
+                            [item for sublist in form.errors.values() for item in sublist]), 
+                            mimetype="application/json")
+
+            # Form is rendered for troubleshooting SWFUpload. If this form works, the problem is not server-side.
+            if not settings.DEBUG:
+                raise ViewDoesNotExist
+            if request.method == 'GET':
+                form = UploadForm()
+            return render_to_response('admin/media_tree/filenode/upload_form.html', {'form': form})            
+
+        except Exception as e:
+            if request.is_ajax():
+                return HttpResponse('{"error": "%s"}' % ugettext('Server Error'), 
+                    mimetype="application/json")
             else:
-                # invalid form data
-
-                if request.is_ajax():
-                    return HttpResponse('{"error": "%s"}' % ' '.join(
-                        [item for sublist in form.errors.values() for item in sublist]), 
-                        mimetype="application/json")
-
-        # Form is rendered for troubleshooting SWFUpload. If this form works, the problem is not server-side.
-        if not settings.DEBUG:
-            raise ViewDoesNotExist
-        if request.method == 'GET':
-            form = UploadForm()
-        return render_to_response('admin/media_tree/filenode/upload_form.html', {'form': form})            
+                raise
 
     def open_path_view(self, request, path=''):
         if path is None or path == '':
