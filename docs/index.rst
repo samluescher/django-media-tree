@@ -34,6 +34,7 @@ The Media Tree application
    configuration
    utils
    bundled_extensions
+   management
    
 
 Extending und using Media Tree with other applications
