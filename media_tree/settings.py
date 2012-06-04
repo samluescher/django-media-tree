@@ -119,12 +119,13 @@ Default::
 
 MEDIA_TREE_ALLOWED_FILE_TYPES = getattr(settings, 'MEDIA_TREE_ALLOWED_FILE_TYPES', (
     'aac', 'ace', 'ai', 'aiff', 'avi', 'bmp', 'dir', 'doc', 'docx', 'dmg',
-    'eps', 'fla', 'flv', 'gif', 'gz', 'hqx', 'htm', 'html', 'ico', 'indd',
-    'inx', 'jpg', 'jar', 'jpeg', 'key', 'md', 'mov', 'mp3', 'mp4', 'mpc', 'mkv',
-    'mpg', 'mpeg', 'numbers', 'ogg', 'odg', 'odf', 'odp', 'ods', 'odt', 'otf',
-    'pages', 'pdf', 'png', 'pps', 'ppsx', 'ps', 'psd', 'rar', 'rm', 'rst', 'rtf',
-    'sit', 'swf', 'tar', 'tga', 'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma',
-    'wmv', 'xls', 'xlsx', 'xml', 'zip'
+    'eps', 'fla', 'flac', 'flv', 'gif', 'gz', 'hqx', 'htm', 'html', 'ico',
+    'indd', 'inx', 'jpg', 'jar', 'jpeg', 'key', 'md', 'mov', 'm3u', 'mp3',
+    'mp4', 'mpc', 'mkv', 'mpg', 'mpeg', 'numbers', 'ogg', 'odg', 'odf', 'odp',
+    'ods', 'odt', 'otf', 'pages', 'pdf', 'pls', 'png', 'pps', 'ppsx', 'ps',
+    'psd', 'rar', 'rdf', 'rm', 'rss', 'rst', 'rtf', 'sit', 'swf', 'tar', 'tga',
+    'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma', 'wmv', 'xls', 'xlsx', 'xml',
+    'zip'
 ))
 """
 A whitelist of file extensions that can be uploaded. By default, this is a
