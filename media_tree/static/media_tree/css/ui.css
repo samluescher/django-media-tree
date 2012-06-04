@@ -217,8 +217,13 @@ ul.node-tools li:last-child {
     background-position: 100% 100%;
 }
 
+#content h1 {
+    /* assign loading gif to some element for preloading */
+    background: url(../img/icons/folder-toggle-loading.gif) no-repeat -9999px;   
+}
+
 #changelist table .loading .folder-toggle {
-    background-image: url(../img/icons/folder-toggle-loading.gif);
+    background: url(../img/icons/folder-toggle-loading.gif);
 }
 
 #changelist.loading th.action-checkbox-column {
@@ -287,7 +292,7 @@ ul.node-tools li:last-child {
 }
 
 .drop-hover, .drop-hover td {
-    background: #ccc;
+    background: #c8c8c8;
 }
 
 .drag-counter {
