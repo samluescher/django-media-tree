@@ -185,6 +185,9 @@ class ThumbnailNode(Node):
         if self.context_name is None:
             return escape(thumbnail.url)
         else:
+            # Prepopulate ImageFile dimensions cache to skip reading of
+            # thumbnail image and prevent IOError in case of missing file
+            thumbnail._dimensions_cache = opts['size']
             context[self.context_name] = thumbnail
             return ''
 
