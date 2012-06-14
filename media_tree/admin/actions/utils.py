@@ -6,7 +6,6 @@ def get_actions_context(modeladmin):
     return {
         'node': FileNode.get_top_node(), # TODO get current folder
         "opts": modeladmin.model._meta,
-        "root_path": modeladmin.admin_site.root_path,
         "app_label": modeladmin.model._meta.app_label,
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
     }
