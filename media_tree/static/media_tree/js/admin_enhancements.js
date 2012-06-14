@@ -493,15 +493,4 @@ jQuery(function($) {
         return false;
     });
 
-    // Prebuffer background images
-    var bufferBackgroundElements = $('<div class="loading"><div class="folder-toggle" /></div>');
-    bufferBackgroundElements.hide();
-    $('body').append(bufferBackgroundElements);
-    $('*', bufferBackgroundElements).each(function() {
-        var matchUrl = $(this).css('background-image').match(/url\((.*)\)/);
-        var img = new Image();
-        img.src = matchUrl[1];
-    });
-    bufferBackgroundElements.remove();
-
 });
