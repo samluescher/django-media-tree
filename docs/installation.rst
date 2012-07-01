@@ -94,7 +94,8 @@ Please follow these steps to use Media Tree with your own application.
   Alternatively, if you are using `South <http://south.aeracode.org/>`_ in your
   project, you'll have to use a slightly different command::
 
-    $ python manage.py syncdb --all $ python migrate media_tree --fake
+    $ python manage.py syncdb --all 
+    $ python migrate media_tree --fake
 
 .. _configuring-media-backends:
 
