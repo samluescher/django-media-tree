@@ -1,0 +1,749 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-media-tree\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-01-16 15:32-0500\n"
+"PO-Revision-Date: 2012-12-29 22:49+0100\n"
+"Last-Translator: Erlend Dalen <erlend.dalen@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: __init__.py:2
+msgid "Media_tree"
+msgstr "Media tre"
+
+#: __init__.py:3
+msgid "Media_Tree"
+msgstr "Media Tre"
+
+#: defaults.py:81 settings.py:183
+msgid "folder"
+msgstr "mappe"
+
+#: defaults.py:82 settings.py:184
+msgid "archive"
+msgstr "arkiv"
+
+#: defaults.py:83 settings.py:185
+msgid "audio"
+msgstr "lyd"
+
+#: defaults.py:84 settings.py:186
+msgid "document"
+msgstr "dokument"
+
+#: defaults.py:85 settings.py:187
+msgid "image"
+msgstr "bilde"
+
+#: defaults.py:86 settings.py:188
+msgid "web image"
+msgstr "web-bilde"
+
+#: defaults.py:87 settings.py:189
+msgid "text"
+msgstr "tekst"
+
+#: defaults.py:88 settings.py:190
+msgid "video"
+msgstr "video"
+
+#: defaults.py:89 settings.py:191
+msgid "other"
+msgstr "annet"
+
+#: defaults.py:105 contrib/cms_plugins/settings.py:6
+msgid "Link to page"
+msgstr "Lenke til side"
+
+#: defaults.py:106 contrib/cms_plugins/settings.py:7
+msgid "Link to web address"
+msgstr "Lenke til web-adresse"
+
+#: defaults.py:107 contrib/cms_plugins/settings.py:8
+msgid "Link to full size image"
+msgstr "Lenke til bilde i full størrelse"
+
+#: defaults.py:108 contrib/cms_plugins/settings.py:9
+msgid "Link to URL pattern"
+msgstr "Lenke til URL mønster"
+
+#: fields.py:42
+msgid "Please select a file."
+msgstr "Velg en fil."
+
+#: fields.py:44
+msgid "Please select a folder."
+msgstr "Velg en mappe."
+
+#: fields.py:46
+msgid "You cannot select this node type."
+msgstr "Du kan ikke velge denne nodetypen."
+
+#: fields.py:50
+#, python-format
+msgid "The required media type is %s."
+msgstr "Den påkrevde mediatypen er %s."
+
+#: fields.py:52
+msgid "You cannot select this media type."
+msgstr "Du kan ikke velge denne mediatypen."
+
+#: fields.py:55
+#, python-format
+msgid "The required file type is %s."
+msgstr "Den påkrevde filtypen er %s."
+
+#: fields.py:57
+msgid "You cannot select this file type."
+msgstr "Du kan ikke velge denne filtypen."
+
+#: forms.py:15 models.py:98
+msgid "Folder"
+msgstr "Mappe"
+
+#: forms.py:18 forms.py:51 models.py:268 admin/filenode_admin.py:204
+msgid "Metadata"
+msgstr "Metadata"
+
+#: forms.py:21 forms.py:54
+msgid "Extended metadata"
+msgstr "Utvidede metadata"
+
+#: forms.py:32
+#, python-format
+msgid "A %s with this name already exists."
+msgstr "En %s med dette navnet finnes allerede."
+
+#: forms.py:43
+msgid "File"
+msgstr "Fil"
+
+#: forms.py:47
+msgid "Display"
+msgstr "Vis"
+
+#: forms.py:66
+msgid "This file type is not allowed."
+msgstr "Denne filtypen er ikke tillatt."
+
+#: forms.py:69
+#, python-format
+msgid "Maximum file size is %s."
+msgstr "Maksimum filstørrelse er %s."
+
+#: models.py:69
+msgid "node type"
+msgstr "nodetype"
+
+#: models.py:70
+msgid "media type"
+msgstr "mediatype"
+
+#: models.py:71 contrib/cms_plugins/media_tree_image/models.py:10
+msgid "file"
+msgstr "fil"
+
+#: models.py:72
+msgid "preview"
+msgstr "forhåndsvisning"
+
+#: models.py:72
+msgid ""
+"Use this field to upload a preview image for video or similar media types."
+msgstr ""
+"Bruk dette feltet til å laste opp et forhåndsvisningsbilde for video eller "
+"lignende mediatyper."
+
+#: models.py:73
+msgid "is published"
+msgstr "er publisert"
+
+#: models.py:74
+msgid "mimetype"
+msgstr "mimetype"
+
+#: models.py:76
+msgid "name"
+msgstr "navn"
+
+#: models.py:77
+msgid "title"
+msgstr "tittel"
+
+#: models.py:78
+msgid "description"
+msgstr "beskrivelse"
+
+#: models.py:79
+msgid "author"
+msgstr "forfatter"
+
+#: models.py:80
+msgid "publish author"
+msgstr "redaktør"
+
+#: models.py:81
+msgid "copyright"
+msgstr "copyright"
+
+#: models.py:82
+msgid "publish copyright"
+msgstr "copyright for publisering"
+
+#: models.py:83
+msgid "date/time"
+msgstr "dato/tid"
+
+#: models.py:84
+msgid "publish date/time"
+msgstr "publisert dato/tid"
+
+#: models.py:85
+msgid "keywords"
+msgstr "nøkkelord"
+
+#: models.py:86
+msgid "alternative text"
+msgstr "alternativ tekst"
+
+#: models.py:86
+msgid ""
+"If you leave this blank, the alternative text will be compiled automatically "
+"from the available metadata."
+msgstr ""
+"Hvis dette feltet settes blankt vil den alternative teksten automatisk "
+"hentes fra tilgjengelige metadata."
+
+#: models.py:87
+msgid "caption"
+msgstr "bildetekst"
+
+#: models.py:87
+msgid ""
+"If you leave this blank, the caption will be compiled automatically from the "
+"available metadata."
+msgstr ""
+"Hvis dette feltet settes blankt vil bildeteksten automatisk hentes fra "
+"tilgjengelige metadata."
+
+#: models.py:89
+msgid "metadata entered"
+msgstr "metadata er tastet inn"
+
+#: models.py:91
+msgid "type"
+msgstr "type"
+
+#: models.py:92 admin/filenode_admin.py:286
+msgid "size"
+msgstr "størrelse"
+
+#: models.py:93
+msgid "width"
+msgstr "bredde"
+
+#: models.py:93 models.py:94
+msgid "Detected automatically for supported images"
+msgstr "Finn automatisk for støttede bilder"
+
+#: models.py:94
+msgid "height"
+msgstr "høyde"
+
+#: models.py:95
+msgid "created"
+msgstr "opprettet"
+
+#: models.py:96
+msgid "modified"
+msgstr "endret"
+
+#: models.py:99
+msgid "slug"
+msgstr "slug"
+
+#: models.py:100
+msgid "use as default object for folder"
+msgstr "bruk som standard objekt for mappen"
+
+#: models.py:100
+msgid "The default object of a folder can be used for folder previews etc."
+msgstr ""
+"Et standard objekt for en mappe brukes for å forhåndsvise innholdet etc."
+
+#: models.py:102
+msgid "created by"
+msgstr "opprettet av"
+
+#: models.py:103
+msgid "modified by"
+msgstr "endret av"
+
+#: models.py:104 contrib/cms_plugins/media_tree_listing/models.py:28
+msgid "position"
+msgstr "posisjon"
+
+#: models.py:109
+msgid "extra metadata"
+msgstr "ekstra metadata"
+
+#: models.py:113 contrib/cms_plugins/media_tree_listing/models.py:33
+msgid "media object"
+msgstr "media objekt"
+
+#: models.py:114 contrib/cms_plugins/media_tree_listing/models.py:34
+msgid "media objects"
+msgstr "media objekter"
+
+#: models.py:260
+msgid "Items"
+msgstr "Elementer"
+
+#: models.py:329
+#, python-format
+msgid "%(width)i×%(height)i"
+msgstr "%(width)i×%(height)i"
+
+#: models.py:332
+msgid "Resolution"
+msgstr "Oppløsning"
+
+#: models.py:468
+msgid "displayed metadata"
+msgstr "metadata som vises"
+
+#: views.py:15
+#, python-format
+msgid "Back to %s"
+msgstr "Tilbake til %s"
+
+#: admin/filenode_admin.py:158 contrib/legacy_mptt_support/admin.py:225
+#, python-format
+msgid "Delete selected %(verbose_name_plural)s"
+msgstr "Slett valgte %(verbose_name_plural)s"
+
+#: admin/filenode_admin.py:181 contrib/legacy_mptt_support/admin.py:220
+#, python-format
+msgid "Successfully deleted %s items."
+msgstr "%s elementer ble slettet."
+
+#: admin/filenode_admin.py:252
+msgid "change"
+msgstr "endre"
+
+#: admin/filenode_admin.py:370
+#, python-format
+msgid "You need to put %s in your MIDDLEWARE_CLASSES setting to use SWFUpload."
+msgstr "Du må sette %s i setting'en MIDDLEWARE_CLASSES for å bruke SWFUpload."
+
+#: admin/filenode_admin.py:407
+msgid "Add"
+msgstr "Legg til"
+
+#: admin/filenode_admin.py:436
+msgid "Change"
+msgstr "Endre"
+
+#: admin/filenode_admin.py:475
+#, python-format
+msgid "Successfully uploaded file %s."
+msgstr "Filen %s ble lastet opp."
+
+#: admin/actions/core_actions.py:62
+msgid "Move media objects"
+msgstr "Flytt media objekter"
+
+#: admin/actions/core_actions.py:63
+msgid "Move"
+msgstr "Flytt"
+
+#: admin/actions/core_actions.py:66
+#, python-format
+msgid "Move selected %(verbose_name_plural)s"
+msgstr "Flytt valgte %(verbose_name_plural)s"
+
+#: admin/actions/core_actions.py:71
+msgid "Copy media objects"
+msgstr "Kopier media objekter"
+
+#: admin/actions/core_actions.py:72
+msgid "Copy"
+msgstr "Kopier"
+
+#: admin/actions/core_actions.py:75
+#, python-format
+msgid "Copy selected %(verbose_name_plural)s"
+msgstr "Kopier valgte %(verbose_name_plural)s"
+
+#: admin/actions/core_actions.py:95
+msgid "Change metadata for several media objects"
+msgstr "Endre metadata for flere mediaobjekter"
+
+#: admin/actions/core_actions.py:96
+msgid "Overwrite selected fields"
+msgstr "Overskriv valgte felter"
+
+#: admin/actions/core_actions.py:100
+#, python-format
+msgid "Change metadata for selected %(verbose_name_plural)s"
+msgstr "Endre metadata for valgte %(verbose_name_plural)s"
+
+#: admin/actions/forms.py:39
+msgid "to"
+msgstr "til"
+
+#: admin/actions/forms.py:138
+msgid "Change metadata of all child objects"
+msgstr "Endre metadata til alle objekter under dette objektet"
+
+#: admin/actions/forms.py:188
+msgid "The following files exist in storage, but are not found in the database"
+msgstr ""
+"Fila finnes på disk, men det finnes ingen oppføring for den i databasen"
+
+#: admin/actions/forms.py:192
+msgid "Yes, I am sure that I want to delete the selected files from disk:"
+msgstr "Ja, jeg er sikker på at jeg ønsker å slette valgte filer fra disk:"
+
+#: admin/actions/maintenance_actions.py:52
+msgid "There are no orphaned files."
+msgstr "Det er ingen foreldreløse filer."
+
+#: admin/actions/maintenance_actions.py:60
+#, python-format
+msgid "Deleted %i file from storage."
+msgid_plural "Deleted %i files from storage."
+msgstr[0] "Slettet %i fil fra disk"
+msgstr[1] "Slettet %i filer fra disk."
+
+#: admin/actions/maintenance_actions.py:62
+msgid "The following files could not be deleted from storage:"
+msgstr "Den følgende filen kunne ikke slettes fra disk:"
+
+#: admin/actions/maintenance_actions.py:73
+msgid "Orphaned files"
+msgstr "Foreldreløse filer"
+
+#: admin/actions/maintenance_actions.py:74
+msgid "Delete selected files"
+msgstr "Slett valgte filer"
+
+#: admin/actions/maintenance_actions.py:77
+msgid ""
+"The following files in the database do not exist in storage. You should fix "
+"these media objects:"
+msgstr ""
+"De følgende filene i databasen finnes ikke på disk. Du bør rette opp disse "
+"mediaobjektene:"
+
+#: admin/actions/maintenance_actions.py:81
+msgid "Find orphaned files"
+msgstr "Finn foreldreløse filer"
+
+#: admin/actions/maintenance_actions.py:89
+msgid "The node tree was rebuilt."
+msgstr "Nodetreet har blitt gjenoppbygd."
+
+#: admin/actions/maintenance_actions.py:91
+msgid "Repair node tree"
+msgstr "Reparer nodetreet"
+
+#: admin/actions/maintenance_actions.py:100
+msgid "The cache directories were cleared."
+msgstr "De mellomlagrede mappene er nå fjernet."
+
+#: admin/actions/maintenance_actions.py:102
+msgid "Clear cache"
+msgstr "Tøm objekter som er mellomlagret (cache)"
+
+#: contrib/cms_plugins/cms_app.py:6
+#: contrib/cms_plugins/media_tree_gallery/cms_plugins.py:34
+#: contrib/cms_plugins/media_tree_image/cms_plugins.py:20
+#: contrib/cms_plugins/media_tree_listing/cms_plugins.py:35
+#: contrib/cms_plugins/media_tree_slideshow/cms_plugins.py:37
+msgid "Media Tree"
+msgstr "Mediatre"
+
+#: contrib/cms_plugins/forms.py:15
+msgid "You can only link individual files, not folders."
+msgstr "Du kan bare koble individuelle filer, ikke mapper."
+
+#: contrib/cms_plugins/forms.py:18
+msgid ""
+"You need to attach the Media Tree application to a page in order to link to "
+"full size images."
+msgstr ""
+"Du må legge til Mediatre applikasjonen for å lage lenker til bilder i full "
+"størrelse."
+
+#: contrib/cms_plugins/media_tree_gallery/cms_plugins.py:38
+#: contrib/cms_plugins/media_tree_image/cms_plugins.py:32
+#: contrib/cms_plugins/media_tree_listing/cms_plugins.py:43
+#: contrib/cms_plugins/media_tree_slideshow/cms_plugins.py:50
+msgid "Settings"
+msgstr "Innstillinger"
+
+#: contrib/cms_plugins/media_tree_gallery/cms_plugins.py:43
+msgid "Gallery"
+msgstr "Galleri"
+
+#: contrib/cms_plugins/media_tree_gallery/models.py:9
+msgid "gallery type"
+msgstr "galleritype"
+
+#: contrib/cms_plugins/media_tree_gallery/models.py:10
+#: contrib/cms_plugins/media_tree_listing/models.py:38
+msgid "merged"
+msgstr "fusjonert"
+
+#: contrib/cms_plugins/media_tree_gallery/models.py:10
+#: contrib/cms_plugins/media_tree_listing/models.py:38
+msgid "nested"
+msgstr "nestet"
+
+#: contrib/cms_plugins/media_tree_gallery/models.py:11
+msgid ""
+"A nested gallery includes a browseable folder list. A merged gallery "
+"displays media from all folders merged into a flat list."
+msgstr ""
+"Et nestet galleri inkluderer en mappeliste som kan bla i. Et fusjonert "
+"galleri viser media fra alle mapper listet på ett nivå."
+
+#: contrib/cms_plugins/media_tree_gallery/models.py:17
+#: contrib/cms_plugins/media_tree_listing/models.py:43
+#: contrib/cms_plugins/media_tree_slideshow/models.py:39
+msgid "folder/file"
+msgstr "mappe/fil"
+
+#: contrib/cms_plugins/media_tree_image/cms_plugins.py:22
+#: contrib/cms_plugins/media_tree_image/cms_plugins.py:29
+msgid "Image"
+msgstr "Bilde"
+
+#: contrib/cms_plugins/media_tree_image/cms_plugins.py:36
+#: contrib/cms_plugins/media_tree_slideshow/cms_plugins.py:24
+msgid "Link"
+msgstr "Lenke"
+
+#: contrib/cms_plugins/media_tree_image/models.py:11
+#: contrib/cms_plugins/media_tree_slideshow/models.py:28
+msgid "link type"
+msgstr "Lenketype"
+
+#: contrib/cms_plugins/media_tree_image/models.py:11
+#: contrib/cms_plugins/media_tree_slideshow/models.py:28
+msgid "Makes the image a clickable link."
+msgstr "Gjør bilde til en klikkbar lenke."
+
+#: contrib/cms_plugins/media_tree_image/models.py:12
+#: contrib/cms_plugins/media_tree_slideshow/models.py:29
+msgid "page"
+msgstr "sider"
+
+#: contrib/cms_plugins/media_tree_image/models.py:12
+#: contrib/cms_plugins/media_tree_slideshow/models.py:29
+msgid "For link to page. Select any page from the list."
+msgstr "For å lenke til en side. Velg en side fra listen."
+
+#: contrib/cms_plugins/media_tree_image/models.py:13
+#: contrib/cms_plugins/media_tree_slideshow/models.py:30
+msgid "web address"
+msgstr "webadresse"
+
+#: contrib/cms_plugins/media_tree_image/models.py:13
+#: contrib/cms_plugins/media_tree_slideshow/models.py:30
+msgid ""
+"For link to web address. Example: Enter \"http://www.domain.com\" to create "
+"an absolute link to an external site, or enter a relative URL like \"/about/"
+"contact\"."
+msgstr ""
+"For å lenke til en webadresse. Eksempel: Skriv \"http://www.domain.com\" for "
+"å opprette en absolutt lenke til et eksternt nettsted, eller en relativ URL "
+"som \"/about/contact\"."
+
+#: contrib/cms_plugins/media_tree_image/models.py:14
+#: contrib/cms_plugins/media_tree_slideshow/models.py:31
+msgid "link target"
+msgstr "Lenke til"
+
+#: contrib/cms_plugins/media_tree_image/models.py:14
+#: contrib/cms_plugins/media_tree_slideshow/models.py:31
+msgid "same window"
+msgstr "samme vindu"
+
+#: contrib/cms_plugins/media_tree_image/models.py:14
+#: contrib/cms_plugins/media_tree_slideshow/models.py:31
+msgid "new window"
+msgstr "nytt vindu"
+
+#: contrib/cms_plugins/media_tree_image/models.py:15
+#: contrib/cms_plugins/media_tree_slideshow/models.py:15
+msgid "max. width"
+msgstr "maks. bredde"
+
+#: contrib/cms_plugins/media_tree_image/models.py:15
+#: contrib/cms_plugins/media_tree_slideshow/models.py:15
+msgid ""
+"You can leave this empty to use an automatically determined image width."
+msgstr ""
+"Hvis dette feltet står tomt vil systemet automatisk finne den passende "
+"bredden for bildet."
+
+#: contrib/cms_plugins/media_tree_image/models.py:16
+#: contrib/cms_plugins/media_tree_slideshow/models.py:16
+msgid "max. height"
+msgstr "maks. høyde"
+
+#: contrib/cms_plugins/media_tree_image/models.py:16
+#: contrib/cms_plugins/media_tree_slideshow/models.py:16
+msgid ""
+"You can leave this empty to use an automatically determined image height."
+msgstr ""
+"Hvis dette feltet står tomt vil systemet automatisk finne den passende "
+"høyden for bildet."
+
+#: contrib/cms_plugins/media_tree_image/models.py:17
+#: contrib/cms_plugins/media_tree_listing/models.py:15
+msgid "template"
+msgstr "mal"
+
+#: contrib/cms_plugins/media_tree_image/models.py:17
+msgid "Template used to render the image."
+msgstr "Mal brukt til å vise bildet."
+
+#: contrib/cms_plugins/media_tree_listing/cms_plugins.py:37
+msgid "File listing"
+msgstr "Opplisting av filer"
+
+#: contrib/cms_plugins/media_tree_listing/models.py:15
+msgid "Template used to render the plugin."
+msgstr "Mal brukt til å vise tillegget."
+
+#: contrib/cms_plugins/media_tree_listing/models.py:16
+msgid "filter file and folder names"
+msgstr "filtrer fil- og mappenavn"
+
+#: contrib/cms_plugins/media_tree_listing/models.py:16
+msgid "Example: *.jpg; Documents.*;"
+msgstr "Eksempel: *.jpg; Documents.*;"
+
+#: contrib/cms_plugins/media_tree_listing/models.py:17
+msgid "include all subfolders"
+msgstr "inkluder alle undermapper"
+
+#: contrib/cms_plugins/media_tree_listing/models.py:38
+msgid "List type"
+msgstr "Liste type"
+
+#: contrib/cms_plugins/media_tree_slideshow/cms_plugins.py:55
+msgid "Slideshow"
+msgstr "Bilderull"
+
+#: contrib/cms_plugins/media_tree_slideshow/models.py:12
+msgid "pause between images"
+msgstr "Pause mellom biløder"
+
+#: contrib/cms_plugins/media_tree_slideshow/models.py:12
+msgid "Milliseconds"
+msgstr "Milisekunder"
+
+#: contrib/cms_plugins/media_tree_slideshow/models.py:13
+msgid "transition"
+msgstr "overgang"
+
+#: contrib/cms_plugins/media_tree_slideshow/models.py:14
+msgid "transition speed"
+msgstr "hastighet på overgang"
+
+#: contrib/cms_plugins/media_tree_slideshow/models.py:14
+msgid "slow"
+msgstr "sakte"
+
+#: contrib/cms_plugins/media_tree_slideshow/models.py:14
+msgid "normal"
+msgstr "normal"
+
+#: contrib/cms_plugins/media_tree_slideshow/models.py:14
+msgid "fast"
+msgstr "hurtig"
+
+#: contrib/cms_plugins/media_tree_slideshow/models.py:17
+msgid "output supported media types only"
+msgstr "kun støttede mediatyper"
+
+#: contrib/legacy_mptt_support/admin.py:92
+msgid "Database error"
+msgstr "Databasefeil"
+
+#: contrib/legacy_mptt_support/admin.py:128
+#, python-format
+msgid "%(count)s %(name)s was changed successfully."
+msgid_plural "%(count)s %(name)s were changed successfully."
+msgstr[0] "%(count)s %(name)s ble endret."
+msgstr[1] "%(count)s %(name)s ble endret."
+
+#: contrib/legacy_mptt_support/admin.py:198
+#: contrib/legacy_mptt_support/admin.py:200
+msgid "Add child"
+msgstr "Legg til \"barn\""
+
+#: contrib/legacy_mptt_support/admin.py:206
+#: contrib/legacy_mptt_support/admin.py:208
+msgid "View on site"
+msgstr "Vis på side"
+
+#: contrib/legacy_mptt_support/forms.py:64
+msgid "First child"
+msgstr "Første \"barn\""
+
+#: contrib/legacy_mptt_support/forms.py:65
+msgid "Last child"
+msgstr "Siste \"barn\""
+
+#: contrib/legacy_mptt_support/forms.py:66
+msgid "Left sibling"
+msgstr "Venstre søsken"
+
+#: contrib/legacy_mptt_support/forms.py:67
+msgid "Right sibling"
+msgstr "Høyre søsken"
+
+#: contrib/media_extensions/images/focal_point/media_extension.py:9
+msgid "Focal point X"
+msgstr "Brennpunkt X"
+
+#: contrib/media_extensions/images/focal_point/media_extension.py:11
+msgid "Focal point Y"
+msgstr "Brennpunkt Y"
+
+#: contrib/media_extensions/images/focal_point/media_extension.py:13
+msgid ""
+"Drag the marker on the image thumbnail to its most relevant portion. You can "
+"then use this information to crop the image accordingly."
+msgstr ""
+"Dra markøren på bildet til den mest relevante delen. Du kan så bruke denne "
+"informasjonen til å beskjøre bildet."
+
+#: contrib/media_extensions/images/focal_point/media_extension.py:40
+msgid "Focal point"
+msgstr "Brennpunkt"
+
+#: contrib/media_extensions/zipfiles/media_extension.py:15
+msgid "Archive"
+msgstr "Arkiv"
+
+#: contrib/media_extensions/zipfiles/media_extension.py:28
+#, python-format
+msgid "Download selected %(verbose_name_plural)s as archive"
+msgstr "Last ned valgte %(verbose_name_plural)s som arkiv."
