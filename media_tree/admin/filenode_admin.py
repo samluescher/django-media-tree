@@ -113,17 +113,17 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     class Media:
         js = [
-            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js'),
-            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js'),
-            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js'),
-            os.path.join(STATIC_SUBDIR, 'lib', 'fileuploader.js'),
-            os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js'),
-            os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js'),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'lib', 'fileuploader.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js').replace("\\","/"),
         ]
         css = {
             'all': (
-                os.path.join(STATIC_SUBDIR, 'css', 'swfupload.css'),
-                os.path.join(STATIC_SUBDIR, 'css', 'ui.css'),
+                os.path.join(STATIC_SUBDIR, 'css', 'swfupload.css').replace("\\","/"),
+                os.path.join(STATIC_SUBDIR, 'css', 'ui.css').replace("\\","/"),
             )
         }
 

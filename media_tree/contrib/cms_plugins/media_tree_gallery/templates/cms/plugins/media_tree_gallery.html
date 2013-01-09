@@ -1,90 +1,98 @@
-{% load i18n media_tree_thumbnail %}
-
+{% load i18n media_tree_thumbnail sekizai_tags%}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ STATIC_URL }}media_tree/lib/jquery.cycle/jquery.cycle.all.min.js"></script>{% endaddtoblock %}
 <div id="{{ plugin.id_attr }}" class="gallery{% if folder_list and folder_list|length > 1 %} with-folder-list{% endif %}">
 
-{% if folder_list and folder_list|length > 1 %}
-{{ folder_list|length }}
-<ul class="file-list folder_list">
+  {% if folder_list and folder_list|length > 1 %}
+  {{ folder_list|length }}
+  <ul class="file-list folder_list">
     {{ folder_list|unordered_list }}
-</ul>
-{% endif %}
+  </ul>
+  {% endif %}
 
-{% if node_list %}
+  {% if node_list %}
 
-<div class="slideshow">
-{% for image_node in node_list %}
-{% include "cms/plugins/media_tree_image.html" %}
-{% endfor %}
-</div>
+  <div class="slideshow">
+    {% for image_node in node_list %}
+    {% include "cms/plugins/media_tree_image.html" %}
+    {% endfor %}
+  </div>
 
-{% ifnotequal node_list|length 1 %}
-<div class="nav">
-<ul>
-    <li class="button"><a class="prev" href="javascript:void(0);">{% trans "Previous" %}</a></li>
-    <li><ul class="pager"></ul></li>
-    <li class="button"><a class="next" href="javascript:void(0);">{% trans "Next" %}</a></li>
-    <li class="button"><a class="play" href="javascript:void(0);">{% trans "Play" %}</a></li>
-    <li class="button"><a class="pause" href="javascript:void(0);">{% trans "Pause" %}</a></li>
-</ul>
-</div>
-{% endifnotequal %}
+  {% ifnotequal node_list|length 1 %}
+  <div class="nav">
+    <ul>
+      <li class="button"><a class="prev" href="javascript:void(0);">{% trans "Previous" %}</a></li>
+      <li>{% trans "Browse" %}<ul class="pager"></ul></li>
+      <li class="button"><a class="next" href="javascript:void(0);">{% trans "Next" %}</a></li>
+      <li class="button"><a class="play" href="javascript:void(0);">{% trans "Play" %}</a></li>
+      <li class="button"><a class="pause" href="javascript:void(0);">{% trans "Pause" %}</a></li>
+    </ul>
+  </div>
+  {% endifnotequal %}
 
-<script type="text/javascript">
-//<![CDATA[
-$(document).ready(function() {
-    
-    {% ifnotequal node_list|length 1 %}
-    var thumbs = [
-    {% for node in node_list %}
-        {% if not forloop.first %},{% endif %}'<li><a href="#">{% if pager_thumbnails %}<img src="{% thumbnail node pager_thumbnail_size as thumb%}{{ thumb.url }}" alt="{{ node.get_alt }}"/>{% else %}{{ forloop.counter}}{% endif %}</a></li>'
+  {% addtoblock "js" %}
+  <script type="text/javascript">
+    //<![CDATA[
+    $(document).ready(function() {
+
+      {% ifnotequal node_list|length 1 %}
+      var thumbs = [
+        {% for node in node_list %}
+    {% if not forloop.first %},{% endif %}'<li><a href="#">{% if pager_thumbnails %}<img src="{% thumbnail node pager_thumbnail_size as thumb%}{{ thumb.url }}" alt="{{ node.get_alt }}"/>{% else %}{{ forloop.counter}}{% endif %}</a></li>'
     {% endfor %}
     ]
     {% endifnotequal %}
-    
-    var containerHeight = 0;
-    $('#{{ plugin.id_attr }} .slideshow p').each(function() {
-        if ($(this).outerHeight(true) > containerHeight) {
-            containerHeight = $(this).outerHeight(true);
-        }
-    }); 
-    $('#{{ plugin.id_attr }} .slideshow').css('height', containerHeight+'px');
-    $('#{{ plugin.id_attr }} .slideshow').cycle({
-		fx: '{{ fx }}'
-		{% ifnotequal speed "normal" %},speed: '{{ speed }}'{% endifnotequal %}
-		,timeout: {{ timeout }} 
-        {% ifnotequal node_list|length 1 %}
-	    ,prev: '#{{ plugin.id_attr }} .prev'
-	    ,next: '#{{ plugin.id_attr }} .next'
-	    ,pager: '#{{ plugin.id_attr }} .pager'
-        ,pagerAnchorBuilder: function(idx, slide) { 
-            return thumbs[idx]; 
-        }        
-        {% endifnotequal %}
-	});
-	
-	{% ifnotequal node_list|length 1 %}
-    {% if auto_play %}
-    $('#{{ plugin.id_attr }} .play').closest('li').hide();
-    {% else %}
-    $('#{{ plugin.id_attr }} .pause').closest('li').hide();
-	$('#{{ plugin.id_attr }} .slideshow').cycle('pause');
-    {% endif %}
 
-    $('#{{ plugin.id_attr }} .play').click(function(e) {
+    var containerHeight = 0;
+    var containerWidth = 0;
+    $('#{{ plugin.id_attr }} .slideshow p').each(function() {
+      if ($(this).outerHeight(true) > containerHeight) {
+        containerHeight = $(this).outerHeight(true);
+      }
+      if ($(this).outerWidth(true) > containerWidth) {
+        containerWidth = $(this).outerWidth(true);
+      }
+    });
+    $('#{{ plugin.id_attr }} .slideshow img').css('height', containerHeight+'px');
+    $('#{{ plugin.id_attr }} .slideshow img').css('width', containerWidth+'px');
+    $('#{{ plugin.id_attr }} .slideshow').cycle({
+      fx: '{{ fx }}'
+    {% ifnotequal speed "normal" %},speed: '{{ speed }}'{% endifnotequal %}
+    ,timeout: {{ timeout }}
+    {% ifnotequal node_list|length 1 %}
+    ,prev: '#{{ plugin.id_attr }} .prev'
+      ,next: '#{{ plugin.id_attr }} .next'
+      ,pager: '#{{ plugin.id_attr }} .pager'
+      ,pagerAnchorBuilder: function(idx, slide) {
+      return thumbs[idx];
+    }
+    {% endifnotequal %}
+    });
+
+    {% ifnotequal node_list|length 1 %}
+    {% if auto_play %}
+      $('#{{ plugin.id_attr }} .play').closest('li').hide();
+      {% else %}
+      $('#{{ plugin.id_attr }} .pause').closest('li').hide();
+      $('#{{ plugin.id_attr }} .slideshow').cycle('pause');
+      {% endif %}
+
+      $('#{{ plugin.id_attr }} .play').click(function(e) {
         $('#{{ plugin.id_attr }} .play').closest('li').hide();
         $('#{{ plugin.id_attr }} .pause').closest('li').show();
-    	$('#{{ plugin.id_attr }} .slideshow').cycle();
-    });
-    $('#{{ plugin.id_attr }} .pause').click(function(e) {
+        $('#{{ plugin.id_attr }} .slideshow').cycle();
+      });
+      $('#{{ plugin.id_attr }} .pause').click(function(e) {
         $('#{{ plugin.id_attr }} .play').closest('li').show();
         $('#{{ plugin.id_attr }} .pause').closest('li').hide();
-    	$('#{{ plugin.id_attr }} .slideshow').cycle('pause');
-    });
-    {% endifnotequal %}
+        $('#{{ plugin.id_attr }} .slideshow').cycle('pause');
+      });
+      {% endifnotequal %}
 
-});
-//]]>
-</script>
-{% endif %}
+    });
+    //]]>
+  </script>
+  {% endaddtoblock %}
+
+  {% endif %}
 
 </div>

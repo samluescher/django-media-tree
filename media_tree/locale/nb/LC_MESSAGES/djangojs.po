@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-media-tree\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-28 13:43-0400\n"
+"PO-Revision-Date: 2012-12-29 22:52+0100\n"
+"Last-Translator: Erlend Dalen <erlend.dalen@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: static/media_tree/js/admin_enhancements.js:6
+msgid "Name"
+msgstr "Navn"
+
+#: static/media_tree/js/admin_enhancements.js:6
+msgid "Size"
+msgstr "Størrekse"
+
+#: static/media_tree/js/admin_enhancements.js:39
+msgid "New folder"
+msgstr "Ny mappe"
+
+#: static/media_tree/js/admin_enhancements.js:40
+msgid "Save"
+msgstr "Lagre"
+
+#: static/media_tree/js/admin_enhancements.js:198
+#, perl-format
+msgid "%i media object"
+msgid_plural "%i media objects"
+msgstr[0] "%i media objekt"
+msgstr[1] "%i media objekter"
+
+#: static/media_tree/js/jquery.swfupload_manager.js:84
+#, perl-format
+msgid "uploading... (%i in queue)"
+msgstr "laster opp... (%i i køen)"
+
+#: static/media_tree/js/jquery.swfupload_manager.js:85
+#, perl-format
+msgid "%i file in queue."
+msgid_plural "%i files in queue."
+msgstr[0] "%i file i køen"
+msgstr[1] "%i filer i køen"
+
+#: static/media_tree/js/jquery.swfupload_manager.js:86
+msgid "Please do not close this window until upload is complete."
+msgstr "Vennligst ikke lukk dette vinduet før opplastingen er ferdig"
+
+#: static/media_tree/js/jquery.swfupload_manager.js:118
+msgid "Upload error"
+msgstr "Feil ved opplasting"
+
+#: static/media_tree/js/jquery.swfupload_manager.js:225
+msgid "loading..."
+msgstr "laster..."
+
+#: static/media_tree/js/jquery.swfupload_manager.js:235
+#, perl-format
+msgid "Successfully added %i file."
+msgid_plural "Successfully added %i files."
+msgstr[0] "%i fil ble lastet opp."
+msgstr[1] "%i filer ble lastet opp."
+
+#: static/media_tree/js/jquery.swfupload_manager.js:243
+msgid "There were errors during upload."
+msgstr "En feil oppstod ved opplasting."
