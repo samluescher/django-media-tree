@@ -2,6 +2,9 @@
 {% load adminmedia admin_list i18n mptt_tags media_tree_admin %}
 
 {% block extrahead %}
+<script type="text/javascript">
+    var upload_button_txt = '{% trans "Upload files" %}';
+</script>
 {{ block.super }}
 {% comment %}
 Since the FileNodeAdmin's Media class can't use reverse to determine the jsi18n URL, 
