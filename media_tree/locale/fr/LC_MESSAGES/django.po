@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-01-30 15:48+0100\n"
-"PO-Revision-Date: 2013-01-30 17:43+0100\n"
+"PO-Revision-Date: 2013-02-13 14:34+0100\n"
 "Last-Translator: Quinode <contact@quinode.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -327,7 +327,7 @@ msgstr "change"
 
 #: admin/filenode_admin.py:458
 msgid "Add"
-msgstr "Ajouteer"
+msgstr "Ajouter"
 
 #: admin/filenode_admin.py:547
 #, python-format
@@ -838,15 +838,15 @@ msgstr "Objets média sélectionnés:"
 
 #: templates/admin/media_tree/filenode/mptt_change_list.html:27
 msgid "Upload files"
-msgstr "Ajouter des fichiers"
+msgstr "Upload direct de fichiers"
 
 #: templates/admin/media_tree/filenode/mptt_change_list.html:32
 msgid "Add file"
-msgstr "Ajouter un fichier"
+msgstr "Nouveau fichier"
 
 #: templates/admin/media_tree/filenode/mptt_change_list.html:37
 msgid "Add folder"
-msgstr "Ajouter un dossier"
+msgstr "Nouveau dossier"
 
 #: templates/admin/media_tree/filenode/mptt_change_list.html:80
 #, python-format
