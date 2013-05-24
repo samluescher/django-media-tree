@@ -62,7 +62,7 @@ class FileNodeManager(models.Manager):
         self.filter_args = filter_args
 
     def get_query_set(self):
-        return super(FileNodeManager, self).get_query_set().filter(**self.filter_args)
+        return super(FileNodeManager, self).get_query_set().filter(site=Site.objects.get_current()).filter(**self.filter_args)
 
     def get_filter_args_with_path(self, for_self, **kwargs):
         names = kwargs['path'].strip('/').split('/')
@@ -254,6 +254,7 @@ class FileNode(ModelBase):
     extra_metadata = models.TextField(_('extra metadata'), editable=None)
     """ Extra metadata """
 
+    site = models.ForeignKey(Site, null=True, blank=True, related_name='file')
 
     is_ancestor_being_updated = False
 
@@ -507,7 +508,7 @@ class FileNode(ModelBase):
         self.save_prevented = True
 
     def save(self, *args, **kwargs):
-
+        self.site = Site.objects.get_current()
         if getattr(self, 'save_prevented', False):
             from django.core.exceptions import ValidationError
             raise ValidationError('Saving was presented for this FileNode object.')
