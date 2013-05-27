@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from media_tree.models import FileNode
 from media_tree.contrib.views.mixin_base import PluginMixin
 from django.views.generic.detail import DetailView
@@ -75,6 +76,7 @@ class FileNodeDetailView(DetailView):
 
     def get_queryset(self, *args, **kwargs):
         queryset = super(FileNodeDetailView, self).get_queryset(*args, **kwargs)
+        queryset = queryset.filter(node__site=Site.objects.get_current())
         kwargs = {}
         if self.filter_node_types:
             kwargs['node_type__in'] = self.filter_node_types

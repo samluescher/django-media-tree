@@ -87,7 +87,7 @@ class FileNodeManager(models.Manager):
         """
         if 'path' in kwargs:
             kwargs = self.get_filter_args_with_path(False, **kwargs)
-        return super(FileNodeManager, self).filter(*args, **kwargs)
+        return super(FileNodeManager, self).filter(site=Site.objects.get_current()).filter(*args, **kwargs)
 
     def exclude(self, *args, **kwargs):
         """
@@ -98,7 +98,7 @@ class FileNodeManager(models.Manager):
         """
         if 'path' in kwargs:
             kwargs = self.get_filter_args_with_path(False, **kwargs)
-        return super(FileNodeManager, self).exclude(*args, **kwargs)
+        return super(FileNodeManager, self).filter(site=Site.objects.get_current()).exclude(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         """
