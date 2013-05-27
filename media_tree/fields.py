@@ -31,7 +31,7 @@ class FileNodeChoiceField(TreeNodeChoiceField):
         self.allowed_node_types = allowed_node_types
         self.allowed_media_types = allowed_media_types
         self.allowed_extensions = allowed_extensions
-        kwargs['level_indicator'] = level_indicator;
+        kwargs['level_indicator'] = level_indicator
         if not kwargs.has_key('widget'):
             kwargs['widget'] = self.widget
 

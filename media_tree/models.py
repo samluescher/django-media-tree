@@ -87,7 +87,7 @@ class FileNodeManager(models.Manager):
         """
         if 'path' in kwargs:
             kwargs = self.get_filter_args_with_path(False, **kwargs)
-        return super(FileNodeManager, self).filter(*args, **kwargs)
+        return super(FileNodeManager, self).filter(site=Site.objects.get_current()).filter(*args, **kwargs)
 
     def exclude(self, *args, **kwargs):
         """
@@ -98,7 +98,7 @@ class FileNodeManager(models.Manager):
         """
         if 'path' in kwargs:
             kwargs = self.get_filter_args_with_path(False, **kwargs)
-        return super(FileNodeManager, self).exclude(*args, **kwargs)
+        return super(FileNodeManager, self).filter(site=Site.objects.get_current()).exclude(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         """
@@ -316,7 +316,8 @@ class FileNode(ModelBase):
         return nodes
 
     def get_folder_tree(self):
-        return self._tree_manager.all().filter(node_type=FileNode.FOLDER)
+        return self._tree_manager.all().filter(node_type=FileNode.FOLDER,
+                                               site=Site.objects.get_current())
 
     def get_default_file(self, media_types=None):
         if self.node_type == FileNode.FOLDER:
