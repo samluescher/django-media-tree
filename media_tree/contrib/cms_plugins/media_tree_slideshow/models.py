@@ -44,3 +44,7 @@ class MediaTreeImageItemBase(MediaTreeListingItemBase):
 class MediaTreeSlideshowItem(MediaTreeImageItemBase):
     list_plugin = models.ForeignKey(MediaTreeSlideshow, related_name='media_items')
     node = FileNodeForeignKey(verbose_name=_('folder/file'), limit_choices_to={"site": Site.objects.get_current})
+
+    def copy_relations(self, oldinstance):
+        self.list_plugin = oldinstance.list_plugin.all()
+        self.node = oldinstance.node.all()
