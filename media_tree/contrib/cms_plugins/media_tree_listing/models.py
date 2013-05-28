@@ -14,6 +14,12 @@ class MediaTreeListingBase(CMSPlugin):
     filename_filter = models.CharField(_('filter file and folder names'), max_length=255, null=True, blank=True, help_text=_('Example: *.jpg; Documents.*;'), editable=False)
     include_descendants = models.BooleanField(_('include all subfolders'), default=True)
 
+    def copy_relations(self, oldinstance):
+        for media_item in oldinstance.media_items.all():
+            media_item.pk = None
+            media_item.list_plugin = self
+            media_item.save()
+
     class Meta:
         abstract = True
 
