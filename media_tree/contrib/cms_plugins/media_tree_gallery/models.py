@@ -16,4 +16,4 @@ class MediaTreeGallery(MediaTreeImageListingBase):
 
 class MediaTreeGalleryItem(MediaTreeImageItemBase):
     list_plugin = models.ForeignKey(MediaTreeGallery, related_name='media_items')
-    node = FileNodeForeignKey(verbose_name=_('folder/file'), limit_choices_to={"site": Site.objects.get_current()})
+    node = FileNodeForeignKey(verbose_name=_('folder/file'), limit_choices_to={"site": Site.objects.get_current})

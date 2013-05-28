@@ -9,12 +9,12 @@ from django.utils.translation import ugettext_lazy as _
 
 class MediaTreeImageSiteManager(models.Manager):
     def get_query_set(self):
-        return super(MediaTreeImageSiteManager, self).get_query_set().filter(node__site=Site.objects.get_current())
+        return super(MediaTreeImageSiteManager, self).get_query_set().filter(node__site=Site.objects.get_current)
 
 
 class MediaTreeImage(CMSPlugin):
     node = FileNodeForeignKey(allowed_media_types=(media_types.SUPPORTED_IMAGE,), verbose_name=_('file'),
-                            limit_choices_to = {"site": Site.objects.get_current()})
+                            limit_choices_to = {"site": Site.objects.get_current})
     link_type = models.CharField(_('link type'), max_length=1, blank=True, null=True, default=plugins_settings.MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_DEFAULT, choices=plugins_settings.MEDIA_TREE_CMS_PLUGIN_LINK_TYPE_CHOICES, help_text=_('Makes the image a clickable link.'))
     link_page = models.ForeignKey(Page, verbose_name=_("page"), null=True, blank=True, help_text=_('For link to page. Select any page from the list.'))
     link_url = models.CharField(_("web address"), max_length=255, blank=True, null=True, help_text=_('For link to web address. Example: Enter "http://www.domain.com" to create an absolute link to an external site, or enter a relative URL like "/about/contact".'))
