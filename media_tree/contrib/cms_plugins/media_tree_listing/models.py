@@ -1,6 +1,6 @@
+from django.contrib.sites.models import Site
 from media_tree import media_types
 from media_tree.contrib.cms_plugins import settings as app_settings
-from media_tree.models import FileNode
 from media_tree.fields import FileNodeForeignKey
 from cms.models import CMSPlugin
 from django.db import models
@@ -46,4 +46,4 @@ class MediaTreeListing(MediaTreeListingBase):
 
 class MediaTreeListingItem(MediaTreeListingItemBase):
     list_plugin = models.ForeignKey(MediaTreeListing, related_name='media_items')
-    node = FileNodeForeignKey(verbose_name=_('folder/file'))
+    node = FileNodeForeignKey(verbose_name=_('folder/file'), limit_choices_to={"site": Site.objects.get_current()})
