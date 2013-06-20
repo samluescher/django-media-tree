@@ -26,7 +26,7 @@ class MediaTreeImage(CMSPlugin):
     objects = MediaTreeImageSiteManager()
 
     def copy_relations(self, oldinstance):
-        self.node = oldinstance.node.all()
+        self.node = oldinstance.node
 
     def __unicode__(self):
         return self.node.__unicode__()
