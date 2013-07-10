@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from media_tree.contrib.cms_plugins.media_tree_listing.models import MediaTreeListing, MediaTreeListingItem
 from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormInlinePositioningBase
 from media_tree.contrib.views.listing import FileNodeListingFilteredByFolderMixin
@@ -8,7 +9,7 @@ from django.contrib import admin
 
 
 class MediaTreeListingPluginForm(MediaTreePluginFormInlinePositioningBase):
-    
+
     class Meta:
         model = MediaTreeListing
     
@@ -36,7 +37,8 @@ class MediaTreeListingPlugin(CMSPluginBase, FileNodeListingFilteredByFolderMixin
     filter_by_parent_folder = False
 
     def render(self, context, instance, placeholder):
-        selected_nodes = [item.node for item in instance.media_items.all()]
+        selected_nodes = [item.node for item in instance.media_items.filter(
+            node__site=Site.objects.get_current())]
         if hasattr(instance, 'filter_supported') and not getattr(instance, 'filter_supported'):
             self.list_filter_media_types = None
         view = self.get_listing_view(context['request'], selected_nodes, opts=instance)

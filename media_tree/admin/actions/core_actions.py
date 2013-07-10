@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from media_tree.models import FileNode
 from media_tree.admin.actions.utils import get_actions_context
 from media_tree.admin.actions.forms import FileNodeActionsWithUserForm, MoveSelectedForm, CopySelectedForm, ChangeMetadataForSelectedForm
@@ -89,7 +90,8 @@ copy_selected.short_description = _('Copy selected %(verbose_name_plural)s')
 
 def expand_selected(modeladmin, request, queryset):
     expanded_folders_pk = modeladmin.get_expanded_folders_pk(request)
-    add_pks = [obj.pk for obj in queryset.filter(node_type=FileNode.FOLDER)]
+    add_pks = [obj.pk for obj in queryset.filter(node_type=FileNode.FOLDER,
+                                                 site=Site.objects.get_current())]
     expanded_folders_pk.extend(add_pks)
     response = HttpResponseRedirect('') 
     modeladmin.set_expanded_folders_pk(response, expanded_folders_pk)
@@ -99,7 +101,8 @@ expand_selected.short_description = _('Expand selected %(verbose_name_plural)s')
 
 def collapse_selected(modeladmin, request, queryset):
     expanded_folders_pk = modeladmin.get_expanded_folders_pk(request)
-    remove_pks = [obj.pk for obj in queryset.filter(node_type=FileNode.FOLDER)]
+    remove_pks = [obj.pk for obj in queryset.filter(node_type=FileNode.FOLDER,
+                                                    site=Site.objects.get_current())]
     expanded_folders_pk = set(expanded_folders_pk).difference(set(remove_pks))
     response = HttpResponseRedirect('') 
     modeladmin.set_expanded_folders_pk(response, expanded_folders_pk)

@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from media_tree.contrib.cms_plugins.media_tree_listing.models import MediaTreeListingBase
 from media_tree.contrib.cms_plugins.media_tree_slideshow.models import MediaTreeImageListingBase, MediaTreeImageItemBase
 from media_tree.fields import FileNodeForeignKey
@@ -15,4 +16,8 @@ class MediaTreeGallery(MediaTreeImageListingBase):
 
 class MediaTreeGalleryItem(MediaTreeImageItemBase):
     list_plugin = models.ForeignKey(MediaTreeGallery, related_name='media_items')
-    node = FileNodeForeignKey(verbose_name=_('folder/file'))
+    node = FileNodeForeignKey(verbose_name=_('folder/file'), limit_choices_to={"site": Site.objects.get_current})
+
+    def copy_relations(self, oldinstance):
+        self.list_plugin = oldinstance.list_plugin.all()
+        self.node = oldinstance.node.all()

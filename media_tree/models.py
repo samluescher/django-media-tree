@@ -62,7 +62,7 @@ class FileNodeManager(models.Manager):
         self.filter_args = filter_args
 
     def get_query_set(self):
-        return super(FileNodeManager, self).get_query_set().filter(**self.filter_args)
+        return super(FileNodeManager, self).get_query_set().filter(site=Site.objects.get_current()).filter(**self.filter_args)
 
     def get_filter_args_with_path(self, for_self, **kwargs):
         names = kwargs['path'].strip('/').split('/')
@@ -87,7 +87,7 @@ class FileNodeManager(models.Manager):
         """
         if 'path' in kwargs:
             kwargs = self.get_filter_args_with_path(False, **kwargs)
-        return super(FileNodeManager, self).filter(*args, **kwargs)
+        return super(FileNodeManager, self).filter(site=Site.objects.get_current()).filter(*args, **kwargs)
 
     def exclude(self, *args, **kwargs):
         """
@@ -98,7 +98,7 @@ class FileNodeManager(models.Manager):
         """
         if 'path' in kwargs:
             kwargs = self.get_filter_args_with_path(False, **kwargs)
-        return super(FileNodeManager, self).exclude(*args, **kwargs)
+        return super(FileNodeManager, self).filter(site=Site.objects.get_current()).exclude(*args, **kwargs)
 
     def get(self, *args, **kwargs):
         """
@@ -254,6 +254,7 @@ class FileNode(ModelBase):
     extra_metadata = models.TextField(_('extra metadata'), editable=None)
     """ Extra metadata """
 
+    site = models.ForeignKey(Site, null=True, blank=True, related_name='file')
 
     is_ancestor_being_updated = False
 
@@ -315,7 +316,8 @@ class FileNode(ModelBase):
         return nodes
 
     def get_folder_tree(self):
-        return self._tree_manager.all().filter(node_type=FileNode.FOLDER)
+        return self._tree_manager.all().filter(node_type=FileNode.FOLDER,
+                                               site=Site.objects.get_current())
 
     def get_default_file(self, media_types=None):
         if self.node_type == FileNode.FOLDER:
@@ -507,7 +509,7 @@ class FileNode(ModelBase):
         self.save_prevented = True
 
     def save(self, *args, **kwargs):
-
+        self.site = Site.objects.get_current()
         if getattr(self, 'save_prevented', False):
             from django.core.exceptions import ValidationError
             raise ValidationError('Saving was presented for this FileNode object.')

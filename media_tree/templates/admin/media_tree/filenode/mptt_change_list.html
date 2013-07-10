@@ -1,5 +1,5 @@
 {% extends "admin/mptt_change_list.html" %}
-{% load adminmedia admin_list i18n mptt_tags media_tree_admin %}
+{% load admin_static admin_list i18n mptt_tags media_tree_admin %}
 
 {% block extrahead %}
 {{ block.super }}
@@ -7,7 +7,7 @@
 Since the FileNodeAdmin's Media class can't use reverse to determine the jsi18n URL, 
 it is embedded here.
 {% endcomment %} 
-<script type="text/javascript" src="{% url admin:media_tree_jsi18n %}"></script>
+<script type="text/javascript" src="{% url 'admin:media_tree_jsi18n' %}"></script>
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -28,12 +28,12 @@ it is embedded here.
             </a>
         </li>
         <li>
-            <a href="{% url admin:media_tree_filenode_add %}?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
+            <a href="{% url 'admin:media_tree_filenode_add' %}?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
             {% trans "Add file" %}
             </a>
         </li>
         <li>
-            <a id="object-tool-add-folder" href="{% url admin:media_tree_filenode_add_folder %}{% if is_popup %}?_popup=1{% endif %}" class="addlink folder">
+            <a id="object-tool-add-folder" href="{% url 'admin:media_tree_filenode_add_folder' %}{% if is_popup %}?_popup=1{% endif %}" class="addlink folder">
             <span class="caption">{% trans "Add folder" %}</span>
             </a>
         </li>
@@ -64,7 +64,7 @@ it is embedded here.
 
             var uploader = new DjangoAdminFileUploader({
                 element: $('.changelist-file-uploader')[0],
-                action: '{% url admin:media_tree_filenode_upload %}',
+                action: "{% url 'admin:media_tree_filenode_upload' %}",
                 debug: true,
                 listElement: $('#changelist tbody')[0],
                 csrfmiddlewaretoken: '{{ csrf_token }}'

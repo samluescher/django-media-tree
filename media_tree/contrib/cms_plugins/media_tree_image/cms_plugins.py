@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from media_tree.contrib.cms_plugins.media_tree_image.models import MediaTreeImage
 from media_tree.contrib.cms_plugins.forms import MediaTreePluginFormBase
 from media_tree.contrib.views.detail.image import ImageNodeDetailMixin
@@ -9,9 +10,15 @@ from cms.plugin_pool import plugin_pool
 from django.utils.translation import ugettext_lazy as _
 
 # TODO: Solve image_detail with get_absolute_url()?
+from media_tree.models import FileNode
 
 
 class MediaTreeImagePluginForm(MediaTreePluginFormBase):
+
+    def __init__(self, *args, **kwargs):
+        super(MediaTreeImagePluginForm, self).__init__(*args, **kwargs)
+        self.fields['node'].queryset = FileNode.objects.filter(site=Site.objects.get_current())
+
     class Meta:
         model = MediaTreeImage
 

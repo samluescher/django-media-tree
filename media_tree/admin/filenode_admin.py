@@ -11,7 +11,7 @@
 # TODO: Ordering of tree by column (within parent) should be possible
 # TODO: Refactor SWFUpload stuff as extension. This would require signals calls
 #       to be called in the FileNodeAdmin view methods.
-
+from django.contrib.sites.models import Site
 
 from media_tree.fields import FileNodeChoiceField
 from media_tree.models import FileNode
@@ -132,12 +132,19 @@ class FileNodeAdmin(MPTTModelAdmin):
         # http://stackoverflow.com/questions/1618728/disable-link-to-edit-object-in-djangos-admin-display-list-only
         self.list_display_links = (None, )
 
+    def queryset(self, request):
+        qs = super(FileNodeAdmin, self).queryset(request)
+        return qs.filter(site=Site.objects.get_current())
+
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'parent' and issubclass(db_field.rel.to, FileNode):
             # overriding formfield_for_dbfield, thus bypassign both Django's and mptt's
             # formfield_for_foreignkey method, and also preventing Django from wrapping
-            # field with RelatedFieldWidgetWrapper ("add" button resulting in a file add form) 
-            valid_targets = FileNode.tree.filter(**db_field.rel.limit_choices_to)
+            # field with RelatedFieldWidgetWrapper ("add" button resulting in a file add form)
+
+            # Issue 25 - Only allow folders registerred in the current site.
+            valid_targets = FileNode.tree.filter(**db_field.rel.limit_choices_to).filter(
+                                                 site=Site.objects.get_current())
             request = kwargs['request']
             node = get_request_attr(request, 'save_node', None)
             if node:

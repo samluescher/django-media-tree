@@ -1,3 +1,4 @@
+from django.contrib.sites.models import Site
 from media_tree.models import FileNode
 from media_tree.fields import FileNodeChoiceField
 from media_tree.forms import MetadataForm
@@ -19,7 +20,8 @@ class FileNodeActionsForm(forms.Form):
     def __init__(self, queryset, *args, **kwargs):
         self.success_count = 0
         super(FileNodeActionsForm, self).__init__(*args, **kwargs)
-        valid_targets = FileNode._tree_manager.filter(node_type=FileNode.FOLDER)
+        valid_targets = FileNode._tree_manager.filter(node_type=FileNode.FOLDER,
+                                                      site=Site.objects.get_current())
         self.selected_nodes = queryset
         
         selected_nodes_pk = []

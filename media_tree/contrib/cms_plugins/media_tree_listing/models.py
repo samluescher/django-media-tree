@@ -1,6 +1,6 @@
+from django.contrib.sites.models import Site
 from media_tree import media_types
 from media_tree.contrib.cms_plugins import settings as app_settings
-from media_tree.models import FileNode
 from media_tree.fields import FileNodeForeignKey
 from cms.models import CMSPlugin
 from django.db import models
@@ -13,6 +13,12 @@ class MediaTreeListingBase(CMSPlugin):
     render_template = models.CharField(_('template'), max_length=100, choices=None, blank=True, null=True, help_text=_('Template used to render the plugin.'))
     filename_filter = models.CharField(_('filter file and folder names'), max_length=255, null=True, blank=True, help_text=_('Example: *.jpg; Documents.*;'), editable=False)
     include_descendants = models.BooleanField(_('include all subfolders'), default=True)
+
+    def copy_relations(self, oldinstance):
+        for media_item in oldinstance.media_items.all():
+            media_item.pk = None
+            media_item.list_plugin = self
+            media_item.save()
 
     class Meta:
         abstract = True
@@ -46,4 +52,8 @@ class MediaTreeListing(MediaTreeListingBase):
 
 class MediaTreeListingItem(MediaTreeListingItemBase):
     list_plugin = models.ForeignKey(MediaTreeListing, related_name='media_items')
-    node = FileNodeForeignKey(verbose_name=_('folder/file'))
+    node = FileNodeForeignKey(verbose_name=_('folder/file'), limit_choices_to={"site": Site.objects.get_current})
+
+    def copy_relations(self, oldinstance):
+        self.list_plugin = oldinstance.list_plugin.all()
+        self.node = oldinstance.node.all()
