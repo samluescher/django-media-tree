@@ -4,9 +4,14 @@ from media_tree import media_types
 from media_tree.media_backends import get_media_backend, ThumbnailError
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.utils.html import escape
-from django.utils.text import truncate_words
+try:
+    from django.utils.text import truncate_words
+except ImportError:
+    #django >= 1.6
+    from django.template.defaultfilters import truncatewords as truncate_words
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+
 import os
 
 THUMBNAIL_EXTENSIONS = app_settings.MEDIA_TREE_THUMBNAIL_EXTENSIONS
