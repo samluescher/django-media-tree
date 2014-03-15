@@ -98,9 +98,9 @@ The first step is to create a Django application that serves as the container
 for our new extender classes. You can do this as usual on the command line from
 your project folder::
 
-    $ django-admin startapp media_tree_geotagging
-    $ cd media_tree_geotagging
-    $ touch media_extension.py
+    django-admin startapp media_tree_geotagging
+    cd media_tree_geotagging
+    touch media_extension.py
 
 Notice that on the last line we created a file called ``media_extension.py``. 
 Media Tree will scan all ``INSTALLED_APPS`` for such a file, so that all 

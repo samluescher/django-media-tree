@@ -7,7 +7,7 @@ This install guide assumes you are familiar with Python and Django.
 Dependencies 
 ============
 
-Make sure to install these packages prior to installation:
+Make sure to install the following packages if you want to use Media Tree:
 
 - `Django <http://www.djangoproject.com>`_ >= 1.5
 - `South <http://south.aeracode.org/>`_ >= 0.8
@@ -18,15 +18,7 @@ Make sure to install these packages prior to installation:
 
 .. Note::
    All required Python packages can easily be installed using `pip
-   <http://pypi.python.org/pypi/pip>`_ (or, alternatively, easy_install). After
-   installing it, you may simply enter the following command to install the
-   dependencies::
-
-    $ pip install django==1.3.1 South django-mptt==0.5.1 PIL
-
-   In case you get a permission error, you will probably have to run the shell
-   commands in this install guide with root permissions, i.e. enter ``sudo pip
-   install …`` instead, and ``sudo python setup.py install`` respectively.
+   <http://pypi.python.org/pypi/pip>`_ (or, alternatively, easy_install). 
 
 
 Getting the code 
@@ -34,27 +26,33 @@ Getting the code
 
 For the latest stable version (recommended), use ``pip``::
 
-    $ pip install django-media-tree
+    pip install django-media-tree
 
-**Alternatively**, if you would like to use the latest development version, you
-can also install it using ``pip``::
-
-    $ pip install -e git://github.com/philomat/django-media-tree#egg=django-media-tree
-
-**or** download it from http://github.com/philomat/django-media-tree and run the
+**or** download it from http://github.com/samluescher/django-media-tree and run the
 installation script::
 
-    $ python setup.py install
+    python setup.py install
 
 
 Demo project
 ============
 
 A demo project is included for you to quickly test and evaluate Django Media 
-Tree. Just change into the folder ``demo_project`` and run the development 
-server::
+Tree. It is recommended to use `virtualenv <http://www.virtualenv.org>` for 
+trying it out, as you'll be able to install all dependencies in isolation.
+Afer installing `virtualenv`, run the following commands to start the demo 
+project::
 
-    $ python manage.py runserver
+    mkdir django-media-tree-test && cd django-media-tree-test
+    virtualenv venv
+    source venv/bin/activate
+    curl -L https://github.com/samluescher/django-media-tree/archive/master.zip  \
+      -o django-media-tree-master.zip && unzip django-media-tree-master
+    cd django-media-tree-master/demo_project
+    pip install -r requirements.txt
+    python manage.py syncdb
+    python manage.py loaddata fixtures/initial_data.json
+    python manage.py runserver
 
 Then open http://localhost:8000 in your web browser.
 
@@ -73,15 +71,18 @@ Please follow these steps to use Media Tree with your own application.
         'media_tree',
     )
 
+- Make sure your ``STATIC_URL``, ``STATIC_ROOT``, ``MEDIA_URL`` and ``STATIC_ROOT``
+  are properly configured.
+
+  .. Note::
+     Please refer to the Django documentation on how to configure your Django project
+     `to serve static files <https://docs.djangoproject.com/en/dev/howto/static-files/>`_ 
+     if you have not done that yet.
+
 - If you are using ``django.contrib.staticfiles`` (recommended), just run the
   usual command to collect static files::
 
-    $ python manage.py collectstatic
-
-  .. Note::
-     Please refer to the Django documentation on how to `set up the static files
-     app <https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/>`_ if
-     you have not done that yet.
+    python manage.py collectstatic
 
   If you are **not** going to use the ``staticfiles`` app, you will have to copy
   the contents of the ``static`` folder to the location you are serving static
@@ -89,21 +90,23 @@ Please follow these steps to use Media Tree with your own application.
   
 - Create the database tables::
 
-    $ python manage.py syncdb
+    python manage.py syncdb
 
   Alternatively, if you are using `South <http://south.aeracode.org/>`_ in your
   project, you'll have to use a slightly different command::
 
-    $ python manage.py syncdb --all 
-    $ python migrate media_tree --fake
+    python manage.py syncdb --all 
+    python migrate media_tree --fake
 
 .. _configuring-media-backends:
 
-- **Configuring media backends (optional)**: If you want thumbnails to be
-  generated, which will usually be the case, you need to install the appropriate
-  media backend that takes care of this. Currently, `easy-thumbnails
-  <https://github.com/SmileyChris/easy-thumbnails>`_ is the only recommended and
-  officially supported 3rd-party application.
+Configuring media backends (optional)
+=====================================
+
+- If you want thumbnails to be generated -- which will usually be the case -- you 
+  need to install the appropriate media backend that takes care of this. 
+  Currently, `easy-thumbnails <https://github.com/SmileyChris/easy-thumbnails>`_ is 
+  the only recommended and officially supported 3rd-party application.
 
   After you've installed the ``easy_thumbnails`` module, configure Media Tree to
   use it by defining ``MEDIA_TREE_MEDIA_BACKENDS`` in your project settings::
@@ -145,7 +148,7 @@ A version of ``django-mptt`` **newer than 0.4.2** is required because there is
 an issue with older versions not indenting the folder list correctly. **Either**
 install a recent version::
 
-    $ pip install django-mptt==0.5.1
+    pip install django-mptt==0.5.1
 
 **or**, if for some reason you can't install a recent version, you can resolve
 the situation by putting ``legacy_mptt_support`` in your ``INSTALLED_APPS``
@@ -159,8 +162,8 @@ the situation by putting ``legacy_mptt_support`` in your ``INSTALLED_APPS``
 
 .. _install-icon-sets:
 
-Installing icon sets 
-====================
+Installing icon sets (optional)
+===============================
 
 By default, Media Tree only comes with plain file and folder icons. If you would
 like to use custom icon sets that are more appropriate for your specific media
@@ -168,7 +171,7 @@ types, you can install them like a Django application.
 
 The following ready-to-use modules contain some nice icons:
 
-- `Teambox Icons <https://github.com/philomat/django-teambox-icons>`_
+- `Teambox Icons <https://github.com/samluescher/django-teambox-icons>`_
 
 You will need to configure Media Tree to use an icon set as follows.
 
@@ -183,7 +186,7 @@ You will need to configure Media Tree to use an icon set as follows.
 - If you are using ``django.contrib.staticfiles`` (recommended), just run the
   usual command to collect static files::
 
-    $ ./manage.py collectstatic
+    ./manage.py collectstatic
 
   If you are **not** using the ``staticfiles`` app, copy the contents of the
   ``static`` folder to the static root of your project.
