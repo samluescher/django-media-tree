@@ -9,11 +9,11 @@ Dependencies
 
 Make sure to install these packages prior to installation:
 
-- `Django <http://www.djangoproject.com>`_ >= 1.2.5
-- `South <http://south.aeracode.org/>`_ >= 0.7.2
+- `Django <http://www.djangoproject.com>`_ >= 1.5
+- `South <http://south.aeracode.org/>`_ >= 0.8
 - `django-mptt <https://github.com/django-mptt/django-mptt>`_ > 0.4.2 (see
   :ref:`install-mptt`)
-- `PIL <http://www.pythonware.com/products/pil/>`_ >= 1.1
+- `Pillow <http://pillow.readthedocs.org/>`_ >= 2.3
 
 
 .. Note::
