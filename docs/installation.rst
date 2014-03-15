@@ -38,7 +38,7 @@ Demo project
 ============
 
 A demo project is included for you to quickly test and evaluate Django Media 
-Tree. It is recommended to use `virtualenv <http://www.virtualenv.org>` for 
+Tree. It is recommended to use `virtualenv <http://www.virtualenv.org>`_ for 
 trying it out, as you'll be able to install all dependencies in isolation.
 Afer installing `virtualenv`, run the following commands to start the demo 
 project::
