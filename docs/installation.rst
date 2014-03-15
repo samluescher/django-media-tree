@@ -122,8 +122,6 @@ Configuring media backends (optional)
      ``media_tree.contrib.media_backends`` if you are interested in using your
      own specific 3rd-party app.
 
-.. _install-swfupload:
-
 - **Optional**: Also add any Media Tree extensions that you are planning to use
   to your ``INSTALLED_APPS``::
 

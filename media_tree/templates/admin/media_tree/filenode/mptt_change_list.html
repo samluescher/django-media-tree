@@ -19,7 +19,7 @@ it is embedded here.
 {% endblock %}
 
 {% block object-tools %}
-    <ul class="object-tools with-view-options">
+    <ul class="object-tools{% if thumbnail_sizes %} with-view-options{% endif %}">
     {% if has_add_permission %}
         <li class="target-folder"></li>
         <li class="changelist-file-uploader">
@@ -42,20 +42,6 @@ it is embedded here.
 
     <script type="text/javascript">// <![CDATA[
         jQuery(function($) {
-            /*
-            {% if swfupload_upload_url %}
-            var uploadManager = $.SWFUploadManager({
-                upload_url: '{{ swfupload_upload_url }}'
-                ,flash_url: '{{ swfupload_flash_url }}'
-                ,button_placeholder_id: "swfupload-button"
-                ,file_post_name : "file"
-                ,file_types : "{% for ext in file_types %}*.{{ ext }};{% endfor %}"
-                ,file_size_limit : "{{ file_size_limit }}B"
-                ,button_width: "200"
-                ,button_height: "30"
-            });
-            {% endif %}
-            */
 
             var initialFolder, targetFolder;
             {% if node and not node.is_top_node %} 
@@ -87,13 +73,6 @@ it is embedded here.
                 addlink.href = addlink.href.replace(/parent=[0-9]*/, 'parent='+targetId);
                 uploaderParams = {parent: targetId};                
                 uploader.setParams(uploaderParams);
-
-
-                /*    
-                {% if swfupload_upload_url %}
-                uploadManager.targetFolder = targetFolder;
-                {% endif %}
-                */
             };
 
             setTargetFolder(initialFolder);
@@ -105,6 +84,7 @@ it is embedded here.
         });
     // ]]></script>
 
+    {% if thumbnail_sizes %}
     <ul class="view-options">
         <li>
             <div class="thumbnail-size-slider ui-slider ui-slider-horizontal no-js">{% spaceless %}
@@ -161,6 +141,7 @@ it is embedded here.
             // ]]></script>
         </li>
     </ul>
+    {% endif %}
 {% endblock %}
 {% block result_list %}
 {{ block.super }}

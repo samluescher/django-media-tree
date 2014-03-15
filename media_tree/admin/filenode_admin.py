@@ -52,6 +52,8 @@ from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import UploadedFile
 from django import forms
 from django.core.exceptions import ValidationError, ViewDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
@@ -122,7 +124,6 @@ class FileNodeAdmin(MPTTModelAdmin):
         ]
         css = {
             'all': (
-                os.path.join(STATIC_SUBDIR, 'css', 'swfupload.css').replace("\\","/"),
                 os.path.join(STATIC_SUBDIR, 'css', 'ui.css').replace("\\","/"),
             )
         }
@@ -392,11 +393,14 @@ class FileNodeAdmin(MPTTModelAdmin):
             request.session['thumbnail_size'] = thumb_size_key
         thumb_size_key = request.session.get('thumbnail_size', 'default')
         set_request_attr(request, 'thumbnail_size', thumb_size_key)
-        return {
-            'thumbnail_sizes': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES,
-            'thumbnail_size_key': thumb_size_key
-        }
-
+        backend = get_media_backend()
+        if backend and backend.supports_thumbnails():
+            return {
+                'thumbnail_sizes': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES,
+                'thumbnail_size_key': thumb_size_key
+            }
+        else:
+            return {}
 
     def changelist_view(self, request, extra_context=None):
         response = execute_empty_queryset_action(self, request)
@@ -414,17 +418,6 @@ class FileNodeAdmin(MPTTModelAdmin):
             extra_context = {}
 
         extra_context.update(self.init_changelist_view_options(request))
-
-        if app_settings.MEDIA_TREE_SWFUPLOAD:
-            swfupload_upload_url = reverse('admin:media_tree_filenode_upload')
-            #swfupload_flash_url = os.path.join(settings.MEDIA_URL, STATIC_SUBDIR, 'lib/swfupload/swfupload_fp10/swfupload.swf')
-            swfupload_flash_url = reverse('admin:media_tree_filenode_static_swfupload_swf')
-            extra_context.update({
-                'file_types': app_settings.MEDIA_TREE_ALLOWED_FILE_TYPES,
-                'file_size_limit': app_settings.MEDIA_TREE_FILE_SIZE_LIMIT,
-                'swfupload_flash_url': swfupload_flash_url,
-                'swfupload_upload_url': swfupload_upload_url,
-            })
 
         if request.GET.get(IS_POPUP_VAR, None):
             extra_context.update({'select_button': True})
@@ -523,9 +516,7 @@ class FileNodeAdmin(MPTTModelAdmin):
             if request.method == 'POST':
 
                 if request.is_ajax() and request.GET.get(FILE_PARAM_NAME, None):
-                    from django.core.files.base import ContentFile
-                    from django.core.files.uploadedfile import UploadedFile
-                    content_file = ContentFile(request.raw_post_data)
+                    content_file = ContentFile(request.body)
                     uploaded_file = UploadedFile(content_file, request.GET.get(FILE_PARAM_NAME), None, content_file.size)
                     form = UploadForm(request.POST, {'file': uploaded_file})
                 else:
@@ -558,7 +549,8 @@ class FileNodeAdmin(MPTTModelAdmin):
                 raise ViewDoesNotExist
             if request.method == 'GET':
                 form = UploadForm()
-            return render_to_response('admin/media_tree/filenode/upload_form.html', {'form': form})            
+            return render_to_response('admin/media_tree/filenode/upload_form.html', {'form': form},
+                    context_instance=RequestContext(request))
 
         except Exception as e:
             if request.is_ajax():
@@ -604,16 +596,6 @@ class FileNodeAdmin(MPTTModelAdmin):
         info = self.model._meta.app_label, self.model._meta.module_name
         url_patterns = patterns('',
             url(r'^jsi18n/', self.admin_site.admin_view(self.i18n_javascript), name='media_tree_jsi18n'),
-            # Since Flash Player enforces a same-domain policy, the upload will break if static files
-            # are served from another domain. So the built-in static file view is used for the uploader SWF:
-            url(r'^static/swfupload\.swf$',
-                'django.views.static.serve',
-                {'document_root': os.path.join(
-                    # Use STATIC_ROOT by default, use MEDIA_ROOT as fallback
-                    getattr(settings, 'STATIC_ROOT', getattr(settings, 'MEDIA_ROOT')),
-                    STATIC_SUBDIR),
-                'path': 'lib/swfupload/swfupload_fp10/swfupload.swf'},
-                name='%s_%s_static_swfupload_swf' % info),
             url(r'^upload/$',
                 self.admin_site.admin_view(self.upload_file_view),
                 name='%s_%s_upload' % info),

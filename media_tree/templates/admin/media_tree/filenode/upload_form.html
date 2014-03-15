@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
         <h1>{% trans "Upload file" %}</h1>
         <p>{{ form.file.errors }}{{ form.file }}</p>
         <p><input type="submit" value="{% trans "Submit" %}" /></p>

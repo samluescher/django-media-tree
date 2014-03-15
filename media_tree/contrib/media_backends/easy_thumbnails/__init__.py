@@ -16,6 +16,10 @@ class EasyThumbnailsBackend(MediaBackend):
     SUPPORTED_MEDIA_TYPES = (media_types.SUPPORTED_IMAGE,)
 
     @staticmethod
+    def supports_thumbnails():
+        return True
+
+    @staticmethod
     def check_conf():
         if not 'easy_thumbnails' in settings.INSTALLED_APPS:
             from django.core.exceptions import ImproperlyConfigured

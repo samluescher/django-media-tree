@@ -49,6 +49,10 @@ class MediaBackend:
     def handles_file_extensions(cls, file_extensions):
         return cls.SUPPORTED_FILE_EXTENSIONS  \
             and len(set(file_extensions) - set(cls.SUPPORTED_FILE_EXTENSIONS)) == 0 
+
+    @staticmethod
+    def supports_thumbnails():
+        return False
     
     @staticmethod
     def get_thumbnail(source, options):

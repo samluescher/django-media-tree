@@ -43,7 +43,7 @@ msgstr[1] "%i media objekter"
 
 #: static/media_tree/js/jquery.swfupload_manager.js:84
 #, perl-format
-msgid "uploading... (%i in queue)"
+msgid "uploading… (%i in queue)"
 msgstr "laster opp... (%i i køen)"
 
 #: static/media_tree/js/jquery.swfupload_manager.js:85

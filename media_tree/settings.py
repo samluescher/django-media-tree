@@ -155,12 +155,6 @@ Default: 1 GB
 Maximum file size for uploaded files.
 """
 
-MEDIA_TREE_SWFUPLOAD = getattr(settings, 'MEDIA_TREE_SWFUPLOAD', True)
-"""
-Toggles support for SWFUpload on or off. See :ref:`install-swfupload` for more
-information.
-"""
-
 MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS = getattr(settings,
     'MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS', {})
 """

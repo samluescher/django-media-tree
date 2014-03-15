@@ -124,13 +124,6 @@ module.
     Maximum file size for uploaded files.
 
 
-``MEDIA_TREE_SWFUPLOAD``
-    Default: ``True``
-    
-    Toggles support for SWFUpload on or off. See
-    :ref:`Installing SWFUpload <install-swfupload>` for more information.
-
-
 ``MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS``
     A dictionary of options that should be applied by default when generating
     thumbnails. You might use this, for instance, to sharpen all thumbnails::
