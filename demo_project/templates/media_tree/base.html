@@ -75,7 +75,7 @@
     Username: <span class="code">admin</span>, Password: <span class="code">admin</span><br /> 
   </p>
   <ul>
-    <li><a href="{% url admin:media_tree_filenode_changelist %}">Media Tree Admin</a></li>
+    <li><a href="{% url "admin:media_tree_filenode_changelist" %}">Media Tree Admin</a></li>
   </ul>
   <h2>Documentation</h2>
   <ul>
@@ -91,9 +91,9 @@
     Of course you can also extend the generic view classes to create views that suit your specific requirements.
   </p>
   <ul>
-    <li><a href="{% url demo_listing %}">Listing View</a></li>
-    <li><a href="{% url demo_detail "Example Documents/license.txt" %}">Detail View</a></li>
-    <li><a href="{% url demo_image "Example Pictures/River.jpg" %}">Image Detail View</a></li>
+    <li><a href="{% url "demo_listing" %}">Listing View</a></li>
+    <li><a href="{% url "demo_detail" "Example Documents/license.txt" %}">Detail View</a></li>
+    <li><a href="{% url "demo_image" "Example Pictures/River.jpg" %}">Image Detail View</a></li>
   </ul>
 </div>
 

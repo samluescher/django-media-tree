@@ -451,21 +451,27 @@ jQuery(function($) {
         if (!isExpanded) {
             //parentRow.data('isExpanded', true);
             controls.addClass('loading');
-            $.get(href, function(data) {
-                //if (!parentRow.data('isExpanded')) return;
-                if (!controls.is('.loading')) return;
-                controls.removeClass('loading');
-                controls.addClass('expanded');
-                controls.removeClass('collapsed');
-                var tbody = $(data).find('#changelist tbody');
-                var rows =  $('tr', tbody);
-                if (rows.length > 0) {
-                    button.removeClass('empty');
-                } else {
-                    button.addClass('empty');
+            $.ajax({
+                url: href, 
+                success: function(data) {
+                    //if (!parentRow.data('isExpanded')) return;
+                    if (!controls.is('.loading')) return;
+                    controls.removeClass('loading');
+                    controls.addClass('expanded');
+                    controls.removeClass('collapsed');
+                    var tbody = $(data).find('#changelist tbody');
+                    var rows =  $('tr', tbody);
+                    if (rows.length > 0) {
+                        button.removeClass('empty');
+                    } else {
+                        button.addClass('empty');
+                    }
+                    parentRow.addExpandedChildren(rows);
+                    $('#changelist').trigger('update', [rows]);
+                },
+                error: function() {
+                    controls.removeClass('loading');
                 }
-                parentRow.addExpandedChildren(rows);
-                $('#changelist').trigger('update', [rows]);
             });
         } else {
             parentRow.data('isExpanded', false);

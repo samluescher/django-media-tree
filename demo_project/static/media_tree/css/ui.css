@@ -217,8 +217,13 @@ ul.node-tools li:last-child {
     background-position: 100% 100%;
 }
 
+#content h1 {
+    /* assign loading gif to some element for preloading */
+    background: url(../img/icons/folder-toggle-loading.gif) no-repeat -9999px;   
+}
+
 #changelist table .loading .folder-toggle {
-    background-image: url(../img/icons/folder-toggle-loading.gif);
+    background: url(../img/icons/folder-toggle-loading.gif);
 }
 
 #changelist.loading th.action-checkbox-column {
@@ -287,7 +292,7 @@ ul.node-tools li:last-child {
 }
 
 .drop-hover, .drop-hover td {
-    background: #ccc;
+    background: #c8c8c8;
 }
 
 .drag-counter {
@@ -305,4 +310,23 @@ ul.node-tools li:last-child {
     -moz-box-shadow: 0px 2px 5px #666;
     -webkit-box-shadow: 0px 2px 5px #666;
     box-shadow: 0px 2px 5px #666;
+}
+
+.qq-uploader{
+    background: url('/admin/img/tooltag-add.gif') no-repeat scroll 100% 0 #999999;
+    color: white;
+    display: block;
+    float: left;
+    height: 14px;
+    padding: 0.1em 30px 0.1em 8px;
+}
+
+.qq-uploader:visited {
+    color: #5B80B2;
+    text-decoration: none;
+}
+
+.qq-uploader:hover {
+    background: url('/admin/img/tooltag-add_over.gif') no-repeat scroll 100% 0 #5B80B2;
+    text-decoration: none;
 }

@@ -3,7 +3,7 @@ from media_tree.contrib.views.listing import FileNodeListingView
 from media_tree.contrib.views.detail import FileNodeDetailView
 from media_tree.contrib.views.detail.image import ImageNodeDetailView
 from django.views.generic.base import TemplateView
-from django.conf.urls.defaults import patterns, include, url
+from django.conf.urls import patterns, include, url
 
 from django.contrib import admin
 admin.autodiscover()
