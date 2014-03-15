@@ -311,3 +311,22 @@ ul.node-tools li:last-child {
     -webkit-box-shadow: 0px 2px 5px #666;
     box-shadow: 0px 2px 5px #666;
 }
+
+.qq-uploader{
+    background: url('/admin/img/tooltag-add.gif') no-repeat scroll 100% 0 #999999;
+    color: white;
+    display: block;
+    float: left;
+    height: 14px;
+    padding: 0.1em 30px 0.1em 8px;
+}
+
+.qq-uploader:visited {
+    color: #5B80B2;
+    text-decoration: none;
+}
+
+.qq-uploader:hover {
+    background: url('/admin/img/tooltag-add_over.gif') no-repeat scroll 100% 0 #5B80B2;
+    text-decoration: none;
+}

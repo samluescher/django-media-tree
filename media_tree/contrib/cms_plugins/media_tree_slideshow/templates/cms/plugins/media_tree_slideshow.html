@@ -1,24 +1,32 @@
+{% load sekizai_tags %}
+{% addtoblock "js" %}<script type="text/javascript" src="{{ STATIC_URL }}media_tree/lib/jquery.cycle/jquery.cycle.all.min.js"></script>{% endaddtoblock %}
 <div id="{{ plugin.id_attr }}" class="slideshow">
-{% for image_node in node_list %}
-{% include "cms/plugins/media_tree_image.html" %}
-{% endfor %}
+  {% for image_node in node_list %}
+  {% include "cms/plugins/media_tree_image.html" %}
+  {% endfor %}
 </div>
-
+{% addtoblock "js" %}
 <script type="text/javascript">
-//<![CDATA[
-$(document).ready(function() {
+  //<![CDATA[
+  $(document).ready(function() {
     var containerHeight = 0;
+    var containerWidth = 0;
     $('#{{ plugin.id_attr }} p').each(function() {
-        if ($(this).outerHeight(true) > containerHeight) {
-            containerHeight = $(this).outerHeight(true);
-        }
-    }); 
-    $('#{{ plugin.id_attr }}').css('height', containerHeight+'px');
+      if ($(this).outerHeight(true) > containerHeight) {
+        containerHeight = $(this).outerHeight(true);
+      }
+      if ($(this).outerWidth(true) > containerWidth) {
+        containerWidth = $(this).outerWidth(true);
+      }
+    });
+    $('#{{ plugin.id_attr }} p').css('height', containerHeight+'px');
+    $('#{{ plugin.id_attr }} p').css('width', containerWidth+'px');
     $('#{{ plugin.id_attr }}').cycle({
-		fx: '{{ fx }}'
-		{% ifnotequal speed "normal" %},speed: '{{ speed }}'{% endifnotequal %}
-		,timeout: {{ timeout }} 
-	});
-});
-//]]>
+      fx: '{{ fx }}'
+    {% ifnotequal speed "normal" %},speed: '{{ speed }}'{% endifnotequal %}
+    ,timeout: {{ timeout }}
+  });
+  });
+  //]]>
 </script>
+{% endaddtoblock %}
