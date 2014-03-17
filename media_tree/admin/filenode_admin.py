@@ -118,7 +118,7 @@ class FileNodeAdmin(MPTTModelAdmin):
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js').replace("\\","/"),
-            os.path.join(STATIC_SUBDIR, 'lib', 'fileuploader.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery.fineuploader-4.4.0', 'jquery.fineuploader-4.4.0.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js').replace("\\","/"),
         ]
@@ -510,17 +510,10 @@ class FileNodeAdmin(MPTTModelAdmin):
             if not self.has_add_permission(request):
                 raise PermissionDenied
 
-            FILE_PARAM_NAME = 'qqfile'
             self.init_parent_folder(request)
 
             if request.method == 'POST':
-
-                if request.is_ajax() and request.GET.get(FILE_PARAM_NAME, None):
-                    content_file = ContentFile(request.body)
-                    uploaded_file = UploadedFile(content_file, request.GET.get(FILE_PARAM_NAME), None, content_file.size)
-                    form = UploadForm(request.POST, {'file': uploaded_file})
-                else:
-                    form = UploadForm(request.POST, request.FILES)
+                form = UploadForm(request.POST, request.FILES)
 
                 if form.is_valid():
                     node = FileNode(file=form.cleaned_data['file'], node_type=FileNode.FILE)

@@ -1,4 +1,120 @@
 jQuery(function($) {
+
+    var _addToList = function(id, fileName) {
+        var c = {};
+
+        cols = [];
+        cols[1] = $(
+            '<td class="nowrap"><span style="display: none;" class="upload-progress-bar-container">'
+            + '<span class="upload-progress-bar"></span></span><span class="queue-status">' 
+            + gettext('queued') + '</span>' 
+            + '&nbsp;<a href="#">' + fileName + '</a>'
+            + '&nbsp;<a href="#" class="' + c['cancel'] + '">'+gettext('cancel')+'</a>'
+            + '</td>');
+        cols[2] = $('<td class="filesize"><span class="' + c['size'] + '"></span></td>');
+
+        var row = $.makeChangelistRow(cols, _getItemByFileId(id))[0];
+        row.qqFileId = id;
+
+        var queuedRows = $('tr.queue');
+
+        if (queuedRows.length > 0) {
+            $(queuedRows[queuedRows.length - 1]).after(row);
+        } else {
+            $('#changelist table tbody').prepend(row);
+        }
+
+        var sortCol = $('#changelist table').find('th.sorted');
+        sortCol.removeClass('sorted ascending descending');
+    };
+
+    var _getItemByFileId = function(id) {
+        var item = $('#queue-'+id);
+        if (item.length) {
+            return item[0];
+        } else {
+            return $('<tr id="queue-'+id+'" class="queue"></tr>');
+        }
+    };
+
+    var _setQueueMessage = function()
+    {
+        /*if (this._filesInProgress > 0) {
+            document.title = gettext('uploading… (%i in queue)').replace('%i', this._filesInProgress)+' – '+this._options.originalDocumentTitle;
+        } else {
+            document.title = this._options.originalDocumentTitle;
+        }
+        var message = ngettext('%i file in queue.', '%i files in queue.', this._filesInProgress).replace('%i', this._filesInProgress);
+        $.addUserMessage(message, 'upload-queue-message');*/
+    };
+
+    $.fn.djangoAdminFileUploader = function(opts) {
+        var uploader = $(this).fineUploader(opts);
+
+        uploader.on('error', function (event, id, name, reason) {
+            console.error('progress', name, reason)
+            // do something
+        }).on('submit', function (event, id, name) {
+            _addToList(id, name);
+        }).on('progress', function (event, id, name, uploadedBytes, totalBytes) {
+            var row = _getItemByFileId(id);
+            var percent = Math.round(uploadedBytes / totalBytes * 100);
+
+            $(row).find('.queue-status').text('');
+            $(row).find('.upload-progress-bar-container').css('display', 'inline-block');
+            var bar = $(row).find('.upload-progress-bar');
+            bar.css('width', percent+'%');
+            bar.text(percent+'%');
+            if (percent == 100) {
+                bar.addClass('complete');
+            }
+
+            _setQueueMessage();
+            // do something
+        }).on('complete', function (event, id, name, responseJSON) {
+            // do something
+            console.log('complete', name)
+        }).on('allComplete', function(event, succeeded, failed) {
+            //uploader._setQueueMessage();
+            var successfulUploads = succeeded.length,
+                uploadsInProgress = false,
+                uploadErrors = failed.length;
+
+            if (uploadErrors == 0) {
+                /*window.location.reload();*/
+                // instead, replace change list only:
+                var message = gettext('loading…');
+                $.addUserMessage(message, 'upload-queue-message');
+
+                $('#changelist').addClass('loading');
+                $('#changelist').setUpdateReq($.ajax({
+                    url: window.location.href, 
+                    success: function(data, textStatus) {
+                        if (!uploadsInProgress) {
+                            // reload changelist contents
+                            $('#changelist').updateChangelist($(data).find('#changelist').html());
+                            // insert success message
+                            message = ngettext('Successfully added %i file.', 'Successfully added %i files.', successfulUploads).replace('%i', successfulUploads);
+                            $.addUserMessage(message, 'upload-queue-message');
+                            // reset stats
+                        }
+                    },
+                    complete: function(jqXHR, textStatus) {
+                        $('#changelist').removeClass('loading');
+                    }
+                }));
+            } else {
+                var message = gettext('There were errors during upload.');
+                $.addUserMessage(message, 'upload-queue-message');
+            }
+        });
+
+        return uploader;
+    };
+
+
+    return;
+
     DjangoAdminFileUploader = function(o) {
         // call parent constructor
         qq.FileUploader.apply(this, arguments);
@@ -134,34 +250,6 @@ jQuery(function($) {
             this._setQueueMessage();
         },
 
-        _addToList: function(id, fileName){
-            var c = this._options.classes;
-
-            cols = [];
-            cols[1] = $(
-                '<td class="nowrap"><span style="display: none;" class="upload-progress-bar-container">'
-                + '<span class="upload-progress-bar"></span></span><span class="queue-status">' 
-                + gettext('queued') + '</span>' 
-                + '&nbsp;<a href="#">' + fileName + '</a>'
-                + '&nbsp;<a href="#" class="' + c['cancel'] + '">'+gettext('cancel')+'</a>'
-                + '</td>');
-            cols[2] = $('<td class="filesize"><span class="' + c['size'] + '"></span></td>');
-
-            var row = $.makeChangelistRow(cols, this._getItemByFileId(id))[0];
-            row.qqFileId = id;
-
-            var queuedRows = $('tr.queue');
-
-            if (queuedRows.length > 0) {
-                $(queuedRows[queuedRows.length - 1]).after(row);
-            } else {
-                $('#changelist table tbody').prepend(row);
-            }
-
-            var sortCol = $('#changelist table').find('th.sorted');
-            sortCol.removeClass('sorted ascending descending');
-        },
-
         _getItemByFileId: function(id){
             var item = $('#queue-'+id);
             if (item.length) {
@@ -196,46 +284,5 @@ jQuery(function($) {
         }
     });
 
-    qq.extend(qq.UploadHandlerXhr.prototype, {
-        /*
-        The only reason why we're overriding this method is that we need to
-        set the X-CSRFToken header (second to last line).
-        */
-        _upload: function(id, params) {
-            var file = this._files[id],
-                name = this.getName(id),
-                size = this.getSize(id);
-                    
-            this._loaded[id] = 0;
-                                    
-            var xhr = this._xhrs[id] = new XMLHttpRequest();
-            var self = this;
-                                            
-            xhr.upload.onprogress = function(e){
-                if (e.lengthComputable){
-                    self._loaded[id] = e.loaded;
-                    self._options.onProgress(id, name, e.loaded, e.total);
-                }
-            };
-
-            xhr.onreadystatechange = function(){            
-                if (xhr.readyState == 4){
-                    self._onComplete(id, xhr);                    
-                }
-            };
-
-            // build query string
-            params = params || {};
-            params['qqfile'] = name;
-            var queryString = qq.obj2url(params, this._options.action);
-
-            xhr.open("POST", queryString, true);
-            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-            xhr.setRequestHeader("X-File-Name", encodeURIComponent(name));
-            xhr.setRequestHeader("Content-Type", "application/octet-stream");
-            xhr.setRequestHeader("X-CSRFToken", this._options.csrfmiddlewaretoken);
-            xhr.send(file);
-        }
-    });
 
 });

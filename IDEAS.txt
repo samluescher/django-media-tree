@@ -4,6 +4,3 @@ TODO: Add support for default templates (for instance
 TODO: support for more file alternatives (preview, other streaming format etc)
 -- solution would probably be ManyToManyField to self with specifying a type.
 There would be a third node_type PACKAGE, a special kind of folder.
-
-TODO: Output of CMS plugins should be refactored as media_tree.contrib.widgets
-for easy use with other systems.
