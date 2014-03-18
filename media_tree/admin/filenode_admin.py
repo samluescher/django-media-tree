@@ -9,7 +9,7 @@
 # Low priority:
 #
 # TODO: Ordering of tree by column (within parent) should be possible
-# TODO: Refactor SWFUpload stuff as extension. This would require signals calls
+# TODO: Refactor FineUploader stuff as extension. This would require signals calls
 #       to be called in the FileNodeAdmin view methods.
 
 
@@ -498,9 +498,6 @@ class FileNodeAdmin(MPTTModelAdmin):
         form.parent_folder = self.get_parent_folder(request)
         return form
 
-    # Upload view is exempted from CSRF protection since SWFUpload cannot send cookies (i.e. it can only
-    # send cookie values as POST values, but that would render this check useless anyway).
-    # However, Flash Player should already be enforcing a same-domain policy.
     @csrf_protect_m
     def upload_file_view(self, request):
         try:
@@ -517,10 +514,7 @@ class FileNodeAdmin(MPTTModelAdmin):
                     if not parent_folder.is_top_node():
                         node.parent = parent_folder
                     self.save_model(request, node, None, False)
-                    # Respond with 'ok' for the client to verify that the upload was successful, since sometimes a failed
-                    # request would not result in a HTTP error and look like a successful upload.
-                    # For instance: When requesting the admin view without authentication, there is a redirect to the
-                    # login form, which to SWFUpload looks like a successful upload request.
+                    # Respond with success
                     if request.is_ajax():
                         return HttpResponse('{"success": true}', mimetype="application/json")
                     else:
@@ -533,13 +527,14 @@ class FileNodeAdmin(MPTTModelAdmin):
                             [item for sublist in form.errors.values() for item in sublist]), 
                             mimetype="application/json")
 
-            # Form is rendered for troubleshooting SWFUpload. If this form works, the problem is not server-side.
+            # Form is rendered for troubleshooting XHR upload. 
+            # If this form works, the problem is not server-side.
             if not settings.DEBUG:
                 raise ViewDoesNotExist
             if request.method == 'GET':
                 form = UploadForm()
             return render_to_response('admin/media_tree/filenode/upload_form.html', {'form': form},
-                    context_instance=RequestContext(request))
+                context_instance=RequestContext(request))
 
         except Exception as e:
             if request.is_ajax():

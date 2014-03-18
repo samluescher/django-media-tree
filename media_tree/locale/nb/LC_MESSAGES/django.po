@@ -869,10 +869,5 @@ msgstr "Hjem"
 #~ msgid "Link to full size image"
 #~ msgstr "Lenke til bilde i full størrelse"
 
-#~ msgid ""
-#~ "You need to put %s in your MIDDLEWARE_CLASSES setting to use SWFUpload."
-#~ msgstr ""
-#~ "Du må sette %s i setting'en MIDDLEWARE_CLASSES for å bruke SWFUpload."
-
 #~ msgid "Change"
 #~ msgstr "Endre"

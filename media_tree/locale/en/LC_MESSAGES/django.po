@@ -333,11 +333,6 @@ msgstr ""
 msgid "change"
 msgstr ""
 
-#: admin/filenode_admin.py:370
-#, python-format
-msgid "You need to put %s in your MIDDLEWARE_CLASSES setting to use SWFUpload."
-msgstr ""
-
 #: admin/filenode_admin.py:407
 msgid "Add"
 msgstr ""

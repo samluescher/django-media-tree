@@ -96,10 +96,12 @@ jQuery(function($) {
             var percent = Math.round(uploadedBytes / totalBytes * 100);
 
             _updateStatusText(id, '');
-            _updateProgressBar(id, percent+'%', percent);
             _setQueueMessage();
             if (percent == 100) {
                 $('.cancel', row).remove();
+                _updateProgressBar(id, 'waiting', 100);
+            } else {
+                _updateProgressBar(id, percent+'%', percent);
             }
         }).on('complete', function (event, id, name, responseJSON) {
             var row = _getItemByFileId(id);
