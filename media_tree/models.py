@@ -29,7 +29,12 @@ from django.utils.encoding import force_unicode
 from django.conf import settings
 from django.utils.formats import get_format
 from django.db import models
-from PIL import Image
+
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 import os
 import mimetypes
 import uuid
@@ -546,7 +551,7 @@ class FileNode(ModelBase):
                 # Determine whether file is a supported image:
                 try:
                     self.pre_save_image()
-                except IOError:
+                except (IOError, OverflowError):
                     self.media_type = FileNode.mimetype_to_media_type(self.name)
 
         self.slug = slugify(self.name)

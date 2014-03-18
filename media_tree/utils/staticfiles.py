@@ -5,7 +5,12 @@ from django.db.models.fields.files import FieldFile
 from django.core.files.storage import FileSystemStorage
 from django.core.files.base import File
 from django.utils.translation import ugettext_lazy as _
-from PIL import Image
+
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 import os
 
 
