@@ -54,9 +54,11 @@ jQuery(function($) {
         );
 
         var form = makeForm($('#object-tool-add-folder').attr('href'));
+        form.attr('class', 'add-folder');
         form.append(
             '<a class="folder-toggle dummy" rel="%s">&nbsp;</a><span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
-            +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
+            +'&nbsp;<input type="submit" class="button default" value="'+gettext('Save')+'" />'
+            +'&nbsp;<input type="submit" class="button cancel" value="'+gettext('Cancel')+'" /></span>'
             +'<input type="hidden" name="parent" value="' + (targetFolder ? targetFolder.id : '') + '" />'
             +(targetFolder ? '<input type="hidden" name="folder_id" value="' + targetFolder.id + '" />' : '')
         );
@@ -79,6 +81,16 @@ jQuery(function($) {
         }
 
         $('#add-folder-name').select().focus();
+        $('.button.cancel', form).on('click', function() {
+            row.remove();
+            return false;
+        });
+        $(form).on('keyup', function(evt) {
+            if (evt.keyCode == 27) {
+                row.remove();
+                return false;
+            }
+        });
     });
     
     if (document.location.href.indexOf('pop=1') != -1) {

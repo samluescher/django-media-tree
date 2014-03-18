@@ -109,7 +109,9 @@
     margin-right: 1em;
 }
 
-
+form.add-folder input[type=submit].default {
+    float: none;
+}
 
 #filenode_form .thumbnail {
     display: block;
