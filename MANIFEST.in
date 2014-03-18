@@ -6,9 +6,12 @@ recursive-include media_tree/locale *
 recursive-include media_tree/static *
 recursive-include media_tree/contrib *
 recursive-include media_tree/templates *
-include demo_project/demo_project.sqlite3
+include demo_project/requirements.txt
+recursive-include demo_project/manage.py *
+recursive-include demo_project/demo_project *
 recursive-include demo_project/media *
-recursive-include demo_project/static *
+recursive-exclude demo_project/media/upload/_thumbs *
 recursive-include demo_project/templates *
+recursive-include demo_project/fixtures *
 recursive-include docs *
 recursive-exclude * *.pyc
