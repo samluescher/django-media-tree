@@ -160,12 +160,12 @@ def get_file_link(node, use_metadata=False, include_size=False, include_extensio
     if node.node_type != media_types.FOLDER and not href:
         href = node.file.url
 
+    icon = ''
     if include_icon:
         icon_file = node.get_icon_file()
-        icon = '<span class="icon"><img src="%s" alt="%s" /></span>' % (
-            icon_file.url, node.alt)
-    else:
-        icon = ''
+        if icon_file:
+            icon = '<span class="icon"><img src="%s" alt="%s" /></span>' % (
+                icon_file.url, node.alt)
 
     if href:
         link = u'<a class="%s" href="%s">%s%s</a>%s' % (

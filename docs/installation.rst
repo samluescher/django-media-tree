@@ -50,7 +50,8 @@ project::
       -o django-media-tree-master.zip && unzip django-media-tree-master
     cd django-media-tree-master/demo_project
     pip install -r requirements.txt
-    python manage.py syncdb
+    python manage.py collectstatic
+    python manage.py syncdb  # no need to create a superuser
     python manage.py loaddata fixtures/initial_data.json
     python manage.py runserver
 
