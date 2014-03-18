@@ -31,5 +31,3 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
     ]
 )
-
-print find_packages()
