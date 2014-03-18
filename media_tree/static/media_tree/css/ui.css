@@ -229,7 +229,7 @@ ul.node-tools li:last-child {
 }
 
 #changelist table .loading .folder-toggle {
-    background: url(../img/icons/folder-toggle-loading.gif);
+    background-image: url(../img/icons/folder-toggle-loading.gif);
 }
 
 #changelist.loading th.action-checkbox-column {
@@ -338,21 +338,31 @@ ul.node-tools li:last-child {
     box-shadow: 0px 2px 5px #666;
 }
 
-.qq-uploader{
-    background: url('/admin/img/tooltag-add.gif') no-repeat scroll 100% 0 #999999;
+.upload-error {
+    color: red !important;
+}
+
+.upload-success {
+    color: inherit !important;
+}
+
+.upload-progress-bar-container {
+    display: inline-block;
+    background: darkgray;
+    width: 80px;
+    margin: 0 1em 0 1em;
+}
+
+.upload-progress-bar {
+    display: inline-block;
+    background: #5B80B2;
+    width: 1px;
+    padding: 0;
+    font-size: .8em;
     color: white;
-    display: block;
-    float: left;
-    height: 14px;
-    padding: 0.1em 30px 0.1em 8px;
 }
 
-.qq-uploader:visited {
-    color: #5B80B2;
-    text-decoration: none;
-}
-
-.qq-uploader:hover {
-    background: url('/admin/img/tooltag-add_over.gif') no-repeat scroll 100% 0 #5B80B2;
-    text-decoration: none;
+.upload-progress-bar.complete {
+    /*display: none !important;*/
+    background: lightgray;
 }

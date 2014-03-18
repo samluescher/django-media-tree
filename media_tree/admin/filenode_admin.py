@@ -511,7 +511,6 @@ class FileNodeAdmin(MPTTModelAdmin):
 
             if request.method == 'POST':
                 form = UploadForm(request.POST, request.FILES)
-
                 if form.is_valid():
                     node = FileNode(file=form.cleaned_data['file'], node_type=FileNode.FILE)
                     parent_folder = self.get_parent_folder(request)
