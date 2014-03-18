@@ -44,7 +44,7 @@ msgstr[1] "%i media objekter"
 #: static/media_tree/js/jquery.swfupload_manager.js:84
 #, perl-format
 msgid "uploading… (%i in queue)"
-msgstr "laster opp... (%i i køen)"
+msgstr "laster opp… (%i i køen)"
 
 #: static/media_tree/js/jquery.swfupload_manager.js:85
 #, perl-format
@@ -62,8 +62,8 @@ msgid "Upload error"
 msgstr "Feil ved opplasting"
 
 #: static/media_tree/js/jquery.swfupload_manager.js:225
-msgid "loading..."
-msgstr "laster..."
+msgid "loading…"
+msgstr "laster…"
 
 #: static/media_tree/js/jquery.swfupload_manager.js:235
 #, perl-format

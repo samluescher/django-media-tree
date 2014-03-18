@@ -12,7 +12,7 @@ Key features
 * Extension system, enabling you to easily add special processing for different
   media types and extend the admin interface.
 * Speedy AJAX-enhanced admin interface with drag & drop and dynamic resizing.
-* Upload queue with progress indicators (using SWFUpload).
+* Upload queue with progress indicators (using Fine Uploader).
 * Add metadata to all media to improve accessibility of your web sites.
 * Integration with `Django CMS <http://www.django-cms.org>`_. Plugins include:
   image, slideshow, gallery, download list -- create your own! 

@@ -9,8 +9,8 @@ README = read('README.rst')
 
 setup(
     name = "django-media-tree",
-    version = "0.7.0",
-    url = 'http://github.com/philomat/django-media-tree',
+    version = "0.8.0",
+    url = 'http://github.com/samluescher/django-media-tree',
     license = 'BSD',
     description = "Django Media Tree is a Django app for managing your website's media files in a folder tree, and using them in your own applications.",
     long_description = README,

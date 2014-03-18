@@ -61,7 +61,7 @@ msgid "Upload error"
 msgstr "Upload-Fehler"
 
 #: static/media_tree/js/jquery.swfupload_manager.js:225
-msgid "loading..."
+msgid "loading…"
 msgstr "laden…"
 
 #: static/media_tree/js/jquery.swfupload_manager.js:235
