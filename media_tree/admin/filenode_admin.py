@@ -292,9 +292,9 @@ class FileNodeAdmin(MPTTModelAdmin):
         if node.is_folder():
             request = get_current_request()
             state = 'expanded' if self.folder_is_open(request, node) else 'collapsed'
-        return '<span id="%s" class="node browse-controls %s %s">%s%s</span>' %  \
+        return '<span id="%s" class="node browse-controls %s %s" data-treeid="%s" data-parentid="%s">%s%s</span>' %  \
             (self.anchor_name(node), 'folder' if node.is_folder() else 'file',
-            state, self.expand_collapse(node), self.admin_link(node, True))
+            state, node.tree_id, node.parent_id or "", self.expand_collapse(node), self.admin_link(node, True))
     browse_controls.short_description = ''
     browse_controls.allow_tags = True
 

@@ -311,8 +311,14 @@ ul.node-tools li:last-child {
     border: none;
 }
 
-.drop-hover, .drop-hover td {
-    background: #c8c8c8;
+.drop-parent, .drop-parent td {
+    background: #bad0e6;
+    -webkit-transition: background .5s; /* Chrome, Safari, Opera */
+    transition: background .5s;
+}
+
+.drop-sibling, .drop-sibling td {
+    border-top: 3px solid #bad0e6;
 }
 
 .drag-counter {
