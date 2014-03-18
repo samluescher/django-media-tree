@@ -43,7 +43,7 @@ from django.utils.encoding import force_unicode
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, render_to_response
 from django.contrib import admin
-from django.db import models, transaction
+from django.db import models
 from django.template.loader import render_to_string
 from django.contrib.admin.util import unquote
 from django.contrib.admin.templatetags.admin_list import _boolean_icon
@@ -458,13 +458,11 @@ class FileNodeAdmin(MPTTModelAdmin):
         return response
 
     @csrf_protect_m
-    @transaction.commit_on_success
     def add_view(self, request, form_url='', extra_context=None):
         return self._add_node_view(request, form_url, extra_context,
             node_type=FileNode.FILE)
 
     @csrf_protect_m
-    @transaction.commit_on_success
     def add_folder_view(self, request, form_url='', extra_context=None):
         return self._add_node_view(request, form_url, extra_context,
             node_type=FileNode.FOLDER)
@@ -504,7 +502,6 @@ class FileNodeAdmin(MPTTModelAdmin):
     # send cookie values as POST values, but that would render this check useless anyway).
     # However, Flash Player should already be enforcing a same-domain policy.
     @csrf_protect_m
-    @transaction.commit_on_success
     def upload_file_view(self, request):
         try:
             if not self.has_add_permission(request):
