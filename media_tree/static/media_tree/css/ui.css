@@ -190,7 +190,7 @@ ul.node-tools li:last-child {
     display: inline-block;
 }
 
-.browse-controls .folder-toggle, .browse-controls .preview {
+.folder-toggle, .browse-controls .preview {
     margin-right: .5em;
 }
 

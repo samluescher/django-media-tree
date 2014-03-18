@@ -55,7 +55,7 @@ jQuery(function($) {
 
         var form = makeForm($('#object-tool-add-folder').attr('href'));
         form.append(
-            '<span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
+            '<a class="folder-toggle dummy" rel="%s">&nbsp;</a><span style="white-space: nowrap;"><input type="text" id="add-folder-name" name="name" value="'+gettext('New folder')+'"/>'
             +'&nbsp;<input type="submit" class="button" value="'+gettext('Save')+'" /></span>'
             +'<input type="hidden" name="parent" value="' + (targetFolder ? targetFolder.id : '') + '" />'
             +(targetFolder ? '<input type="hidden" name="folder_id" value="' + targetFolder.id + '" />' : '')
