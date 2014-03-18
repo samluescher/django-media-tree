@@ -4,4 +4,4 @@ South==0.8.4
 django-mptt==0.6.0
 easy-thumbnails==1.5
 wsgiref==0.1.2
-django-media-tree==0.8
+django-media-tree>=0.8
