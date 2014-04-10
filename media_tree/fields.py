@@ -114,6 +114,13 @@ class FileNodeForeignKey(models.ForeignKey):
         defaults.update(kwargs)
         return super(FileNodeForeignKey, self).formfield(**defaults)
 
+    def south_field_triple(self):
+        "Returns a suitable description of this field for South."
+        from south.modelsinspector import introspector
+        field_class = "django.db.models.fields.related.ForeignKey"
+        args, kwargs = introspector(self)
+        return (field_class, args, kwargs)
+
 
 class ImageFileNodeForeignKey(FileNodeForeignKey):
     """
@@ -147,3 +154,10 @@ class DimensionField(models.CharField):
                     'form_class': forms.RegexField}
         defaults.update(kwargs)
         return models.Field.formfield(self, **defaults)
+
+    def south_field_triple(self):
+        "Returns a suitable description of this field for South."
+        from south.modelsinspector import introspector
+        field_class = "django.db.models.fields.CharField"
+        args, kwargs = introspector(self)
+        return (field_class, args, kwargs)
