@@ -64,8 +64,6 @@ class Migration(DataMigration):
             'extension': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '10', 'null': 'True'}),
             'extra_metadata': ('django.db.models.fields.TextField', [], {}),
             'file': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'null': 'True'}),
-            'focal_x': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '5', 'decimal_places': '3', 'blank': 'True'}),
-            'focal_y': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '5', 'decimal_places': '3', 'blank': 'True'}),
             'has_metadata': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'blank': 'True'}),
             'height': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
