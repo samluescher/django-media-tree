@@ -11,7 +11,10 @@
 # TODO: Ordering of tree by column (within parent) should be possible
 # TODO: Refactor FineUploader stuff as extension. This would require signals calls
 #       to be called in the FileNodeAdmin view methods.
-
+#
+#
+# TODO: Upload view does not enforce parent's child node type permissions (or any other form validation)
+#   -- should completely rewrite how parent_folder etc. is passed around the course of fixing that
 
 from media_tree.fields import FileNodeChoiceField
 from media_tree.models import FileNode
@@ -495,7 +498,6 @@ class FileNodeAdmin(MPTTModelAdmin):
         self.fieldsets = self.form.Meta.fieldsets
 
         form = super(FileNodeAdmin, self).get_form(request, *args, **kwargs)
-        form.parent_folder = self.get_parent_folder(request)
         return form
 
     @csrf_protect_m

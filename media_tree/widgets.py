@@ -52,3 +52,5 @@ class AdminThumbWidget(AdminFileWidget):
             except ThumbnailError as inst:
                 pass
         return mark_safe(output)
+
+

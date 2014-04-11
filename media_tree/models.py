@@ -29,6 +29,9 @@ from django.utils.encoding import force_unicode
 from django.conf import settings
 from django.utils.formats import get_format
 from django.db import models
+from django.core.exceptions import ValidationError
+from django import forms
+
 from PIL import Image
 import os
 import mimetypes
@@ -113,6 +116,74 @@ class FileNodeManager(models.Manager):
             *args, **kwargs)
 
 
+class MultipleChoiceCommaSeparatedIntegerField(models.Field):
+    u'''
+    Save a list of integers in a MultipleChoiceCommaSeparatedIntegerField.
+
+    In the django model object the column is a list of strings.
+    '''
+    __metaclass__=models.SubfieldBase
+    SPLIT_CHAR=u','
+    def __init__(self, *args, **kwargs):
+        self.internal_type=kwargs.pop('internal_type', 'CharField') # or TextField
+        super(MultipleChoiceCommaSeparatedIntegerField, self).__init__(*args, **kwargs)
+
+    def to_python(self, value):
+        if value is None   \
+            or not len(value):
+                return []
+        if not isinstance(value, list):
+            value = value.split(self.SPLIT_CHAR)
+        return [int(v) for v in value]
+
+    def get_internal_type(self):
+        return self.internal_type
+
+    def get_db_prep_lookup(self, lookup_type, value):
+        # SQL WHERE
+        raise NotImplementedError()
+
+    def get_db_prep_save(self, value, *args, **kwargs):
+        return self.SPLIT_CHAR.join(['%i' % v for v in value])
+
+    def formfield(self, **kwargs):
+        assert not kwargs, kwargs
+        return forms.MultipleChoiceField(choices=self.choices, widget=forms.CheckboxSelectMultiple  \
+            , required=False)
+
+    def validate(self, value, model_instance):
+        """
+        Validates value and throws ValidationError. Subclasses should override
+        this to provide validation logic.
+        """
+        if not self.editable:
+            # Skip validation for non-editable fields.
+            return
+        if self._choices and value:
+            print value
+            l = value
+            if type(value) != list:
+                l = [ value ]
+            for v in value:
+                for option_key, option_value in self.choices:
+                    if isinstance(option_value, (list, tuple)):
+                        # This is an optgroup, so look inside the group for options.
+                        for optgroup_key, optgroup_value in option_value:
+                            if v == optgroup_key:
+                                return
+                    elif v == option_key:
+                        return
+                raise ValidationError(self.error_messages['invalid_choice'] % {'value': value})
+
+        if value is None and not self.null:
+            raise ValidationError(self.error_messages['null'])
+
+        if not self.blank and value in validators.EMPTY_VALUES:
+            raise ValidationError(self.error_messages['blank'])
+
+        return super(MultipleChoiceCommaSeparatedIntegerField, self).validate(value, model_instance)
+
+
 class FileNode(ModelBase):
     """
     Each ``FileNode`` instance represents a node in the media object tree, that
@@ -191,6 +262,8 @@ class FileNode(ModelBase):
     """ Type of the node (:attr:`FileNode.FILE` or :attr:`FileNode.FOLDER`) """
     media_type = models.IntegerField(_('media type'), choices = app_settings.MEDIA_TREE_CONTENT_TYPE_CHOICES, blank=True, null=True, editable=False)
     """ Media type, i.e. broad category of the kind of media """
+    allowed_child_node_types = MultipleChoiceCommaSeparatedIntegerField(_('allowed '), choices = ((FILE, _('file')), (FOLDER, _('folder'))), blank=True, null=True, max_length=64, help_text=_('If none selected, all are allowed.'))
+    """ Media type, i.e. broad category of the kind of media """
     published = models.BooleanField(_('is published'), blank=True, default=True)
     """ Publish date and time """
     mimetype = models.CharField(_('mimetype'), max_length=64, null=True, editable=False)
@@ -248,7 +321,7 @@ class FileNode(ModelBase):
     modified_by = models.ForeignKey(User, null=True, blank=True, related_name='modified_by', verbose_name = _('modified by'), editable=False)
     """ User that last modified the object """
 
-    position = models.IntegerField(_('position'), default=0)
+    position = models.IntegerField(_('position'), default=0, blank=True)
     """ Position of the file among its siblings, for manual ordering """
 
     extra_metadata = models.TextField(_('extra metadata'), editable=None)
@@ -509,7 +582,6 @@ class FileNode(ModelBase):
     def save(self, *args, **kwargs):
 
         if getattr(self, 'save_prevented', False):
-            from django.core.exceptions import ValidationError
             raise ValidationError('Saving was presented for this FileNode object.')
 
         if self.node_type == FileNode.FOLDER:

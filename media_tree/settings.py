@@ -218,3 +218,11 @@ already.
 MEDIA_TREE_METADATA_LESS_MEDIA_TYPES = (
     media_types.FOLDER, media_types.DOCUMENT, media_types.ARCHIVE,
     media_types.TEXT)
+
+"""
+Specified which node types are allowed on root level. Set to ``(media_types.FOLDER,)`` if you
+only want to allow folders on root, not individual files.
+"""
+MEDIA_TREE_ROOT_ALLOWED_NODE_TYPES = getattr(settings, 'MEDIA_TREE_ROOT_ALLOWED_NODE_TYPES', (
+    media_types.FOLDER, media_types.FILE
+))
