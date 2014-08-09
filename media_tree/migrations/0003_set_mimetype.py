@@ -8,7 +8,7 @@ from media_tree.models import FileNode
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for node in FileNode.objects.all():
+        for node in orm.FileNode.objects.all():
             if not node.is_folder():
                 node.mimetype = FileNode.get_mimetype(node.name, None)
                 node.save()
