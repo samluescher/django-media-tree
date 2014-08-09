@@ -9,7 +9,7 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         "Write your forwards methods here."
-        for node in FileNode.objects.all():
+        for node in orm.FileNode.objects.all():
             node.save()
 
     def backwards(self, orm):
