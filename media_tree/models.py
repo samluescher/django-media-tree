@@ -37,6 +37,10 @@ import os
 import mimetypes
 import uuid
 
+try:
+    from south.modelsinspector import add_introspection_rules
+except ImportError:
+    add_introspection_rules = False
 
 MIMETYPE_CONTENT_TYPE_MAP = app_settings.MEDIA_TREE_MIMETYPE_CONTENT_TYPE_MAP
 EXT_MIMETYPE_MAP = app_settings.MEDIA_TREE_EXT_MIMETYPE_MAP
@@ -182,6 +186,9 @@ class MultipleChoiceCommaSeparatedIntegerField(models.Field):
             raise ValidationError(self.error_messages['blank'])
 
         return super(MultipleChoiceCommaSeparatedIntegerField, self).validate(value, model_instance)
+
+if add_introspection_rules:
+    add_introspection_rules([], ["^media_tree\.models\.MultipleChoiceCommaSeparatedIntegerField"])
 
 
 class FileNode(ModelBase):
