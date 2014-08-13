@@ -295,4 +295,3 @@ def thumbnail(parser, token):
     return ThumbnailNode(source_var, opts=opts, context_name=context_name)
 
 register.tag(thumbnail)
-raise_
