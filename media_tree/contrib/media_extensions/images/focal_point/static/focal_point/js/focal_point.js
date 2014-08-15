@@ -1,5 +1,5 @@
 jQuery(function($) {
-    var thumb = $('.form-row.file .thumbnail');
+    var thumb = $('.form-row.file .thumbnail', '.form-row.field-file .thumbnail');
     if (thumb.length) {
 
         var focalPoint = $('<span class="focal-point" />');
