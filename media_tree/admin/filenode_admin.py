@@ -5,6 +5,7 @@
 # TODO: Bug: With child folder changelist view and child of child expanded -- after uploading a file, the child 
 #       of child has the expanded triangle, 
 #       but no child child child objects are visible.
+# TODO: after XHR upload, New Folder button does not work
 #
 # Low priority:
 #
