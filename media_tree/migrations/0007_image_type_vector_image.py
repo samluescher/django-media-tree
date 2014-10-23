@@ -10,13 +10,13 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         for node in orm.FileNode.objects.all():
-            if node.extension in app_settings.VECTOR_IMAGE_EXTENSIONS:
+            if node.extension in app_settings.MEDIA_TREE_VECTOR_EXTENSIONS:
                 node.media_type = media_types.VECTOR_IMAGE
                 node.save()
 
     def backwards(self, orm):
         for node in orm.FileNode.objects.all():
-            if node.extension in app_settings.VECTOR_IMAGE_EXTENSIONS:
+            if node.extension in app_settings.MEDIA_TREE_VECTOR_EXTENSIONS:
                 node.media_type = media_types.FILE
                 node.save()
 
