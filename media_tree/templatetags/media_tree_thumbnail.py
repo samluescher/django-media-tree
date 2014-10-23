@@ -138,6 +138,7 @@ class ThumbnailNode(Node):
         # Note that this isn't a global constant because we need to change the
         # value for tests.
         raise_errors = getattr(settings, 'TEMPLATE_DEBUG', False)
+        raise_thumb_errors = getattr(settings, 'THUMBNAIL_DEBUG', False)
         # Get the source file.
         try:
             source = self.source_var.resolve(context)
@@ -179,7 +180,7 @@ class ThumbnailNode(Node):
         try:
             thumbnail = MEDIA_BACKEND.get_thumbnail(source, opts)
         except:
-            if raise_errors:
+            if raise_thumb_errors:
                 raise
             return self.bail_out(context)
         # Return the thumbnail file url, or put the file on the context.
