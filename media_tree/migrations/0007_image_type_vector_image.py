@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from media_tree import settings as app_settings
+from media_tree import media_types
 from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import DataMigration
@@ -8,10 +10,15 @@ class Migration(DataMigration):
 
     def forwards(self, orm):
         for node in orm.FileNode.objects.all():
-            node.save()
+            if node.extension in app_settings.VECTOR_IMAGE_EXTENSIONS:
+                node.media_type = media_types.VECTOR_IMAGE
+                node.save()
 
     def backwards(self, orm):
-        "Write your backwards methods here."
+        for node in orm.FileNode.objects.all():
+            if node.extension in app_settings.VECTOR_IMAGE_EXTENSIONS:
+                node.media_type = media_types.FILE
+                node.save()
 
     models = {
         u'auth.group': {
