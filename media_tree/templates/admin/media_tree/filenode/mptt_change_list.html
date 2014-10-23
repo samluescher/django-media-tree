@@ -91,7 +91,7 @@ it is embedded here.
                 
                 var addlink = $('.addlink')[0];
                 addlink.href = addlink.href.replace(/parent=[0-9]*/, 'parent='+targetId);
-                uploader.fineUploader('setEndpoint', uploadUrl + '?parent=' + targetId);
+                uploader.fineUploader('setParams', {parent: targetId});
             };
 
             setTargetFolder(initialFolder);

@@ -145,7 +145,7 @@ jQuery(function($) {
                 }));
             } else {
                 var message = gettext('There were errors during upload.');
-                $.addUserMessage(message, 'upload-queue-message');
+                $.addUserMessage(message, 'upload-queue-message', 'error');
             }
         });
 

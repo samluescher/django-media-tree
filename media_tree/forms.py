@@ -82,6 +82,8 @@ class FileForm(FileNodeForm):
 
     def __init__(self, *args, **kwargs):
         super(FileForm, self).__init__(*args, **kwargs)
+        if 'name' in self.fields:
+            del self.fields['name']
 
     def clean(self):
         self.cleaned_data['node_type'] = FileNode.FILE
@@ -100,10 +102,15 @@ class FileForm(FileNodeForm):
         return FileForm.upload_clean(self.cleaned_data['file'])
 
 
-class UploadForm(forms.Form):
-    file = forms.FileField()
-    def clean_file(self):
-        return FileForm.upload_clean(self.cleaned_data['file'])
+class UploadForm(FileForm):
+    fieldsets = None
+
+    def __init__(self, *args, **kwargs):
+        super(UploadForm, self).__init__(*args, **kwargs)
+        for key in self.fields.keys():
+            if not key in ('file', 'parent'):
+                del self.fields[key]
+
 
 class MetadataForm(forms.ModelForm):
     class Meta:

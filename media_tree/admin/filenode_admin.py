@@ -64,7 +64,7 @@ from django.http import Http404
 from django.contrib.admin.views.main import IS_POPUP_VAR
 from django.utils.text import capfirst
 import os
-
+import json
 
 STATIC_SUBDIR = app_settings.MEDIA_TREE_STATIC_SUBDIR
 
@@ -518,23 +518,21 @@ class FileNodeAdmin(MPTTModelAdmin):
             if request.method == 'POST':
                 form = UploadForm(request.POST, request.FILES)
                 if form.is_valid():
-                    node = FileNode(file=form.cleaned_data['file'], node_type=FileNode.FILE)
-                    parent_folder = self.get_parent_folder(request)
-                    if not parent_folder.is_top_node():
-                        node.parent = parent_folder
+                    node = FileNode(**form.cleaned_data)
                     self.save_model(request, node, None, False)
+
                     # Respond with success
                     if request.is_ajax():
-                        return HttpResponse('{"success": true}', mimetype="application/json")
+                        return HttpResponse(json.dumps({'success': True}), content_type="application/json")
                     else:
                         messages.info(request, _('Successfully uploaded file %s.') % node.name)
                         return HttpResponseRedirect(reverse('admin:media_tree_filenode_changelist'))
                 else:
                     # invalid form data
                     if request.is_ajax():
-                        return HttpResponse('{"error": "%s"}' % ' '.join(
-                            [item for sublist in form.errors.values() for item in sublist]), 
-                            mimetype="application/json")
+                        return HttpResponse(json.dumps({'error': ' '.join(
+                            [item for sublist in form.errors.values() for item in sublist])}),
+                            content_type="application/json", status=403)
 
             # Form is rendered for troubleshooting XHR upload. 
             # If this form works, the problem is not server-side.
@@ -546,9 +544,9 @@ class FileNodeAdmin(MPTTModelAdmin):
                 context_instance=RequestContext(request))
 
         except Exception as e:
-            if request.is_ajax():
-                return HttpResponse('{"error": "%s"}' % ugettext('Server Error'), 
-                    mimetype="application/json")
+            if not settings.DEBUG and request.is_ajax():
+                return HttpResponse(json.dumps({'error': ugettext('Server Error')}), 
+                    content_type="application/json")
             else:
                 raise
 

@@ -2,13 +2,14 @@
 {% load i18n %}
 
 {% block breadcrumbs %}
-    {% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
+	{% include "admin/media_tree/filenode/includes/breadcrumbs.html" %}
 {% endblock %}
 
 {% block content %}
-    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
-        <h1>{% trans "Upload file" %}</h1>
-        <p>{{ form.file.errors }}{{ form.file }}</p>
-        <p><input type="submit" value="{% trans "Submit" %}" /></p>
-    </form>
+	<form method="POST" enctype="multipart/form-data">{% csrf_token %}
+		<h1>{% trans "Upload file" %}</h1>
+		{{ form.errors.as_p }}
+		{{ form.as_p }}
+		<p><input type="submit" value="{% trans "Submit" %}" /></p>
+	</form>
 {% endblock %}    
