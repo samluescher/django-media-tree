@@ -1,6 +1,7 @@
 raise NotImplementedError('SorlThumbnailBackend is experimental and currently not officially supported')
 
 from media_tree.media_backends import MediaBackend, ThumbnailError
+from media_tree import media_types
 from sorl.thumbnail import get_thumbnail
 
 class SorlThumbnailBackend(MediaBackend):

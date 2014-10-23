@@ -1,12 +1,12 @@
 {% spaceless %}
 {% load media_tree_thumbnail %}
 {% if not thumbnail_size %}
-    {% thumbnail_size as thumbnail_size %}
+	{% thumbnail_size as thumbnail_size %}
 {% endif %}
-{% if preview_file %}
+{% if thumb or preview_file %}
 <span class="preview thumbnail{% if class %} {{ class }}{% endif %}">
-    {% thumbnail preview_file thumbnail_size as thumb %}
-    <img src="{{ thumb.url }}" alt="{{ node.alt }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
+	{% if not thumb %}{% thumbnail preview_file thumbnail_size as thumb %}{% endif %}
+	<img src="{{ thumb.url }}" alt="{{ node.alt }}" width="{{ thumb.width }}" height="{{ thumb.height }}" />
 </span>
 {% endif %}
 {% endspaceless %}

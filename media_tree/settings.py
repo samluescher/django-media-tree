@@ -123,9 +123,9 @@ MEDIA_TREE_ALLOWED_FILE_TYPES = getattr(settings, 'MEDIA_TREE_ALLOWED_FILE_TYPES
     'indd', 'inx', 'jpg', 'jar', 'jpeg', 'key', 'md', 'mov', 'm3u', 'mp3',
     'mp4', 'mpc', 'mkv', 'mpg', 'mpeg', 'numbers', 'ogg', 'odg', 'odf', 'odp',
     'ods', 'odt', 'otf', 'pages', 'pdf', 'pls', 'png', 'pps', 'ppsx', 'ps',
-    'psd', 'rar', 'rdf', 'rm', 'rss', 'rst', 'rtf', 'sit', 'swf', 'tar', 'tga',
-    'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma', 'wmv', 'xls', 'xlsx', 'xml',
-    'zip'
+    'psd', 'rar', 'rdf', 'rm', 'rss', 'rst', 'rtf', 'sit', 'svg', 'swf', 'tar', 
+    'tga', 'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma', 'wmv', 'xls', 'xlsx', 
+    'xml', 'zip'
 ))
 """
 A whitelist of file extensions that can be uploaded. By default, this is a
@@ -145,6 +145,17 @@ Default: ``('jpg', 'png')``
 A tuple of image extensions used for thumbnail files. Note that ``png`` is in
 there since you might typically want to preserve the file type of PNG images
 instead of converting them to JPG.
+"""
+
+MEDIA_TREE_VECTOR_EXTENSIONS = getattr(settings,
+    'MEDIA_TREE_VECTOR_EXTENSIONS', ('svg',))
+"""
+Default: ``('svg',)``
+
+A tuple of vector image extensions that are supported by your browser, but can't
+necessarily be opened or resized by the server-side image library. These images
+will be assigned ``media_types.VECTOR_IMAGE``. They shouldn't be resized as 
+bitmap images since they can be displayed by the browser at any size.
 """
 
 MEDIA_TREE_FILE_SIZE_LIMIT = getattr(settings, 'MEDIA_TREE_FILE_SIZE_LIMIT',
@@ -199,6 +210,7 @@ MEDIA_TREE_CONTENT_TYPE_CHOICES = (
     (media_types.DOCUMENT, _('document')),
     (media_types.IMAGE, _('image')),
     (media_types.SUPPORTED_IMAGE, _('web image')),
+    (media_types.VECTOR_IMAGE, _('vector image')),
     (media_types.TEXT, _('text')),
     (media_types.VIDEO, _('video')),
     (media_types.FILE, _('other')),

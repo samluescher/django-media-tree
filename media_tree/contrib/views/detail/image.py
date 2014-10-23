@@ -38,7 +38,7 @@ class ImageNodeDetailView(FileNodeDetailView):
     template_name = "media_tree/image_detail.html"
     """ Name of the template. """
 
-    filter_media_types = (media_types.SUPPORTED_IMAGE,)
+    filter_media_types = (media_types.SUPPORTED_IMAGE, media_types.VECTOR_IMAGE)
 
 
     def get_context_data(self, **kwargs):

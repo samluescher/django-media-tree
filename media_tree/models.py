@@ -183,6 +183,10 @@ class MultipleChoiceCommaSeparatedIntegerField(models.Field):
 
         return super(MultipleChoiceCommaSeparatedIntegerField, self).validate(value, model_instance)
 
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^media_tree\.models\.MultipleChoiceCommaSeparatedIntegerField"])
+
+
 
 class FileNode(ModelBase):
     """
@@ -441,7 +445,7 @@ class FileNode(ModelBase):
     def get_preview_file(self, default_name=None):
         if self.preview_file:
             return self.preview_file
-        elif self.is_image():
+        elif self.is_web_image():
             return self.file
         else:
             return self.get_icon_file(default_name=default_name)
@@ -617,8 +621,11 @@ class FileNode(ModelBase):
 
                 # Determine whether file is a supported image:
                 try:
+                    self.media_type = None
                     self.pre_save_image()
                 except IOError:
+                    pass
+                if not self.media_type:
                     self.media_type = FileNode.mimetype_to_media_type(self.name)
 
         self.slug = slugify(self.name)
@@ -628,9 +635,12 @@ class FileNode(ModelBase):
 
     # TODO: Move to extension
     def pre_save_image(self):
-        self.saved_image = Image.open(self.file)
-        self.media_type = media_types.SUPPORTED_IMAGE
-        self.width, self.height = self.saved_image.size
+        if self.extension in app_settings.MEDIA_TREE_VECTOR_EXTENSIONS:
+            self.media_type = media_types.VECTOR_IMAGE
+        else:
+            self.saved_image = Image.open(self.file)
+            self.media_type = media_types.SUPPORTED_IMAGE
+            self.width, self.height = self.saved_image.size
 
     def file_path(self):
         return self.file.path if self.file else ''
@@ -643,6 +653,9 @@ class FileNode(ModelBase):
 
     def is_image(self):
         return self.media_type == media_types.SUPPORTED_IMAGE
+
+    def is_web_image(self):
+        return self.media_type in (media_types.SUPPORTED_IMAGE, media_types.VECTOR_IMAGE)
 
     def __unicode__(self):
         return self.name

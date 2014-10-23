@@ -28,8 +28,9 @@ import re
 
 THUMBNAIL_SIZES = app_settings.MEDIA_TREE_THUMBNAIL_SIZES
 RE_SIZE = re.compile(r'(\d+)x(\d+)$')
-MEDIA_BACKEND = get_media_backend(fail_silently=False, handles_media_types=(
-    media_types.SUPPORTED_IMAGE,))
+#MEDIA_BACKEND = get_media_backend(fail_silently=False, handles_media_types=(
+#    media_types.SUPPORTED_IMAGE,))
+MEDIA_BACKEND = get_media_backend(fail_silently=False, supports_thumbnails=True)
 VALID_OPTIONS = MEDIA_BACKEND.get_valid_thumbnail_options() if MEDIA_BACKEND else {}
 register = template.Library()
 

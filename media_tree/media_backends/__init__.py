@@ -9,7 +9,7 @@ class ThumbnailError(Exception):
     pass
     
 def get_media_backend(fail_silently=True, handles_media_types=None, 
-    handles_file_extensions=None):
+    handles_file_extensions=None, supports_thumbnails=None):
         """
         Returns the MediaBackend subclass that is configured for use with 
         media_tree.
@@ -26,7 +26,8 @@ def get_media_backend(fail_silently=True, handles_media_types=None,
             # Traverse backends until there is one supporting what's requested:
             backend = get_module_attr(path)
             if (not handles_media_types or backend.handles_media_types(handles_media_types))  \
-                and (not handles_file_extensions or backend.handles_file_extensions(handles_file_extensions)):
+                and (not handles_file_extensions or backend.handles_file_extensions(handles_file_extensions))  \
+                and (not supports_thumbnails or backend.supports_thumbnails()):
                     return backend
     
         if not fail_silently:

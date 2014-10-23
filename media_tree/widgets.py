@@ -31,26 +31,36 @@ class FileNodeForeignKeyRawIdWidget(ForeignKeyRawIdWidget):
 
 class AdminThumbWidget(AdminFileWidget):
     """
-    A Image FileField Widget that shows a thumbnail if it has one.
+    An Image FileField Widget that shows a thumbnail if it has one.
     """
     def __init__(self, attrs={}):
         super(AdminThumbWidget, self).__init__(attrs)
- 
+
+    def get_media_backend(self, media_type):
+        return get_media_backend(fail_silently=True, handles_media_types=(
+            media_type,))
+
     def render(self, name, value, attrs=None):
         output = super(AdminThumbWidget, self).render(name, value, attrs)
-        media_backend = get_media_backend(fail_silently=True, handles_media_types=(
-            media_types.SUPPORTED_IMAGE,))
-        if media_backend and value and hasattr(value, "url"):
-            try:
-                thumb_extension = os.path.splitext(value.name)[1].lstrip('.').lower()
-                if not thumb_extension in THUMBNAIL_EXTENSIONS:
-                    thumb_extension = None
-                thumb = media_backend.get_thumbnail(value, {'size': THUMBNAIL_SIZE})
-                if thumb:
-                    thumb_html = u'<img src="%s" alt="%s" width="%i" height="%i" />' % (thumb.url, os.path.basename(value.name), thumb.width, thumb.height) 
-                    output = u'<div><p><span class="thumbnail">%s</span></p><p>%s</p></div>' % (thumb_html, output)
-            except ThumbnailError as inst:
-                pass
-        return mark_safe(output)
+        thumb = None
 
+        if value and hasattr(value, "url"):
+            media_backend = self.get_media_backend(media_types.SUPPORTED_IMAGE)
+            if media_backend:
+                try:
+                    thumb = media_backend.get_thumbnail(value, {'size': THUMBNAIL_SIZE})
+                except ThumbnailError:
+                    pass
+            if not thumb:
+                media_backend = self.get_media_backend(media_types.VECTOR_IMAGE)
+                if media_backend:
+                    try:
+                        thumb = media_backend.get_thumbnail(value, {'size': THUMBNAIL_SIZE})
+                    except ThumbnailError:
+                        pass
+            if thumb:
+                thumb_html = u'<img src="%s" alt="%s" width="%i" height="%i" />' % (thumb.url, os.path.basename(value.name), thumb.width, thumb.height) 
+                output = u'<div><p><span class="thumbnail">%s</span></p><p>%s</p></div>' % (thumb_html, output)
+
+        return mark_safe(output)
 

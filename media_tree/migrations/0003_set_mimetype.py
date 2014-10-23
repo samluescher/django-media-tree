@@ -1,22 +1,21 @@
 # encoding: utf-8
+from media_tree import media_types
 import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
-from media_tree.models import FileNode
+from media_tree.models import FileNode  # for static get_mimetype
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for node in FileNode.objects.all():
-            if not node.is_folder():
+        for node in orm.FileNode.objects.all():
+            if node.node_type != media_types.FOLDER:
                 node.mimetype = FileNode.get_mimetype(node.name, None)
                 node.save()
 
-
     def backwards(self, orm):
-        raise RuntimeError("Cannot reverse this migration.")
-
+        pass
 
     models = {
         'auth.group': {

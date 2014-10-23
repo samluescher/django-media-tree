@@ -253,19 +253,26 @@ class FileNodeAdmin(MPTTModelAdmin):
     def admin_preview(self, node, icons_only=False):
         request = get_current_request()
         template = 'admin/media_tree/filenode/includes/preview.html'
-        if not get_media_backend():
+        thumbnail_backend = get_media_backend(handles_media_types=(node.media_type,), supports_thumbnails=True)
+        if not thumbnail_backend:
             icons_only = True
             template = 'media_tree/filenode/includes/icon.html'
             # TODO SPLIT preview.html in two: one that doesn't need media backend!
-        
-        thumb_size_key = get_request_attr(request, 'thumbnail_size') or 'default'
 
-        preview = render_to_string(template, {
+        context = {
             'node': node,
             'preview_file': node.get_icon_file() if icons_only else node.get_preview_file(),
             'class': 'collapsed' if node.is_folder() else '',
-            'thumbnail_size': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_key]
-        })
+        }
+
+        if not icons_only:
+            thumb_size_key = get_request_attr(request, 'thumbnail_size') or 'default'
+            context['thumbnail_size'] = app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_key]
+            thumb = thumbnail_backend.get_thumbnail(context['preview_file'], {'size': context['thumbnail_size']})
+            context['thumb'] = thumb
+
+        preview = render_to_string(template, context)
+
         if node.is_folder():
             preview += render_to_string(template, {
                 'node': node,
