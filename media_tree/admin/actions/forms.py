@@ -3,6 +3,7 @@ from media_tree.fields import FileNodeChoiceField
 from media_tree.forms import MetadataForm
 from media_tree.utils import get_media_storage
 from django import forms
+from django.forms.util import ErrorList
 from django.utils.translation import ugettext as _
 from django.contrib.admin import helpers
 from django.core.files.uploadedfile import UploadedFile
