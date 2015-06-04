@@ -18,12 +18,12 @@ from media_tree.contrib.legacy_mptt_support.forms import MPTTAdminForm, TreeNode
 __all__ = ('MPTTChangeList', 'MPTTModelAdmin', 'MPTTAdminForm')
 
 class MPTTChangeList(ChangeList):
-    def get_query_set(self, request=None):
+    def get_queryset(self, request=None):
         # request arg was added in django r16144 (after 1.3)
         if request is not None and django.VERSION >= (1, 4):
-            qs = super(MPTTChangeList, self).get_query_set(request)
+            qs = super(MPTTChangeList, self).get_queryset(request)
         else:
-            qs = super(MPTTChangeList, self).get_query_set()
+            qs = super(MPTTChangeList, self).get_queryset()
         
         # always order by (tree_id, left)
         tree_id = qs.model._mptt_meta.tree_id_attr
@@ -96,7 +96,7 @@ class MPTTModelAdmin(ModelAdmin):
             # Try to look up an action or confirmation first, but if this isn't an
             # action the POST will fall through to the bulk edit check, below.
             if actions and request.method == 'POST' and (helpers.ACTION_CHECKBOX_NAME in request.POST or 'index' in request.POST):
-                response = self.response_action(request, queryset=cl.get_query_set(request))
+                response = self.response_action(request, queryset=cl.get_queryset(request))
                 if response:
                     return response
 

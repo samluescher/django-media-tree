@@ -19,17 +19,17 @@ class MediaTreeChangeList(MPTTChangeList):
 
     def __init__(self, request, *args, **kwargs):
         super(MediaTreeChangeList, self).__init__(request, *args, **kwargs)
-        # self.parent_folder is set in get_query_set()
+        # self.parent_folder is set in get_queryset()
         self.title = self.parent_folder.name if self.parent_folder else FileNode.get_top_node().name
 
     # TODO: Move filtering by open folders here
-    def get_query_set(self, request=None):
+    def get_queryset(self, request=None):
 
         # request arg was added in django r16144 (after 1.3)
         if request is not None and django.VERSION >= (1, 4):
-            qs = super(MPTTChangeList, self).get_query_set(request)
+            qs = super(MPTTChangeList, self).get_queryset(request)
         else:
-            qs = super(MPTTChangeList, self).get_query_set()
+            qs = super(MPTTChangeList, self).get_queryset()
             request = get_current_request()
 
         # Pagination should be disabled by default, since it interferes

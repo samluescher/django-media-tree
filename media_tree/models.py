@@ -67,8 +67,8 @@ class FileNodeManager(models.Manager):
         super(FileNodeManager, self).__init__()
         self.filter_args = filter_args
 
-    def get_query_set(self):
-        return super(FileNodeManager, self).get_query_set().filter(**self.filter_args)
+    def get_queryset(self):
+        return super(FileNodeManager, self).get_queryset().filter(**self.filter_args)
 
     def get_filter_args_with_path(self, for_self, **kwargs):
         names = kwargs['path'].strip('/').split('/')
