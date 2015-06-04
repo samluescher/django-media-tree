@@ -10,6 +10,7 @@ class FileNodeForm(forms.ModelForm):
 
     class Meta:
         model = FileNode
+        fields = '__all__'
 
     def clean(self):
         if self.cleaned_data['parent']:
@@ -60,7 +61,7 @@ class FileForm(FileNodeForm):
 
     # TODO:
     #set_manual_dimensions = forms.BooleanField(_('set manual dimensions'), required=False)
-    
+
     class Meta(FileNodeForm.Meta):
         fieldsets = [
             (_('File'), {
