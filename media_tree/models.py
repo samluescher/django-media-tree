@@ -21,7 +21,6 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils import dateformat
 from django.contrib.sites.models import Site
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.utils.text import capfirst
 from django.utils.safestring import mark_safe
@@ -323,9 +322,9 @@ class FileNode(ModelBase):
     modified = models.DateTimeField(_('modified'), auto_now=True, editable=False)
     """ Date and time when object was last modified """
 
-    created_by = models.ForeignKey(get_user_model(), null=True, blank=True, related_name='created_by', verbose_name = _('created by'), editable=False)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='created_by', verbose_name = _('created by'), editable=False)
     """ User that created the object """
-    modified_by = models.ForeignKey(get_user_model(), null=True, blank=True, related_name='modified_by', verbose_name = _('modified by'), editable=False)
+    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='modified_by', verbose_name = _('modified by'), editable=False)
     """ User that last modified the object """
 
     position = models.IntegerField(_('position'), default=0, blank=True)
@@ -387,8 +386,9 @@ class FileNode(ModelBase):
 
     def get_node_path(self):
         nodes = []
-        for node in self.get_ancestors():
-            nodes.append(node)
+        if self.pk:
+            for node in self.get_ancestors():
+                nodes.append(node)
         if (self.level != -1):
             nodes.insert(0, FileNode.get_top_node())
         nodes.append(self)
