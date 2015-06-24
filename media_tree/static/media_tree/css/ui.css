@@ -3,11 +3,11 @@
 }
 
 .thumbnails li {
-    float: left; 
-    width: 260px; 
-    height: 190px; 
-    list-style-type: none; 
-    text-align: center; 
+    float: left;
+    width: 260px;
+    height: 190px;
+    list-style-type: none;
+    text-align: center;
     padding: 1em;
 }
 
@@ -57,7 +57,7 @@
 .ui-slider {
     position:relative;
     text-align:left;
-    
+
     border: 1px #CCC solid;
     display: inline-block;
     cursor: pointer;
@@ -90,23 +90,6 @@
     padding: 0 0 0 8px;
     margin-left: 2px;
     height: 16px;
-}
-
-.popup-buttons {
-    position: fixed; 
-    bottom: 0px;
-    left: 0px;
-    width: 100%;
-    z-index: 1000;
-    padding: 1em 0 1em 0;
-
-    background: #E0E0E0 !important;
-    border-top: 1px solid #ddd !important;
-    overflow: hidden;
-}
-
-.popup-buttons input {
-    margin-right: 1em;
 }
 
 form.add-folder input[type=submit].default {
@@ -143,7 +126,7 @@ ul.node-tools {
 }
 
 ul.node-tools li {
-    display: inline-block; 
+    display: inline-block;
     margin: 0 1em 0 0;
     padding: 0;
     list-style-type: none;
@@ -225,7 +208,7 @@ ul.node-tools li:last-child {
 
 #content h1 {
     /* assign loading gif to some element for preloading */
-    background: url(../img/icons/folder-toggle-loading.gif) no-repeat -9999px;   
+    background: url(../img/icons/folder-toggle-loading.gif) no-repeat -9999px;
 }
 
 #changelist table .loading .folder-toggle {

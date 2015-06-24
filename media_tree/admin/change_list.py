@@ -2,17 +2,11 @@ import django
 from media_tree.models import FileNode
 from media_tree.admin.utils import get_current_request, is_search_request,  \
     get_request_attr
-    
-try:
-    from mptt.admin import MPTTChangeList
-except ImportError:
-    # Legacy mptt support
-    from media_tree.contrib.legacy_mptt_support.admin import MPTTChangeList
-
+from django.contrib.admin.views.main import ChangeList
 from django.db import models
 
-    
-class MediaTreeChangeList(MPTTChangeList):
+
+class MediaTreeChangeList(ChangeList):
 
     def is_filtered(self, request):
         return is_search_request(request) or self.params
@@ -34,7 +28,7 @@ class MediaTreeChangeList(MPTTChangeList):
 
         # Pagination should be disabled by default, since it interferes
         # with expanded folders and might display them partially.
-        # However, filtered results are presented as a flat list and 
+        # However, filtered results are presented as a flat list and
         # should be paginated.
         pagination_enabled = self.is_filtered(request)
         if not pagination_enabled:
@@ -81,5 +75,3 @@ class MediaTreeChangeList(MPTTChangeList):
                 else:
                     item.reduce_levels = reduce_levels
                     item.level = max(0, item.level - reduce_levels)
-        
-

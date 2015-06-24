@@ -1,9 +1,9 @@
-# TODO: If in subfolder view, reset_expanded_folders_pk is called and expanded_folders are not stored 
+# TODO: If in subfolder view, reset_expanded_folders_pk is called and expanded_folders are not stored
 # TODO: Metadata tooltip is too narrow and text gets too wrapped
 # TODO: Make renaming of files possible.
 # TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt".
-# TODO: Bug: With child folder changelist view and child of child expanded -- after uploading a file, the child 
-#       of child has the expanded triangle, 
+# TODO: Bug: With child folder changelist view and child of child expanded -- after uploading a file, the child
+#       of child has the expanded triangle,
 #       but no child child child objects are visible.
 # TODO: after XHR upload, New Folder button does not work
 #
@@ -92,17 +92,17 @@ class FileNodeAdmin(MPTTModelAdmin):
       page reloads.
     * The file listing supports drag & drop. Drag files and folders to another
       folder to move them. Hold the Alt key to copy them.
-    * You can set up an upload queue, which enables you to upload large files 
-      and monitor the process via the corresponding progress bars. 
+    * You can set up an upload queue, which enables you to upload large files
+      and monitor the process via the corresponding progress bars.
     * Drag the slider above the file listing to dynamically resize thumbnails.
-    * You can select files and execute various special actions on them, for 
-      instance download the selection as a ZIP archive. 
+    * You can select files and execute various special actions on them, for
+      instance download the selection as a ZIP archive.
 
     """
 
     change_list_template = 'admin/media_tree/filenode/mptt_change_list.html'
 
-    list_display = app_settings.MEDIA_TREE_LIST_DISPLAY
+    list_display = ('name',)
     list_filter = app_settings.MEDIA_TREE_LIST_FILTER
     #list_display_links = app_settings.MEDIA_TREE_LIST_DISPLAY_LINKS
     search_fields = app_settings.MEDIA_TREE_SEARCH_FIELDS
@@ -135,13 +135,13 @@ class FileNodeAdmin(MPTTModelAdmin):
     def __init__(self, *args, **kwargs):
         super(FileNodeAdmin, self).__init__(*args, **kwargs)
         # http://stackoverflow.com/questions/1618728/disable-link-to-edit-object-in-djangos-admin-display-list-only
-        self.list_display_links = (None, )
+        # self.list_display_links = (None, )
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'parent' and issubclass(db_field.rel.to, FileNode):
             # overriding formfield_for_dbfield, thus bypassign both Django's and mptt's
             # formfield_for_foreignkey method, and also preventing Django from wrapping
-            # field with RelatedFieldWidgetWrapper ("add" button resulting in a file add form) 
+            # field with RelatedFieldWidgetWrapper ("add" button resulting in a file add form)
             valid_targets = FileNode.tree.filter(**db_field.rel.limit_choices_to)
             request = kwargs['request']
             node = get_request_attr(request, 'save_node', None)
@@ -209,11 +209,11 @@ class FileNodeAdmin(MPTTModelAdmin):
             n += 1
         self.message_user(request, _("Successfully deleted %s items." % n))
 
-    def get_changelist(self, request, **kwargs):
-        """
-        Returns the ChangeList class for use on the changelist page.
-        """
-        return MediaTreeChangeList
+#    def get_changelist(self, request, **kwargs):
+#        """
+#        Returns the ChangeList class for use on the changelist page.
+#        """
+#        return MediaTreeChangeList
 
     def save_model(self, request, obj, form, change):
         """
@@ -431,7 +431,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         extra_context.update(self.init_changelist_view_options(request))
 
         if request.GET.get(IS_POPUP_VAR, None):
-            extra_context.update({'select_button': True})
+            extra_context.update({'is_popup': True})
 
         if parent_folder:
             extra_context.update({'node': parent_folder})
@@ -464,7 +464,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         set_request_attr(request, 'save_node_type', node_type)
         response = super(FileNodeAdmin, self).add_view(request, form_url, extra_context)
         if isinstance(response, HttpResponseRedirect) and not parent_folder.is_top_node():
-            return HttpResponseRedirect(reverse('admin:media_tree_filenode_folder_expand', 
+            return HttpResponseRedirect(reverse('admin:media_tree_filenode_folder_expand',
                 args=(parent_folder.pk,)))
         return response
 
@@ -535,7 +535,7 @@ class FileNodeAdmin(MPTTModelAdmin):
                             [item for sublist in form.errors.values() for item in sublist])}),
                             content_type="application/json", status=403)
 
-            # Form is rendered for troubleshooting XHR upload. 
+            # Form is rendered for troubleshooting XHR upload.
             # If this form works, the problem is not server-side.
             if not settings.DEBUG:
                 raise ViewDoesNotExist
@@ -546,7 +546,7 @@ class FileNodeAdmin(MPTTModelAdmin):
 
         except Exception as e:
             if not settings.DEBUG and request.is_ajax():
-                return HttpResponse(json.dumps({'error': ugettext('Server Error')}), 
+                return HttpResponse(json.dumps({'error': ugettext('Server Error')}),
                     content_type="application/json")
             else:
                 raise

@@ -4,9 +4,9 @@
 {% block extrahead %}
 {{ block.super }}
 {% comment %}
-Since the FileNodeAdmin's Media class can't use reverse to determine the jsi18n URL, 
+Since the FileNodeAdmin's Media class can't use reverse to determine the jsi18n URL,
 it is embedded here.
-{% endcomment %} 
+{% endcomment %}
 <script type="text/javascript" src="{% url "admin:media_tree_jsi18n" %}"></script>
 {% endblock %}
 
@@ -44,7 +44,7 @@ it is embedded here.
         jQuery(function($) {
 
             var initialFolder, targetFolder;
-            {% if node and not node.is_top_node %} 
+            {% if node and not node.is_top_node %}
             initialFolder = {name: '{{ node.name }}', id: '{{ node.pk }}'};
             {% endif %}
 
@@ -88,14 +88,14 @@ it is embedded here.
                 } else {
                     $('.target-folder').html('');
                 }
-                
+
                 var addlink = $('.addlink')[0];
                 addlink.href = addlink.href.replace(/parent=[0-9]*/, 'parent='+targetId);
                 uploader.fineUploader('setParams', {parent: targetId});
             };
 
             setTargetFolder(initialFolder);
-            
+
             $('#changelist').delegate('input[name=_selected_action]', 'change', function() {
                 var targetFolder = $('#changelist').getFirstSelectedFolder();
                 setTargetFolder(targetFolder);
@@ -125,7 +125,7 @@ it is embedded here.
                         $('.thumbnail-size-slider').slider({
                             value: thumbnailSizeKeys.indexOf('{{ thumbnail_size_key }}'),
                             min: 0,
-                            max: thumbnailSizeKeys.length - 1,  
+                            max: thumbnailSizeKeys.length - 1,
                             change: function(event, ui) {
                                 var sizeKey = thumbnailSizeKeys[ui.value];
                                 var nodes = $('#changelist .node');
@@ -140,8 +140,8 @@ it is embedded here.
                                         ratio = newSize[1] / curSize[1];
                                     }
 
-                                    img.width(Math.round(curSize[0] * ratio)); 
-                                    img.height(Math.round(curSize[1] * ratio)); 
+                                    img.width(Math.round(curSize[0] * ratio));
+                                    img.height(Math.round(curSize[1] * ratio));
                                 });
 
                                 $('#changelist').setUpdateReq($.get('?thumbnail_size=' + sizeKey, function(data) {
@@ -164,9 +164,4 @@ it is embedded here.
 {% endblock %}
 {% block result_list %}
 {{ block.super }}
-{% if select_button %} 
-<div class="popup-buttons submit-row">
-    <input class="default popup-select-button" type="submit" value="Select" disabled="disabled" />
-</div>
-{% endif %}
 {% endblock %}
