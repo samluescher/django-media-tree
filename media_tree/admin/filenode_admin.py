@@ -33,11 +33,7 @@ from media_tree.admin.utils import get_current_request, set_current_request,  \
     get_request_attr, set_request_attr, is_search_request
 from media_tree.media_backends import get_media_backend
 
-try:
-    from mptt.admin import MPTTModelAdmin
-except ImportError:
-    # Legacy mptt support
-    from media_tree.contrib.legacy_mptt_support.admin import MPTTModelAdmin
+from mptt.admin import MPTTModelAdmin
 
 from mptt.forms import TreeNodeChoiceField
 import django
@@ -102,9 +98,11 @@ class FileNodeAdmin(MPTTModelAdmin):
 
     change_list_template = 'admin/media_tree/filenode/mptt_change_list.html'
 
-    list_display = ('name',)
-    list_filter = app_settings.MEDIA_TREE_LIST_FILTER
+    list_display = ('admin_preview', 'name',)
     #list_display_links = app_settings.MEDIA_TREE_LIST_DISPLAY_LINKS
+    list_display_links = ('admin_preview', 'name',)
+
+    list_filter = app_settings.MEDIA_TREE_LIST_FILTER
     search_fields = app_settings.MEDIA_TREE_SEARCH_FIELDS
     ordering = app_settings.MEDIA_TREE_ORDERING_DEFAULT
     mptt_indent_field = 'browse_controls'

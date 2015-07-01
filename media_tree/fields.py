@@ -16,13 +16,13 @@ class FileNodeChoiceField(TreeNodeChoiceField):
     """
     A form field for selecting a ``FileNode`` object.
 
-    Its constructor takes the following arguments that are relevant when selecting ``FileNode`` objects: 
+    Its constructor takes the following arguments that are relevant when selecting ``FileNode`` objects:
 
     :param allowed_node_types: A list of node types that are allowed and will validate, e.g. ``(FileNode.FILE,)`` if the user should only be able to select files, but not folders
     :param allowed_media_types: A list of media types that are allowed and will validate, e.g. ``(media_types.DOCUMENT,)``
     :param allowed_extensions: A list of file extensions that are allowed and will validate, e.g. ``("jpg", "jpeg")``
 
-    Since this class is a subclass of ``ModelChoiceField``, you can also pass it that class' 
+    Since this class is a subclass of ``ModelChoiceField``, you can also pass it that class'
     parameters, such as ``queryset`` if you would like to restrict the objects that will
     be available for selection.
     """
@@ -31,13 +31,12 @@ class FileNodeChoiceField(TreeNodeChoiceField):
         self.allowed_node_types = allowed_node_types
         self.allowed_media_types = allowed_media_types
         self.allowed_extensions = allowed_extensions
-        kwargs['level_indicator'] = level_indicator;
+        kwargs['level_indicator'] = level_indicator
         if not kwargs.has_key('widget'):
             kwargs['widget'] = self.widget
 
             # TODO: FileNodeForeignKeyRawIdWidget should only be the standard widget when in admin
             # TODO: It currently does not work with move/copy form
-            #kwargs['widget'] = FileNodeForeignKeyRawIdWidget(rel)
 
         super(FileNodeChoiceField, self).__init__(*args, **kwargs)
         # TODO there should nonetheless be an "empty item", also if not required
@@ -84,13 +83,13 @@ class FileNodeForeignKey(models.ForeignKey):
     """
     A model field for selecting a ``FileNode`` object.
 
-    Its constructor takes the following arguments that are relevant when selecting ``FileNode`` objects: 
+    Its constructor takes the following arguments that are relevant when selecting ``FileNode`` objects:
 
     :param allowed_node_types: A list of node types that are allowed and will validate, e.g. ``(FileNode.FILE,)`` if the user should only be able to select files, but not folders
     :param allowed_media_types: A list of media types that are allowed and will validate, e.g. ``(media_types.DOCUMENT,)``
     :param allowed_extensions: A list of file extensions that are allowed and will validate, e.g. ``("jpg", "jpeg")``
 
-    Since this class is a subclass of ``models.ForeignKey``, you can also pass it that class' 
+    Since this class is a subclass of ``models.ForeignKey``, you can also pass it that class'
     parameters, such as ``limit_choices_to`` if you would like to restrict the objects that will
     be available for selection.
     """
@@ -100,7 +99,8 @@ class FileNodeForeignKey(models.ForeignKey):
         self.allowed_media_types = allowed_media_types
         self.allowed_extensions = allowed_extensions
         self.level_indicator = level_indicator
-        super(FileNodeForeignKey, self).__init__(FileNode, *args, **kwargs)
+        kwargs['to'] = FileNode
+        super(FileNodeForeignKey, self).__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
         defaults = {
@@ -109,8 +109,12 @@ class FileNodeForeignKey(models.ForeignKey):
             'allowed_node_types': self.allowed_node_types,
             'allowed_media_types': self.allowed_media_types,
             'allowed_extensions': self.allowed_extensions,
-            'empty_label': '',
+            'empty_label': ''
         }
+
+        #raise Exception(kwargs)
+        #defaults['widget'] = FileNodeForeignKeyRawIdWidget(self.rel, self.admin_site, using=db)
+
         defaults.update(kwargs)
         return super(FileNodeForeignKey, self).formfield(**defaults)
 
@@ -126,15 +130,15 @@ class ImageFileNodeForeignKey(FileNodeForeignKey):
     """
     A model field for selecting a ``FileNode`` object associated to a supported image format.
 
-    Using this field will ensure that only folders and image files will be visible in the widget, 
-    and will require the user to select an image node. 
+    Using this field will ensure that only folders and image files will be visible in the widget,
+    and will require the user to select an image node.
     """
     def __init__(self, allowed_node_types=None, allowed_media_types=None, allowed_extensions=None, level_indicator=LEVEL_INDICATOR, *args, **kwargs):
         self.allowed_node_types = allowed_node_types
         if not allowed_media_types:
             allowed_media_types = (media_types.SUPPORTED_IMAGE,)
         kwargs['limit_choices_to'] = {'media_type__in': (FileNode.FOLDER, media_types.SUPPORTED_IMAGE)}
-        
+
         super(ImageFileNodeForeignKey, self).__init__(allowed_node_types, allowed_media_types, allowed_extensions, level_indicator, *args, **kwargs)
 
 

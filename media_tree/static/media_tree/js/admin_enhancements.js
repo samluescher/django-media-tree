@@ -552,4 +552,14 @@ jQuery(function($) {
     });
     bufferBackgroundElements.remove();
 
+    $('a[onclick*=dismissRelatedLookupPopup]').each(function() {
+        var _onclick = this.onclick;
+        this.onclick = null;
+        $(this).click(function(evt) {
+            _onclick();
+            /*evt.preventDefault();
+            console.log(window.name, opener.document.getElementById('lookup_' + window.name));
+            return false;*/
+        });
+    });
 });
