@@ -6,15 +6,8 @@ from media_tree.utils.staticfiles import get_icon_finders
 from media_tree.utils import get_media_storage
 from media_tree.utils.filenode import get_file_link
 
-try:
-    from mptt.models import MPTTModel as ModelBase
-except ImportError:
-    # Legacy mptt support
-    import mptt
-    from django.db.models import Model as ModelBase
-
-from mptt.models import TreeForeignKey
-from mptt.managers import TreeManager
+from treebeard.ns_tree import NS_Node as ModelBase
+from treebeard.ns_tree import NS_NodeManager as TreeManager
 
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.conf import settings
@@ -22,13 +15,13 @@ from django.template.defaultfilters import slugify
 from django.utils import dateformat
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 from django.utils.text import capfirst
 from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
 from django.conf import settings
 from django.utils.formats import get_format
 from django.db import models
-from django.core.exceptions import ValidationError
 from django import forms
 
 from PIL import Image
@@ -54,7 +47,7 @@ def Property(func):
     return property(**func())
 
 
-class FileNodeManager(models.Manager):
+class FileNodeManager(TreeManager):
     """
     A special manager that enables you to pass a ``path`` argument to
     :func:`get`, :func:`filter`, and :func:`exclude`, allowing you to
@@ -230,12 +223,14 @@ class FileNode(ModelBase):
 
     STORAGE = get_media_storage()
 
-    tree = TreeManager()
-    """ MPTT tree manager """
-
-    objects = FileNodeManager()
+    objects = TreeManager()
     """
     An instance of the :class:`FileNodeManager` class, providing methods for retrieving ``FileNode`` objects by their full node path.
+    """
+
+    tree = objects
+    """
+    .. deprecated::
     """
 
     published_objects = FileNodeManager({'published': True})
@@ -336,17 +331,15 @@ class FileNode(ModelBase):
 
     is_ancestor_being_updated = False
 
-
     class Meta:
-        ordering = ['tree_id', 'lft']
+        #ordering = ['tree_id', 'lft']
         verbose_name = _('media object')
         verbose_name_plural = _('media objects')
         permissions = (
             ("manage_filenode", "Can perform management tasks"),
         )
 
-    class MPTTMeta:
-        order_insertion_by = ['name']
+    node_order_by = ['name']
 
     @staticmethod
     def get_top_node():
@@ -596,6 +589,8 @@ class FileNode(ModelBase):
             # Admin asserts that folder name is unique under parent. For other inserts:
             self.make_name_unique_numbered(self.name)
         else:
+            if not self.file:
+                raise ValidationError('FileNode object with node_type `FILE` is missing a value for the `file` attribute.')
             # TODO: If file was not changed, this field will nevertheless be changed to
             # the name of the renamed file on disk. Do not do this unless a new file is being saved.
             file_changed = True
@@ -739,14 +734,6 @@ class FileNode(ModelBase):
         else:
             return self.get_metadata_display()
 
-# Legacy mptt support
-if ModelBase == models.Model:
-    FileNode._mptt_meta = FileNode._meta
-    try:
-        mptt.register(FileNode,
-            order_insertion_by=FileNode.MPTTMeta.order_insertion_by)
-    except mptt.AlreadyRegistered:
-        pass
 
 from media_tree.utils import autodiscover_media_extensions
 autodiscover_media_extensions()
