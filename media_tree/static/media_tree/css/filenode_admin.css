@@ -1,0 +1,134 @@
+/* Treebeard Admin */
+
+#roots {
+    margin: 0;
+    padding: 0;
+}
+
+#roots li {
+    list-style: none;
+    padding: 5px !important;
+    line-height: 13px;
+    border-bottom: 1px solid #EEE;
+}
+
+#roots li a {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+#roots li input {
+    margin: 0 5px;
+}
+
+.oder-grabber {
+    width: 1.5em;
+    text-align: center;
+}
+
+#changelist td.drag-handler {
+    padding: 0;
+    text-align: center;
+    vertical-align: center;
+}
+
+#changelist .drag-handler span {
+    width: 16px;
+    height: 16px;
+    background: transparent url(../img/icons/drag-handler.png) no-repeat left top;
+    background-size: 16px 16px;
+    margin: 0;
+    display: inline-block;
+    cursor: move;
+}
+
+#changelist .drag-handler span.active {
+    cursor: move;
+}
+
+.spacer {
+    width: 10px;
+    margin: 0 10px;
+}
+
+#changelist .collapse {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    text-indent: -999px;
+}
+
+#changelist .collapsed {
+    background: transparent url(../img/icons/folder-toggle.png) no-repeat !important;
+    background-size: 32px 32px !important;
+    background-position: left top !important;
+}
+
+#changelist .collapsed:hover, #changelist .collapsed:active {
+    background-position: left bottom !important;
+}
+
+#changelist .expanded {
+    background: transparent url(../img/icons/folder-toggle.png) no-repeat !important;
+    background-size: 32px 32px !important;
+    background-position: right top !important;
+}
+
+#changelist .expanded:hover, #changelist .expanded:active {
+    background-position: right bottom !important;
+}
+
+#drag_line {
+    border-top: 5px solid #A0A;
+    background: #A0A;
+    display: block;
+    position: absolute;
+}
+
+#drag_line span {
+    position: relative;
+    display: block;
+    width: 100px;
+    background: #FFD;
+    color: #000;
+    left: 100px;
+    text-align: center;
+    border: 1px solid #000;
+    vertical-align: center;
+}
+
+/*tr:target { I'm handling the highlight with js to have more control
+background-color: #FF0;
+}*/
+
+#ghost td, #ghost .collapse {
+    display: none; /* only show th */
+}
+
+#ghost {
+  padding: 1em;
+}
+
+
+/* Changelist general */
+
+#changelist .preview img, #ghost .preview img {
+    vertical-align: middle;
+    margin-top: .5em;
+    margin-bottom: .5em;
+    margin-right: 1em;
+}
+
+/* Thumbnails */
+
+#content-main .thumbnail img, #ghost .thumbnail img {
+    display: inline-block;
+    border: 1px #CCC solid;
+    padding: 3px;
+    background: white;
+    border-radius: 3px;
+    line-height: 1px;
+    -moz-box-shadow: 0px 3px 7px rgba(0, 0, 0, .1);
+    -webkit-box-shadow: 0px 3px 7px rgba(0, 0, 0, .1);
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, .1);
+}

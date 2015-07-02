@@ -34,9 +34,8 @@ Specifies whether exceptions caused by media backends, such as
 """
 
 MEDIA_TREE_LIST_DISPLAY = getattr(settings, 'MEDIA_TREE_LIST_DISPLAY',
-    ('browse_controls', 'size_formatted', 'extension', 'resolution_formatted',
-    'get_descendant_count_display', 'modified', 'modified_by', 'metadata_check',
-    'position', 'node_tools'))
+    ('node_preview_and_name', 'size_formatted', 'media_type',
+    'get_descendant_count_display', 'metadata_check', 'modified', 'modified_by'))
 """
 A tuple containing the columns that should be displayed in the
 ``FileNodeAdmin``. Note that the ``browse_controls`` column is necessary for the
@@ -123,8 +122,8 @@ MEDIA_TREE_ALLOWED_FILE_TYPES = getattr(settings, 'MEDIA_TREE_ALLOWED_FILE_TYPES
     'indd', 'inx', 'jpg', 'jar', 'jpeg', 'key', 'md', 'mov', 'm3u', 'mp3',
     'mp4', 'mpc', 'mkv', 'mpg', 'mpeg', 'numbers', 'ogg', 'odg', 'odf', 'odp',
     'ods', 'odt', 'otf', 'pages', 'pdf', 'pls', 'png', 'pps', 'ppsx', 'ps',
-    'psd', 'rar', 'rdf', 'rm', 'rss', 'rst', 'rtf', 'sit', 'svg', 'swf', 'tar', 
-    'tga', 'tif', 'tiff', 'ttf', 'txt', 'wav', 'webm', 'wma', 'wmv', 'xls', 'xlsx', 
+    'psd', 'rar', 'rdf', 'rm', 'rss', 'rst', 'rtf', 'sit', 'svg', 'swf', 'tar',
+    'tga', 'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma', 'wmv', 'xls', 'xlsx',
     'xml', 'zip'
 ))
 """
@@ -154,7 +153,7 @@ Default: ``('svg',)``
 
 A tuple of vector image extensions that are supported by your browser, but can't
 necessarily be opened or resized by the server-side image library. These images
-will be assigned ``media_types.VECTOR_IMAGE``. They shouldn't be resized as 
+will be assigned ``media_types.VECTOR_IMAGE``. They shouldn't be resized as
 bitmap images since they can be displayed by the browser at any size.
 """
 

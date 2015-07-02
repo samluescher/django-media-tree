@@ -7,3 +7,5 @@
 /django_media_tree.egg-info/
 /_thumbs/
 *.py[co]
+_thumbs
+.DS_Store

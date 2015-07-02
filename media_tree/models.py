@@ -140,7 +140,8 @@ class MultipleChoiceCommaSeparatedIntegerField(models.Field):
         raise NotImplementedError()
 
     def get_db_prep_save(self, value, *args, **kwargs):
-        return self.SPLIT_CHAR.join(['%i' % v for v in value])
+        if value:
+            return self.SPLIT_CHAR.join(['%i' % v for v in value])
 
     def formfield(self, **kwargs):
         assert not kwargs, kwargs
@@ -179,8 +180,16 @@ class MultipleChoiceCommaSeparatedIntegerField(models.Field):
 
         return super(MultipleChoiceCommaSeparatedIntegerField, self).validate(value, model_instance)
 
+
 if add_introspection_rules:
     add_introspection_rules([], ["^media_tree\.models\.MultipleChoiceCommaSeparatedIntegerField"])
+
+
+class TestNode(ModelBase):
+    name = models.CharField(max_length=255)
+    node_order_by = ['name']
+    def __unicode__(self):
+        return self.name
 
 
 class FileNode(ModelBase):
@@ -223,12 +232,12 @@ class FileNode(ModelBase):
 
     STORAGE = get_media_storage()
 
-    objects = TreeManager()
+    #objects = TreeManager()
     """
     An instance of the :class:`FileNodeManager` class, providing methods for retrieving ``FileNode`` objects by their full node path.
     """
 
-    tree = objects
+    #tree = objects
     """
     .. deprecated::
     """
@@ -255,9 +264,6 @@ class FileNode(ModelBase):
     # The actual media file
     preview_file = models.ImageField(_('preview'), upload_to=app_settings.MEDIA_TREE_PREVIEW_SUBDIR, blank=True, null=True, help_text=_('Use this field to upload a preview image for video or similar media types.'), storage=STORAGE)
     # An optional image file that will be used for previews. This is useful for video files.
-
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='children', verbose_name=_('folder'), limit_choices_to={'node_type': FOLDER})
-    """ The parent (folder) object of the node. """
 
     node_type = models.IntegerField(_('node type'), choices = ((FOLDER, 'Folder'), (FILE, 'File')), editable=False, blank=False, null=False)
     """ Type of the node (:attr:`FileNode.FILE` or :attr:`FileNode.FOLDER`) """
@@ -351,7 +357,8 @@ class FileNode(ModelBase):
 
     def is_top_node(self):
         """Returns True if the model instance is the top node."""
-        return self.level == -1
+        return True
+        #return self.level == -1
 
     # Workaround for http://code.djangoproject.com/ticket/11058
     def admin_preview(self):
@@ -382,7 +389,7 @@ class FileNode(ModelBase):
         if self.pk:
             for node in self.get_ancestors():
                 nodes.append(node)
-        if (self.level != -1):
+        if not self.get_depth():
             nodes.insert(0, FileNode.get_top_node())
         nodes.append(self)
         return nodes
@@ -456,22 +463,6 @@ class FileNode(ModelBase):
 
     def get_media_type_name(self):
         return MEDIA_TYPE_NAMES[self.media_type]
-
-    def is_descendant_of(self, ancestor_nodes):
-        if issubclass(ancestor_nodes.__class__, FileNode):
-            ancestor_nodes = (ancestor_nodes,)
-        # Check whether requested folder is in selected nodes
-        is_descendant = self in ancestor_nodes
-        if not is_descendant:
-            # Check whether requested folder is a subfolder of selected nodes
-            ancestors = self.get_ancestors(ascending=True)
-            if ancestors:
-                self.parent_folder = ancestors[0]
-                for ancestor in ancestors:
-                    if ancestor in ancestor_nodes:
-                        is_descendant = True
-                        break
-        return is_descendant
 
     def get_descendant_count_display(self):
         if self.node_type == FileNode.FOLDER:
@@ -567,17 +558,24 @@ class FileNode(ModelBase):
 
     def make_name_unique_numbered(self, name, ext=''):
         # If file with same name exists in folder:
-        qs = FileNode.objects.filter(parent=self.parent)
         if self.pk:
-            qs = qs.exclude(pk=self.pk)
-        number = 1
-        while qs.filter(name__exact=self.name).count() > 0:
-            number += 1
-            # rename using a number
-            self.name = app_settings.MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT % {'name': name, 'number': number, 'ext': ext}
+            qs = self.get_siblings()
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+            number = 1
+            while qs.filter(name__exact=self.name).count() > 0:
+                number += 1
+                # rename using a number
+                self.name = app_settings.MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT % {'name': name, 'number': number, 'ext': ext}
 
     def prevent_save(self):
         self.save_prevented = True
+
+    def _set_name_from_filename(self):
+        self.name = os.path.basename(self.file.name)
+        # using os.path.splitext(), foo.tar.gz would become foo.tar_2.gz instead of foo_2.tar.gz
+        split = multi_splitext(self.name)
+        self.make_name_unique_numbered(split[0], split[1])
 
     def save(self, *args, **kwargs):
 
@@ -602,13 +600,10 @@ class FileNode(ModelBase):
                 except FileNode.DoesNotExist:
                     pass
             if file_changed:
-                self.name = os.path.basename(self.file.name)
-                # using os.path.splitext(), foo.tar.gz would become foo.tar_2.gz instead of foo_2.tar.gz
-                split = multi_splitext(self.name)
-                self.make_name_unique_numbered(split[0], split[1])
-
+                self._set_name_from_filename()
                 # Determine various file parameters
                 self.size = self.file.size
+                split = multi_splitext(self.name)
                 self.extension = split[2].lstrip('.').lower()
                 self.width, self.height = (None, None)
 
@@ -656,6 +651,8 @@ class FileNode(ModelBase):
         return self.media_type in (media_types.SUPPORTED_IMAGE, media_types.VECTOR_IMAGE)
 
     def __unicode__(self):
+        if not self.name:
+            return ugettext('unnamed %s instance' % self.__class__.__name__)
         return self.name
 
     def check_minimal_metadata(self):
