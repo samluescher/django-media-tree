@@ -14,14 +14,13 @@
 #changelist .drag-handler span {
     width: 16px;
     height: 16px;
-    background: transparent url(../img/icons/drag-handler.png) no-repeat left top;
     background-size: 16px 16px;
     margin: 0;
     display: inline-block;
-    cursor: move;
 }
 
 #changelist .drag-handler span.active {
+    background: transparent url(../img/icons/drag-handler.png) no-repeat left top;
     cursor: move;
 }
 
