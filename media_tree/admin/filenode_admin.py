@@ -1,5 +1,5 @@
 # TODO: tree_change_list.html is not used
-# TODO: _ref_node_id -- validate to be a folder, use foreignkey widget that only displays folders (also for moves)
+# TODO: _ref_node_id -- use foreignkey widget that only displays folders (also for moves)
 # TODO: ghost can't be dropped properly if it contains a tall image
 # TODO: search results are falsely indented
 # TODO: how to present top-level folders in collapsed form initially?
@@ -12,7 +12,7 @@
 
 from ..models import FileNode
 from .. import settings as app_settings
-from .forms import FileForm, FolderForm, UploadForm
+from .forms import MoveForm, FileForm, FolderForm, UploadForm
 from .utils import get_current_request, set_current_request,  \
     get_request_attr, set_request_attr, is_search_request
 from ..media_backends import get_media_backend
@@ -20,16 +20,18 @@ from ..widgets import AdminThumbWidget
 
 from treebeard.admin import TreeAdmin
 
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin.options import csrf_protect_m
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.db import models
+from django.http import HttpResponseBadRequest
 
 import os
 
 STATIC_SUBDIR = app_settings.MEDIA_TREE_STATIC_SUBDIR
+
 
 class FileNodeAdmin(TreeAdmin):
 
@@ -71,7 +73,7 @@ class FileNodeAdmin(TreeAdmin):
         context = {
             'node': node,
             'preview_file': node.get_icon_file() if icons_only else node.get_preview_file(),
-            'class': 'collapsed' if node.is_folder() else '',
+            'class': 'collapsed-folder' if node.is_folder() else '',
         }
 
         if not icons_only:
@@ -80,21 +82,21 @@ class FileNodeAdmin(TreeAdmin):
             thumb = thumbnail_backend.get_thumbnail(context['preview_file'], {'size': context['thumbnail_size']})
             context['thumb'] = thumb
 
-        preview = render_to_string(template, context)
+        preview = render_to_string(template, context).strip()
 
         if node.is_folder():
-            preview += render_to_string(template, {
+            preview = "%s%s" % (preview, render_to_string(template, {
                 'node': node,
                 'preview_file': node.get_preview_file(default_name='_folder_expanded'),
-                'class': 'expanded'
-            })
+                'class': 'expanded-folder hidden'
+            }).strip())
         return preview
     node_preview.short_description = ''
     node_preview.allow_tags = True
 
     def node_preview_and_name(self, node):
         return '%s<span class="name">%s</span>' % (self.node_preview(node).strip(), node.name)
-    node_preview_and_name.short_description = _('file')
+    node_preview_and_name.short_description = _('media object')
     node_preview_and_name.allow_tags = True
 
     def size_formatted(self, node, with_descendants=True):
@@ -140,8 +142,27 @@ class FileNodeAdmin(TreeAdmin):
         kwargs['form'] = self._get_form_class(request, obj)
         return super(FileNodeAdmin, self).get_form(request, obj, **kwargs)
 
+    def try_to_move_node(self, as_child, node, pos, request, target):
+        # Make sure to validate using the appropriate form. This will validate
+        # allowed media types, whether parent is a folder, etc.
+        params = {
+            '_ref_node_id': target.pk,
+            '_position': pos,
+            'node_type': node.node_type
+        }
+        form = MoveForm(params, instance=node)
+        if not form.is_valid():
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+            return HttpResponseBadRequest('Malformed POST params')
+        return super(FileNodeAdmin, self).try_to_move_node(as_child, node, pos, request, target)
+
     def get_fieldsets(self, request, obj=None):
-        return self._get_form_class(request, obj).Meta.fieldsets
+        fieldsets = getattr(self._get_form_class(request, obj).Meta, 'fieldsets', None)
+        if fieldsets:
+            return fieldsets
+        return super(FileNodeAdmin, self).get_fieldsets(request, obj)
 
     def get_urls(self):
         try:

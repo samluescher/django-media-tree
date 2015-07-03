@@ -1,26 +1,5 @@
 /* Treebeard Admin */
 
-#roots {
-    margin: 0;
-    padding: 0;
-}
-
-#roots li {
-    list-style: none;
-    padding: 5px !important;
-    line-height: 13px;
-    border-bottom: 1px solid #EEE;
-}
-
-#roots li a {
-    font-weight: bold;
-    font-size: 12px;
-}
-
-#roots li input {
-    margin: 0 5px;
-}
-
 .oder-grabber {
     width: 1.5em;
     text-align: center;
@@ -117,6 +96,10 @@ background-color: #FF0;
     margin-top: .5em;
     margin-bottom: .5em;
     margin-right: 1em;
+}
+
+#changelist .hidden {
+    display: none;
 }
 
 /* Thumbnails */

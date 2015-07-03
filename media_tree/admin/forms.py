@@ -11,32 +11,56 @@ FormBase = movenodeform_factory(FileNode)
 
 class FileNodeForm(FormBase):
 
+    node_type = forms.fields.ChoiceField(widget=forms.HiddenInput(), choices=((FileNode.FILE, _('file')), (FileNode.FOLDER, _('folder'))))
+    # disable posting of _position, we're always expecting
+    # 'sorted-child' instead of user-entered value
+    _position = forms.ChoiceField(required=True, label=_("Position"), initial='sorted-child', widget=forms.HiddenInput())
+
     def __init__(self, *args, **kwargs):
         super(FileNodeForm, self).__init__(*args, **kwargs)
-        #self.fields['_position'].required = False
         self.fields['_ref_node_id'].label = _('Containing folder')
 
-    def clean(self):
-        if not self.cleaned_data.get('position', None):
-            self.cleaned_data['_position'] = 'sorted-child'
+    def clean_node_type(self):
+        return int(self.cleaned_data['node_type'])
 
-        if self.cleaned_data['_ref_node_id']:
-            allowed_types = FileNode.objects.get(pk=self.cleaned_data['_ref_node_id']).allowed_child_node_types
+    def clean(self):
+        if self.cleaned_data.get('_ref_node_id', None) and '_position' in self.cleaned_data:
+            try:
+                if self.cleaned_data['_position'] == 'sorted-child':
+                    parent = FileNode.objects.get(pk=self.cleaned_data['_ref_node_id'])
+                elif self.cleaned_data['_position'] == 'sorted-sibling':
+                    parent = FileNode.objects.get(pk=self.cleaned_data['_ref_node_id']).get_parent()
+                else:
+                    self.add_error('_position', _('Invalid insertion position: %s.' % self.cleaned_data['_position']))
+            except FileNode.DoesNotExist:
+                self.add_error('_ref_node_id', _('Target does not exist.'))
+
+        if parent:
+            if not parent.is_folder():
+                self.add_error('_ref_node_id', _('Please select a valid folder.'))
+            allowed_types = parent.allowed_child_node_types
         else:
             allowed_types = app_settings.MEDIA_TREE_ROOT_ALLOWED_NODE_TYPES
 
         if allowed_types and len(allowed_types) and not self.cleaned_data['node_type'] in allowed_types:
-            raise forms.ValidationError(_('Can\'t save media object in this folder. Please select an appropriate parent folder.'))
+            self.add_error('_ref_node_id', _('Can\'t save media object in this folder. Please select an appropriate parent folder.'))
 
         return super(FileNodeForm, self).clean()
 
 
+class MoveForm(FileNodeForm):
+    class Meta(FileNodeForm.Meta):
+        fields = ('_ref_node_id', '_position', 'node_type')
+
+
 class FolderForm(FileNodeForm):
+
+    node_type = forms.fields.ChoiceField(initial=FileNode.FOLDER, widget=forms.HiddenInput(), choices=((FileNode.FOLDER, _('folder')),))
 
     class Meta(FileNodeForm.Meta):
         fieldsets = [
             (_('Folder'), {
-                'fields': ['name', '_ref_node_id', '_position']
+                'fields': ['name', 'node_type', '_ref_node_id', '_position']
             }),
             (_('Metadata'), {
                 'fields': ['title', 'description']
@@ -52,7 +76,6 @@ class FolderForm(FileNodeForm):
         ]
 
     def clean(self):
-        self.cleaned_data['node_type'] = FileNode.FOLDER
 
         # check whether name is unique in parent folder
         if 'name' in self.cleaned_data:
@@ -70,6 +93,8 @@ class FolderForm(FileNodeForm):
 
 class FileForm(FileNodeForm):
 
+    node_type = forms.fields.ChoiceField(initial=FileNode.FILE, widget=forms.HiddenInput(), choices=((FileNode.FILE, _('file')),))
+
     # TODO:
     #set_manual_dimensions = forms.BooleanField(_('set manual dimensions'), required=False)
 
@@ -77,7 +102,7 @@ class FileForm(FileNodeForm):
         fieldsets = [
             (_('File'), {
                 #'fields': ['name', 'file']
-                'fields': ['file', '_ref_node_id', '_position']
+                'fields': ['file', 'node_type', '_ref_node_id', '_position']
             }),
             (_('Display'), {
                 'fields': ['published', 'preview_file', 'position', 'is_default'],
@@ -96,10 +121,6 @@ class FileForm(FileNodeForm):
         super(FileForm, self).__init__(*args, **kwargs)
         if 'name' in self.fields:
             del self.fields['name']
-
-    def clean(self):
-        self.cleaned_data['node_type'] = FileNode.FILE
-        return super(FileForm, self).clean()
 
     def save(self, commit=True):
         self.instance._set_name_from_filename()
