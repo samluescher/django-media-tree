@@ -24,6 +24,7 @@ class FileNodeForm(FormBase):
         return int(self.cleaned_data['node_type'])
 
     def clean(self):
+        parent = None
         if self.cleaned_data.get('_ref_node_id', None) and '_position' in self.cleaned_data:
             try:
                 if self.cleaned_data['_position'] == 'sorted-child':
