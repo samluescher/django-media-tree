@@ -20,6 +20,7 @@ from ..widgets import AdminThumbWidget
 
 from treebeard.admin import TreeAdmin
 
+from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.options import csrf_protect_m
 from django.template.loader import render_to_string
