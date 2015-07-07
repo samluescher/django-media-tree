@@ -45,20 +45,23 @@ class FileNodeAdmin(TreeAdmin):
         models.ImageField: {'widget': AdminThumbWidget},
     }
 
+    change_list_template = 'admin/media_tree/filenode/tree_change_list.html'
+
     ADD_FOLDER_VIEW_NAME = 'add_folder'
 
     class Media:
         js = [
-            #os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js').replace("\\","/"),
-            #os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js').replace("\\","/"),
-            #os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js').replace("\\","/"),
-            #os.path.join(STATIC_SUBDIR, 'lib/jquery.fineuploader-4.4.0', 'jquery.fineuploader-4.4.0.js').replace("\\","/"),
-            #os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js').replace("\\","/"),
-            #os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'lib/jquery.fineuploader-4.4.0', 'jquery.fineuploader-4.4.0.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js').replace("\\","/"),
         ]
         css = {
             'all': (
                 os.path.join(STATIC_SUBDIR, 'css', 'filenode_admin.css').replace("\\","/"),
+                os.path.join(STATIC_SUBDIR, 'css', 'jquery.ui.css').replace("\\","/"),
             )
         }
 
@@ -175,9 +178,9 @@ class FileNodeAdmin(TreeAdmin):
         info = self.model._meta.app_label, self.model._meta.module_name
         url_patterns = patterns('',
             url(r'^jsi18n/', self.admin_site.admin_view(self.i18n_javascript), name='media_tree_jsi18n'),
-            #url(r'^upload/$',
-            #    self.admin_site.admin_view(self.upload_file_view),
-            #    name='%s_%s_upload' % info),
+            url(r'^upload/$',
+                self.admin_site.admin_view(self.upload_file_view),
+                name='%s_%s_upload' % info),
             url(r'^%s/$' % self.ADD_FOLDER_VIEW_NAME,
                 self.admin_site.admin_view(self.add_folder_view),
                 name='%s_%s_add_folder' % info),
@@ -194,8 +197,29 @@ class FileNodeAdmin(TreeAdmin):
         url_patterns.extend(urls)
         return url_patterns
 
+    def init_changelist_view_options(self, request):
+        if 'thumbnail_size' in request.GET:
+            request.GET = request.GET.copy()
+            thumb_size_key = request.GET.get('thumbnail_size')
+            del request.GET['thumbnail_size']
+            if not thumb_size_key in app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES:
+                thumb_size_key = None
+            request.session['thumbnail_size'] = thumb_size_key
+        thumb_size_key = request.session.get('thumbnail_size', 'default')
+        set_request_attr(request, 'thumbnail_size', thumb_size_key)
+        backend = get_media_backend()
+        if backend and backend.supports_thumbnails():
+            return {
+                'thumbnail_sizes': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES,
+                'thumbnail_size_key': thumb_size_key
+            }
+        else:
+            return {}
+
     def changelist_view(self, request, extra_context=None):
         set_current_request(request)
+        extra_context = extra_context or {}
+        extra_context.update(self.init_changelist_view_options(request))
         return super(FileNodeAdmin, self).changelist_view(request, extra_context)
 
     @csrf_protect_m
@@ -203,6 +227,49 @@ class FileNodeAdmin(TreeAdmin):
         extra_context = extra_context or {}
         extra_context['form'] = 'foo'
         return self.add_view(request, form_url, extra_context)
+
+    @csrf_protect_m
+    def upload_file_view(self, request):
+        try:
+            if not self.has_add_permission(request):
+                raise PermissionDenied
+
+            self.init_parent_folder(request)
+
+            if request.method == 'POST':
+                form = UploadForm(request.POST, request.FILES)
+                if form.is_valid():
+                    node = FileNode(**form.cleaned_data)
+                    self.save_model(request, node, None, False)
+
+                    # Respond with success
+                    if request.is_ajax():
+                        return HttpResponse(json.dumps({'success': True}), content_type="application/json")
+                    else:
+                        messages.info(request, _('Successfully uploaded file %s.') % node.name)
+                        return HttpResponseRedirect(reverse('admin:media_tree_filenode_changelist'))
+                else:
+                    # invalid form data
+                    if request.is_ajax():
+                        return HttpResponse(json.dumps({'error': ' '.join(
+                            [item for sublist in form.errors.values() for item in sublist])}),
+                            content_type="application/json", status=403)
+
+            # Form is rendered for troubleshooting XHR upload.
+            # If this form works, the problem is not server-side.
+            if not settings.DEBUG:
+                raise ViewDoesNotExist
+            if request.method == 'GET':
+                form = UploadForm()
+            return render_to_response('admin/media_tree/filenode/upload_form.html', {'form': form},
+                context_instance=RequestContext(request))
+
+        except Exception as e:
+            if not settings.DEBUG and request.is_ajax():
+                return HttpResponse(json.dumps({'error': ugettext('Server Error')}),
+                    content_type="application/json")
+            else:
+                raise
 
     def i18n_javascript(self, request):
         """
