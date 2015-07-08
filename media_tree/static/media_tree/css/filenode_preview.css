@@ -20,3 +20,7 @@
 .FileNodeForeignKeyRawIdWidget .preview, .FileNodeForeignKeyRawIdWidget .name {
     cursor: pointer;
 }
+
+.FileNodeForeignKeyRawIdWidget .clear-widget {
+    margin-left: .5em;
+}

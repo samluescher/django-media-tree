@@ -1,11 +1,13 @@
 from media_tree import settings as app_settings
 from django.contrib.admin.widgets import AdminFileWidget
+from django.contrib.admin.templatetags.admin_static import static
 from media_tree import media_types
 from media_tree.media_backends import get_media_backend, ThumbnailError
 from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.utils.html import escape
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
 import os
 
 THUMBNAIL_EXTENSIONS = app_settings.MEDIA_TREE_THUMBNAIL_EXTENSIONS
@@ -38,8 +40,12 @@ class FileNodeForeignKeyRawIdWidget(ForeignKeyRawIdWidget):
         # insert a placeholder for widget preview if value is None so that
         # the dismissRelatedLookupPopup hook in Javascript can populate it.
         output = super(FileNodeForeignKeyRawIdWidget, self).render(name, value, attrs)
-        return mark_safe('<span class="FileNodeForeignKeyRawIdWidget">%s%s</span>' %
-            (output, self.label_for_value(None) if not value else ''))
+        extra = ''
+        if value:
+            extra = '<a href="#" class="clear-widget"><img src="%s" width="11" height="11" alt="%s" /></a>' % (
+                static('admin/img/icon_deletelink.gif'), _('Clear'))
+        return mark_safe('<span class="FileNodeForeignKeyRawIdWidget">%s%s%s</span>' %
+            (output, self.label_for_value(None) if not value else '', extra))
 
     def label_for_value(self, value):
         # instead of just outputting the node's name, render the node (or None)
@@ -53,6 +59,7 @@ class FileNodeForeignKeyRawIdWidget(ForeignKeyRawIdWidget):
                 obj = None
             preview = render_to_string('admin/media_tree/filenode/includes/widget_preview.html',
                 {'node': obj, 'preview_file': obj.get_preview_file() if obj else None})
+
             return preview
         except (ValueError, self.rel.to.DoesNotExist):
             return ''
