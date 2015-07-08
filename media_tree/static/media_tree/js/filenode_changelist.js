@@ -7,10 +7,10 @@ jQuery(function($) {
         $trigger.click(function(evt) {
             evt.preventDefault();
             var d = opener.document,
-                fieldName = window.name.substring('id_'.length),
-                $input = $('#' + window.name, d),
-                $widgetContainer = $('.field-' + fieldName, d);
-            if ($input.closest('.FileNodeForeignKeyRawIdWidget').length) {
+                fieldName = windowname_to_id(window.name).substring('id_'.length),
+                $input = $('#' + windowname_to_id(window.name), d),
+                $widgetContainer = $input.closest('.FileNodeForeignKeyRawIdWidget');
+            if ($widgetContainer.length) {
                 var $preview = $trigger.find('.preview:visible').clone(),
                     $name = $trigger.find('.name').clone(),
                     $targetPreview = $widgetContainer.find('.preview'),
