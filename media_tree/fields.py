@@ -14,8 +14,6 @@ LEVEL_INDICATOR = app_settings.MEDIA_TREE_LEVEL_INDICATOR
 from django.forms import ModelChoiceField
 
 
-
-
 class FileNodeChoiceField(ModelChoiceField):
     """
     A form field for selecting a ``FileNode`` object.
@@ -35,8 +33,7 @@ class FileNodeChoiceField(ModelChoiceField):
         self.allowed_node_types = allowed_node_types
         self.allowed_media_types = allowed_media_types
         self.allowed_extensions = allowed_extensions
-        #TODO: should render an indented tree
-        #kwargs['level_indicator'] = level_indicator
+        self.level_indicator = level_indicator
         super(FileNodeChoiceField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
@@ -70,7 +67,7 @@ class FileNodeChoiceField(ModelChoiceField):
         Creates labels which represent the tree level of each node when
         generating option labels.
         """
-        return u'%s %s' % (self.level_indicator * (getattr(obj, obj._mptt_meta.level_attr) + (1 if not self.required else 0)), smart_unicode(obj))
+        return u'%s %s %i' % (self.level_indicator * (getattr(obj, 'depth') - 1), smart_unicode(obj), obj.depth)
 
 
 class FileNodeForeignKey(models.ForeignKey):
