@@ -185,13 +185,6 @@ if add_introspection_rules:
     add_introspection_rules([], ["^media_tree\.models\.MultipleChoiceCommaSeparatedIntegerField"])
 
 
-class TestNode(ModelBase):
-    name = models.CharField(max_length=255)
-    node_order_by = ['name']
-    def __unicode__(self):
-        return self.name
-
-
 class FileNode(ModelBase):
     """
     Each ``FileNode`` instance represents a node in the media object tree, that
