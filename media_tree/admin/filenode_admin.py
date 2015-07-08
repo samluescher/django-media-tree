@@ -25,6 +25,7 @@ from django.contrib import admin, messages
 from django.contrib.admin.options import csrf_protect_m
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.html import escape
 from django.template.defaultfilters import filesizeformat
 from django.db import models
 from django.http import HttpResponseBadRequest
@@ -95,7 +96,12 @@ class FileNodeAdmin(TreeAdmin):
                 'preview_file': node.get_preview_file(default_name='_folder_expanded'),
                 'class': 'expanded-folder hidden'
             }).strip())
-        return preview
+
+        meta = '<link class="meta" rel="alternate" data-id="%s" type="%s" href="%s" data-name="%s" data-alt="%s" data-caption="%s">' % (
+            node.pk, FileNode.get_mimetype(node.file.path) if node.file else '', escape(node.file.url) if node.file else '',
+            escape(node), escape(node.alt), escape(node.get_caption_formatted()))
+
+        return "%s%s" % (preview, meta)
     node_preview.short_description = ''
     node_preview.allow_tags = True
 

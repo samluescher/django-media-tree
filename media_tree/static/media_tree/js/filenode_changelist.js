@@ -18,6 +18,8 @@ jQuery(function($) {
                 $targetPreview.replaceWith($preview);
                 $targetName.replaceWith($name);
             }
+
+            window.selectedMeta = $trigger.find('link.meta')[0];
             _onclick();
         });
     });
