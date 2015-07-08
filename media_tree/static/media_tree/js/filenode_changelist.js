@@ -1,5 +1,29 @@
 jQuery(function($) {
 
+    $('a[onclick*=dismissRelatedLookupPopup]').each(function() {
+        var _onclick = this.onclick,
+            $trigger = $(this);
+        this.onclick = null;
+        $trigger.click(function(evt) {
+            evt.preventDefault();
+            var d = opener.document,
+                fieldName = window.name.substring('id_'.length),
+                $input = $('#' + window.name, d),
+                $widgetContainer = $('.field-' + fieldName, d);
+            if ($input.closest('.FileNodeForeignKeyRawIdWidget').length) {
+                var $preview = $trigger.find('.preview:visible').clone(),
+                    $name = $trigger.find('.name').clone(),
+                    $targetPreview = $widgetContainer.find('.preview'),
+                    $targetName = $widgetContainer.find('.name');
+                $targetPreview.replaceWith($preview);
+                $targetName.replaceWith($name);
+            }
+            _onclick();
+        });
+    });
+
+    return;
+
     $.makeChangelistRow = function(cols, row)
     {
         if ($('#changelist table').length == 0) {
@@ -551,15 +575,4 @@ jQuery(function($) {
         img.src = matchUrl[1];
     });
     bufferBackgroundElements.remove();
-
-    $('a[onclick*=dismissRelatedLookupPopup]').each(function() {
-        var _onclick = this.onclick;
-        this.onclick = null;
-        $(this).click(function(evt) {
-            _onclick();
-            /*evt.preventDefault();
-            console.log(window.name, opener.document.getElementById('lookup_' + window.name));
-            return false;*/
-        });
-    });
 });

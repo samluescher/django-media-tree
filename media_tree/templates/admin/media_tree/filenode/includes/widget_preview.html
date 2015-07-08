@@ -1,0 +1,6 @@
+{% spaceless %}
+<span class="widget-preview">
+{% if node %}{% include "admin/media_tree/filenode/includes/preview.html" %}{% else %}<span class="preview">-empty-</span>{% endif %}
+<strong><span class="name">{% if node %}{{ node }}{% else %}__NONAME__{% endif %}<span></strong>
+</span>
+{% endspaceless %}

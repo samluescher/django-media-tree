@@ -55,12 +55,13 @@ class FileNodeAdmin(TreeAdmin):
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'lib/jquery.fineuploader-4.4.0', 'jquery.fineuploader-4.4.0.js').replace("\\","/"),
-            os.path.join(STATIC_SUBDIR, 'js', 'admin_enhancements.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'js', 'filenode_changelist.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js').replace("\\","/"),
         ]
         css = {
             'all': (
                 os.path.join(STATIC_SUBDIR, 'css', 'filenode_admin.css').replace("\\","/"),
+                os.path.join(STATIC_SUBDIR, 'css', 'filenode_preview.css').replace("\\","/"),
                 os.path.join(STATIC_SUBDIR, 'css', 'jquery.ui.css').replace("\\","/"),
             )
         }

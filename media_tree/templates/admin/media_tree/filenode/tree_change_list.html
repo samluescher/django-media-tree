@@ -40,68 +40,7 @@ it is embedded here.
     {% endif %}
     </ul>
 
-    <script type="text/javascript">// <![CDATA[
-        jQuery(function($) {
-
-            var initialFolder, targetFolder;
-            {% if node and not node.is_top_node %}
-            initialFolder = {name: '{{ node.name }}', id: '{{ node.pk }}'};
-            {% endif %}
-
-            /*var uploader = new DjangoAdminFileUploader({
-                element: $('.changelist-file-uploader')[0],
-                action: '{% url "admin:media_tree_filenode_upload" %}',
-                debug: true,
-                listElement: $('#changelist tbody')[0],
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            });*/
-
-            var uploadUrl = '{% url "admin:media_tree_filenode_upload" %}',
-                uploader = $('#uploader-button').djangoAdminFileUploader({
-                request: {
-                    endpoint: uploadUrl,
-                    customHeaders: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    inputName: 'file'
-                },
-                uploaderType: 'basic',
-                multiple: true,
-                button: $('#uploader-button'),
-                validation: {
-                    //allowedExtensions: ['jpeg', 'jpg', 'txt'],
-                    //sizeLimit: 51200 // 50 kB = 50 * 1024 bytes
-                },
-                showMessage: function(message) {
-                }
-            })
-
-            var setTargetFolder = function(targetFolder) {
-                $('#changelist').data('targetFolder', targetFolder);
-                var targetId = '';
-                if (!targetFolder) {
-                    targetFolder = initialFolder;
-                }
-                if (targetFolder) {
-                    $('.target-folder').html('{% trans "To %(folder)s:" %} '.replace('%(folder)s', targetFolder.name));
-                    targetId= targetFolder.id;
-                } else {
-                    $('.target-folder').html('');
-                }
-
-                var addlink = $('.addlink')[0];
-                addlink.href = addlink.href.replace(/parent=[0-9]*/, 'parent='+targetId);
-                uploader.fineUploader('setParams', {parent: targetId});
-            };
-
-            setTargetFolder(initialFolder);
-
-            $('#changelist').delegate('input[name=_selected_action]', 'change', function() {
-                var targetFolder = $('#changelist').getFirstSelectedFolder();
-                setTargetFolder(targetFolder);
-            });
-        });
-    // ]]></script>
+    <!--{% include "admin/media_tree/filenode/includes/uploader_button_js.html" %}-->
 
     {% if thumbnail_sizes %}
     <ul class="view-options">

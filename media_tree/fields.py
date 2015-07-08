@@ -1,8 +1,7 @@
 from media_tree import settings as app_settings, media_types
 from media_tree.models import FileNode
 from media_tree.widgets import FileNodeForeignKeyRawIdWidget
-from mptt.forms import TreeNodeChoiceField
-from django.forms.widgets import Select
+from django.contrib.admin.widgets import ForeignKeyRawIdWidget
 from django.db import models
 from django import forms
 from django.utils.translation import ugettext as _
@@ -12,7 +11,12 @@ from django.conf import settings
 LEVEL_INDICATOR = app_settings.MEDIA_TREE_LEVEL_INDICATOR
 
 
-class FileNodeChoiceField(TreeNodeChoiceField):
+from django.forms import ModelChoiceField
+
+
+
+
+class FileNodeChoiceField(ModelChoiceField):
     """
     A form field for selecting a ``FileNode`` object.
 
@@ -31,19 +35,9 @@ class FileNodeChoiceField(TreeNodeChoiceField):
         self.allowed_node_types = allowed_node_types
         self.allowed_media_types = allowed_media_types
         self.allowed_extensions = allowed_extensions
-        kwargs['level_indicator'] = level_indicator
-        if not kwargs.has_key('widget'):
-            kwargs['widget'] = self.widget
-
-            # TODO: FileNodeForeignKeyRawIdWidget should only be the standard widget when in admin
-            # TODO: It currently does not work with move/copy form
-
+        #TODO: should render an indented tree
+        #kwargs['level_indicator'] = level_indicator
         super(FileNodeChoiceField, self).__init__(*args, **kwargs)
-        # TODO there should nonetheless be an "empty item", also if not required
-        if not self.required:
-            self.empty_label = FileNode.get_top_node().name
-        else:
-            self.empty_label = '---------'
 
     def clean(self, value):
         result = super(FileNodeChoiceField, self).clean(value)
@@ -109,14 +103,21 @@ class FileNodeForeignKey(models.ForeignKey):
             'allowed_node_types': self.allowed_node_types,
             'allowed_media_types': self.allowed_media_types,
             'allowed_extensions': self.allowed_extensions,
-            'empty_label': ''
+            'empty_label': '',
         }
 
-        #raise Exception(kwargs)
-        #defaults['widget'] = FileNodeForeignKeyRawIdWidget(self.rel, self.admin_site, using=db)
-
         defaults.update(kwargs)
-        return super(FileNodeForeignKey, self).formfield(**defaults)
+        field = super(FileNodeForeignKey, self).formfield(**defaults)
+
+        # If the widget is a ForeignKeyRawIdWidget, overwrite it with
+        # FileNodeForeignKeyRawIdWidget. This is done here since the
+        # widget's contructor parameters are coming from the ModelAdmin,
+        # which we have no direct access to here.
+        if isinstance(field.widget, ForeignKeyRawIdWidget) and not  \
+            isinstance(field.widget, FileNodeForeignKeyRawIdWidget):
+            field.widget = FileNodeForeignKeyRawIdWidget(field.widget.rel,
+                field.widget.admin_site, using=field.widget.db)
+        return field
 
     def south_field_triple(self):
         "Returns a suitable description of this field for South."

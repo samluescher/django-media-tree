@@ -10,21 +10,50 @@ import os
 
 THUMBNAIL_EXTENSIONS = app_settings.MEDIA_TREE_THUMBNAIL_EXTENSIONS
 THUMBNAIL_SIZE = app_settings.MEDIA_TREE_THUMBNAIL_SIZES['large']
+STATIC_SUBDIR = app_settings.MEDIA_TREE_STATIC_SUBDIR
 
 
 class FileNodeForeignKeyRawIdWidget(ForeignKeyRawIdWidget):
 
-    # TODO: Bug: When popup is dismissed, label for value is currently not replaced with new label (although value is)
+    class Media:
+        js = (
+            os.path.join(STATIC_SUBDIR, 'js', 'filenode_foreignkeywidget.js').replace("\\","/"),
+        )
+        css = {
+            'all': (
+                os.path.join(STATIC_SUBDIR, 'css', 'filenode_preview.css').replace("\\","/"),
+            )
+        }
 
+    # the actual input field should be hidden...
     input_type = 'hidden'
 
+    # ...but for the field to show up amongst the form's visible fields, return
+    # False here.
+    @property
+    def is_hidden(self):
+        return False
+
+    def render(self, name, value, attrs=None):
+        # insert a placeholder for widget preview if value is None so that
+        # the dismissRelatedLookupPopup hook in Javascript can populate it.
+        output = super(FileNodeForeignKeyRawIdWidget, self).render(name, value, attrs)
+        return mark_safe('<span class="FileNodeForeignKeyRawIdWidget">%s%s</span>' %
+            (output, self.label_for_value(None) if not value else ''))
+
     def label_for_value(self, value):
+        # instead of just outputting the node's name, render the node (or None)
+        # through widget_preview.html, which adds icons and thumbnails depending
+        # on your configuration.
         key = self.rel.get_related_field().name
         try:
-            obj = self.rel.to._default_manager.using(self.db).get(**{key: value})
-            preview = render_to_string('media_tree/filenode/includes/preview.html', 
-                {'node': obj, 'preview_file': obj.get_preview_file()})
-            return '%s %s' % (preview, super(FileNodeForeignKeyRawIdWidget, self).label_for_value(value))
+            if value:
+                obj = self.rel.to._default_manager.using(self.db).get(**{key: value})
+            else:
+                obj = None
+            preview = render_to_string('admin/media_tree/filenode/includes/widget_preview.html',
+                {'node': obj, 'preview_file': obj.get_preview_file() if obj else None})
+            return preview
         except (ValueError, self.rel.to.DoesNotExist):
             return ''
 
@@ -59,8 +88,7 @@ class AdminThumbWidget(AdminFileWidget):
                     except ThumbnailError:
                         pass
             if thumb:
-                thumb_html = u'<img src="%s" alt="%s" width="%i" height="%i" />' % (thumb.url, os.path.basename(value.name), thumb.width, thumb.height) 
+                thumb_html = u'<img src="%s" alt="%s" width="%i" height="%i" />' % (thumb.url, os.path.basename(value.name), thumb.width, thumb.height)
                 output = u'<div><p><span class="thumbnail">%s</span></p><p>%s</p></div>' % (thumb_html, output)
 
         return mark_safe(output)
-
