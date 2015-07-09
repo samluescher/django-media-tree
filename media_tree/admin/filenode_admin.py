@@ -1,13 +1,24 @@
-# TODO: tree_change_list.html is not used
-# TODO: _ref_node_id -- use foreignkey widget that only displays folders (also for moves)
+
+# TODO: _ref_node_id -- use foreignkey widget that only displays folders (also for move and upload forms)
 # TODO: ghost can't be dropped properly if it contains a tall image
-# TODO: search results are falsely indented
+# TODO: search results are falsely indented -- display as stream always?
 # TODO: how to present top-level folders in collapsed form initially?
 # TODO: restore breadcrumbs to show path
+# TODO: Files are not renumbered when name exists within parent.
+# TODO: Bring admin actions back
+# TODO: Switching view options must conserve other GET params
 
-# TODO: Restore upload functionality
-# TODO: ForeignKeyRawIdWidget
-# TODO: Admin actions
+
+# Low priority:
+#
+# TODO: Make renaming of files possible.
+# TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt".
+#
+# TODO: Ordering of tree by column (within parent) should be possible
+# TODO: Refactor FineUploader stuff as extension. This would require signals calls
+#       to be called in the FileNodeAdmin view methods.
+# TODO: When using raw id interface, after adding new, name and icon are not
+#       populated like when list item is selected. Look into dismissAddAnotherPopup().
 
 
 from ..models import FileNode
