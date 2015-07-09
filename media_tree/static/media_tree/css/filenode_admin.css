@@ -107,31 +107,30 @@ background-color: #FF0;
 
 /* Changelist action button additions */
 
-.view-options {
-    font-size: 10px;
-    font-weight: bold;
-    font-family: Arial,Helvetica,sans-serif;
-    padding-left: 0;
-    float: right;
-    position: relative;
-    margin-top: -2.4em;
-    margin-bottom: -2em;
-    margin-right: 0px;
-    width: 115px;
+.object-tools li.thumbnail-sizes > a {
+    padding: 2px !important;
+    height: 20px;
+    width: 20px;
+    line-height: 18px !important;
+    text-align: center;
 }
 
-.thumbnail-size-slider {
-    width: 100px;
+.thumbnail-sizes a:link, .thumbnail-sizes a:visited, .thumbnail-sizes:hover a:link, .thumbnail-sizes:hover a {
+    border-radius: 0;
+    background: white;
 }
 
-.object-tools.with-view-options {
-    margin-right: 120px;
+.thumbnail-sizes a .icon {
+    border: 1px solid #bbb;
+    display: inline-block;
+    border-radius: 2px;
+    vertical-align: middle;
 }
 
-.view-options li {
-    display: block;
-    float: left;
-    padding: 0 0 0 8px;
-    margin-left: 2px;
-    height: 16px;
+.thumbnail-sizes a.active .icon, .thumbnail-sizes a:hover .icon {
+    border-color: #444;
+}
+
+.thumbnail-sizes a .label {
+    display: none;
 }

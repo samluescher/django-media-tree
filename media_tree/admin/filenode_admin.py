@@ -56,8 +56,8 @@ class FileNodeAdmin(TreeAdmin):
 
     class Media:
         js = [
-            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js').replace("\\","/"),
-            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.ui.js').replace("\\","/"),
+            #os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'js', 'jquery.init.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'lib/jquery.fineuploader-4.4.0', 'jquery.fineuploader-4.4.0.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'js', 'filenode_changelist.js').replace("\\","/"),
@@ -67,7 +67,6 @@ class FileNodeAdmin(TreeAdmin):
             'all': (
                 os.path.join(STATIC_SUBDIR, 'css', 'filenode_admin.css').replace("\\","/"),
                 os.path.join(STATIC_SUBDIR, 'css', 'filenode_preview.css').replace("\\","/"),
-                os.path.join(STATIC_SUBDIR, 'css', 'jquery.ui.css').replace("\\","/"),
             )
         }
 
@@ -216,7 +215,7 @@ class FileNodeAdmin(TreeAdmin):
             if not thumb_size_key in app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES:
                 thumb_size_key = None
             request.session['thumbnail_size'] = thumb_size_key
-        thumb_size_key = request.session.get('thumbnail_size', 'default')
+        thumb_size_key = request.session.get('thumbnail_size', None) or 'default'
         set_request_attr(request, 'thumbnail_size', thumb_size_key)
         backend = get_media_backend()
         if backend and backend.supports_thumbnails():

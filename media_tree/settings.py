@@ -87,17 +87,20 @@ MEDIA_TREE_ICON_FINDERS = getattr(settings, 'MEDIA_TREE_ICON_FINDERS', (
 ))
 
 MEDIA_TREE_ADMIN_THUMBNAIL_SIZES = SortedDict((
+    ('default', (32, 32)),
+    ('medium', (64, 64)),
+    ('large', (128, 128)),
+))
+
+MEDIA_TREE_THUMBNAIL_SIZES = SortedDict((
     ('tiny', (20, 20)),
     ('small', (70, 70)),
     ('default', (100, 100)),
     ('medium', (250, 250)),
     ('large', (400, 400)),
+    ('full', None), # None means: use original size
 ))
 
-MEDIA_TREE_THUMBNAIL_SIZES = MEDIA_TREE_ADMIN_THUMBNAIL_SIZES.copy()
-MEDIA_TREE_THUMBNAIL_SIZES.update({
-    'full': None, # None means: use original size
-})
 MEDIA_TREE_THUMBNAIL_SIZES.update(getattr(settings,
     'MEDIA_TREE_THUMBNAIL_SIZES', {}))
 """
