@@ -24,8 +24,6 @@ jQuery(function($) {
         });
     });
 
-    return;
-
     $.makeChangelistRow = function(cols, row)
     {
         if ($('#changelist table').length == 0) {
@@ -50,6 +48,32 @@ jQuery(function($) {
 
         return row;
     }
+
+    $.addUserMessage = function(messageText, messageId, messageClass) {
+        if (!messageClass) {
+            messageClass = 'info';
+        }
+        var defaultMessageId = 'default-message';
+        if (!messageId) {
+            messageId = defaultMessageId;
+        }
+        $('#' + defaultMessageId).remove();
+        var message = $('<li id="'+messageId+'" class="' + messageClass + '">'+messageText+'</li>')
+        var currentMessage = $('#'+messageId);
+        if (currentMessage.length > 0) {
+            currentMessage.replaceWith(message);
+        } else {
+            var messageList = $('ul.messagelist');
+            if (messageList.length == 0) {
+                $('#content').before('<ul class="messagelist"></ul>');
+                var messageList = $('ul.messagelist');
+            }
+            messageList.append(message);
+        }
+    }
+
+    return;
+
 
     var makeForm = function(action, hiddenFields) {
         if (!hiddenFields) {

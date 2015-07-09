@@ -24,17 +24,19 @@ it is embedded here.
 {% block object-tools %}
     <ul class="object-tools">
     {% if has_add_permission %}
-        <li class="target-folder"></li>
+        <li class="target-folder"><form id="upload-form" onsubmit="return false;">{{ upload_form.as_p }}</form></li>
         <li class="changelist-file-uploader">
             <a id="uploader-button" href="javascript:void(0)" class="addlink">
             <span class="caption">{% trans "Upload files" %}</span>
             </a>
         </li>
+        {% comment %}
         <li class="traditional-upload">
             <a href="{% url "admin:media_tree_filenode_add" %}?parent=&{% if is_popup %}_popup=1{% endif %}" class="addlink">
             {% trans "Add file" %}
             </a>
         </li>
+        {% endcomment %}
         <li>
             <a id="object-tool-add-folder" href="{% url "admin:media_tree_filenode_add_folder" %}{% if is_popup %}?_popup=1{% endif %}" class="addlink folder">
             <span class="caption">{% trans "Add folder" %}</span>

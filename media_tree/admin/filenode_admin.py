@@ -33,7 +33,7 @@ from django.utils.html import escape
 from django.template.defaultfilters import filesizeformat
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-
+import json
 import os
 
 STATIC_SUBDIR = app_settings.MEDIA_TREE_STATIC_SUBDIR
@@ -226,10 +226,25 @@ class FileNodeAdmin(TreeAdmin):
         else:
             return {}
 
+    def get_upload_form(self, request):
+        target_folder_id = request.session.get('target_folder_id', None)
+        try:
+            target_folder = FileNode.objects.get(pk=target_folder_id)
+        except FileNode.DoesNotExist:
+            request.session['target_folder_id'] = None
+        upload_form = UploadForm(initial={'_ref_node_id': target_folder.pk if target_folder else None})
+        del upload_form.fields['file']
+        upload_form.fields['_ref_node_id'].label = _('To folder')
+        return upload_form
+
     def changelist_view(self, request, extra_context=None):
         set_current_request(request)
         extra_context = extra_context or {}
         extra_context.update(self.init_changelist_view_options(request))
+        extra_context.update({
+            'upload_form': self.get_upload_form(request)
+        })
+
         return super(FileNodeAdmin, self).changelist_view(request, extra_context)
 
     @csrf_protect_m
@@ -252,15 +267,21 @@ class FileNodeAdmin(TreeAdmin):
                     node = form.save(commit=False)
                     self.save_model(request, node, None, False)
 
+                    parent = node.get_parent()
+                    if parent:
+                        messages.info(request, _('Successfully uploaded file "%s" to "%s".') % (node, parent))
+                    else:
+                        messages.info(request, _('Successfully uploaded file "%s".') % node)
+
+                    if parent:
+                        request.session['target_folder_id'] = parent.pk
+                    else:
+                        request.session['target_folder_id'] = None
+
                     # Respond with success
                     if request.is_ajax():
                         return HttpResponse(json.dumps({'success': True}), content_type="application/json")
                     else:
-                        parent = node.get_parent()
-                        if parent:
-                            messages.info(request, _('Successfully uploaded file "%s" to "%s".') % (node, parent))
-                        else:
-                            messages.info(request, _('Successfully uploaded file "%s".') % node)
                         return HttpResponseRedirect(reverse('admin:media_tree_filenode_changelist'))
                 else:
                     # invalid form data
