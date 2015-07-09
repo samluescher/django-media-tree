@@ -49,7 +49,7 @@ class FileNodeForm(FormBase):
             allowed_types = app_settings.MEDIA_TREE_ROOT_ALLOWED_NODE_TYPES
 
         if allowed_types and len(allowed_types) and not self.cleaned_data['node_type'] in allowed_types:
-            self.add_error('_ref_node_id', _('Can\'t save media object in this folder. Please select an appropriate parent folder.'))
+            self.add_error('_ref_node_id', _('Can\'t save media object in this folder; please select a valid parent folder.'))
 
         return super(FileNodeForm, self).clean()
 
