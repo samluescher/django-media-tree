@@ -24,11 +24,15 @@ from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.options import csrf_protect_m
 from django.template.loader import render_to_string
+from django.shortcuts import render_to_response
+from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
+from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils.html import escape
 from django.template.defaultfilters import filesizeformat
 from django.db import models
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 
 import os
 
@@ -236,24 +240,28 @@ class FileNodeAdmin(TreeAdmin):
         return self.add_view(request, form_url, extra_context)
 
     @csrf_protect_m
-    def upload_file_view(self, request):
+    def upload_file_view(self, request, extra_context=None):
         try:
             if not self.has_add_permission(request):
-                raise PermissionDenied
+                raise PermissionDenied()
 
-            self.init_parent_folder(request)
+            #self.init_parent_folder(request)
 
             if request.method == 'POST':
                 form = UploadForm(request.POST, request.FILES)
                 if form.is_valid():
-                    node = FileNode(**form.cleaned_data)
+                    node = form.save(commit=False)
                     self.save_model(request, node, None, False)
 
                     # Respond with success
                     if request.is_ajax():
                         return HttpResponse(json.dumps({'success': True}), content_type="application/json")
                     else:
-                        messages.info(request, _('Successfully uploaded file %s.') % node.name)
+                        parent = node.get_parent()
+                        if parent:
+                            messages.info(request, _('Successfully uploaded file "%s" to "%s".') % (node, parent))
+                        else:
+                            messages.info(request, _('Successfully uploaded file "%s".') % node)
                         return HttpResponseRedirect(reverse('admin:media_tree_filenode_changelist'))
                 else:
                     # invalid form data
@@ -268,7 +276,12 @@ class FileNodeAdmin(TreeAdmin):
                 raise ViewDoesNotExist
             if request.method == 'GET':
                 form = UploadForm()
-            return render_to_response('admin/media_tree/filenode/upload_form.html', {'form': form},
+            context = dict(self.admin_site.each_context(),
+                form=form,
+                app_label=self.model._meta.app_label
+            )
+            context.update(extra_context or {})
+            return render_to_response('admin/media_tree/filenode/upload_form.html', context,
                 context_instance=RequestContext(request))
 
         except Exception as e:
