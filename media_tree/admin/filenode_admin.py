@@ -56,9 +56,7 @@ class FileNodeAdmin(TreeAdmin):
 
     class Media:
         js = [
-            #os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery-1.7.1.min.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'js', 'jquery.init.js').replace("\\","/"),
-            os.path.join(STATIC_SUBDIR, 'lib/jquery', 'jquery.cookie.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'lib/jquery.fineuploader-4.4.0', 'jquery.fineuploader-4.4.0.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'js', 'filenode_changelist.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js').replace("\\","/"),
