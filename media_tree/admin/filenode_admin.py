@@ -86,6 +86,16 @@ class FileNodeAdmin(TreeAdmin):
             )
         }
 
+    def get_queryset(self, request):
+        if get_request_attr(request, 'list_type', None) == 'stream':
+            return admin.ModelAdmin.get_queryset(self, request).exclude(node_type=FileNode.FOLDER).order_by('-modified')
+        else:
+            return super(FileNodeAdmin, self).get_queryset(request)
+
+    def get_thumbnail_size(self, request):
+        thumb_size_key = get_request_attr(request, 'thumbnail_size') or 'default'
+        return app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_key]
+
     def node_preview(self, node, icons_only=False):
         request = get_current_request()
         template = 'admin/media_tree/filenode/includes/preview.html'
@@ -102,9 +112,7 @@ class FileNodeAdmin(TreeAdmin):
         }
 
         if not icons_only:
-            thumb_size_key = get_request_attr(request, 'thumbnail_size') or 'default'
-            context['thumbnail_size'] = app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_key]
-            thumb = thumbnail_backend.get_thumbnail(context['preview_file'], {'size': context['thumbnail_size']})
+            thumb = thumbnail_backend.get_thumbnail(context['preview_file'], {'size': self.get_thumbnail_size(request)})
             context['thumb'] = thumb
 
         preview = render_to_string(template, context).strip()
@@ -224,6 +232,20 @@ class FileNodeAdmin(TreeAdmin):
         return url_patterns
 
     def init_changelist_view_options(self, request):
+        context = {}
+
+        if 'list_type' in request.GET:
+            request.GET = request.GET.copy()
+            list_type = request.GET.get('list_type')
+            del request.GET['list_type']
+            if list_type == 'stream':
+                request.session['list_type'] = list_type
+            else:
+                request.session['list_type'] = None
+
+        set_request_attr(request, 'list_type', request.session['list_type'])
+        context.update({'list_type': request.session['list_type']})
+
         if 'thumbnail_size' in request.GET:
             request.GET = request.GET.copy()
             thumb_size_key = request.GET.get('thumbnail_size')
@@ -235,12 +257,13 @@ class FileNodeAdmin(TreeAdmin):
         set_request_attr(request, 'thumbnail_size', thumb_size_key)
         backend = get_media_backend()
         if backend and backend.supports_thumbnails():
-            return {
+            context.update({
                 'thumbnail_sizes': app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES,
-                'thumbnail_size_key': thumb_size_key
-            }
-        else:
-            return {}
+                'thumbnail_size_key': thumb_size_key,
+                'thumbnail_size': self.get_thumbnail_size(request),
+            })
+
+        return context
 
     def get_upload_form(self, request):
         target_folder_id = request.session.get('target_folder_id', None)
@@ -258,7 +281,7 @@ class FileNodeAdmin(TreeAdmin):
         extra_context = extra_context or {}
         extra_context.update(self.init_changelist_view_options(request))
         extra_context.update({
-            'upload_form': self.get_upload_form(request)
+            'upload_form': self.get_upload_form(request),
         })
 
         return super(FileNodeAdmin, self).changelist_view(request, extra_context)

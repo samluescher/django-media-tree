@@ -1,5 +1,5 @@
 {% extends "admin/tree_change_list.html" %}
-{% load i18n %}
+{% load i18n media_tree_admin %}
 
 {% block extrahead %}
 {{ block.super }}
@@ -48,3 +48,10 @@ it is embedded here.
     </ul>
 {% endblock %}
 
+{% block result_list %}
+{% if list_type == 'stream' %}
+{% result_tree_flat cl request %}
+{% else %}
+{{ block.super }}
+{% endif %}
+{% endblock %}

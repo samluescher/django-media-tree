@@ -1,6 +1,11 @@
-{% spaceless %}
-<li class="thumbnail-sizes">
+{% spaceless %}{% load i18n %}
+<li class="view-options thumbnail-sizes square">
     {% for key, size in thumbnail_sizes.items %}
-        <a class="{% if key == thumbnail_size_key %}active{% endif %}" href="?thumbnail_size={{ key }}"><span class="icon" style="width: {% widthratio size.0 8 1 %}px; height: {% widthratio size.1 8 1 %}px;"></span><span class="label">{{ key }}</span></a>
+    <a class="{% if key == thumbnail_size_key %}active{% endif %}" href="?thumbnail_size={{ key }}"><span class="icon" style="width: {% widthratio size.0 8 1 %}px; height: {% widthratio size.1 8 1 %}px;"></span><span class="label">{{ key }}</span></a>
     {% endfor %}
+</li>
+<li class="view-options">
+    <a class="{% if not list_type %}active{% endif %}" href="?list_type="><span class="label">{% trans "Tree" %}</span></a>
+    <a class="{% if list_type == 'stream' %}active{% endif %}" href="?list_type=stream"><span class="label">{% trans "Stream" %}</span></a>
+</li>
 {% endspaceless %}
