@@ -20,6 +20,11 @@ class FileNodeForm(FormBase):
         super(FileNodeForm, self).__init__(*args, **kwargs)
         self.fields['_ref_node_id'].label = _('Containing folder')
 
+    @classmethod
+    def add_subtree(cls, for_node, node, options):
+        if node.is_folder():
+            return super(FileNodeForm, cls).add_subtree(for_node, node, options)
+
     def clean_node_type(self):
         return int(self.cleaned_data['node_type'])
 
