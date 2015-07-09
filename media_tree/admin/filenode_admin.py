@@ -41,6 +41,7 @@ from treebeard.admin import TreeAdmin
 from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.options import csrf_protect_m
+from django.contrib.admin.views.main import SEARCH_VAR
 from django.template.loader import render_to_string
 from django.shortcuts import render_to_response
 from django.core.exceptions import PermissionDenied
@@ -234,6 +235,7 @@ class FileNodeAdmin(TreeAdmin):
     def init_changelist_view_options(self, request):
         context = {}
 
+        list_type = None
         if 'list_type' in request.GET:
             request.GET = request.GET.copy()
             list_type = request.GET.get('list_type')
@@ -242,9 +244,15 @@ class FileNodeAdmin(TreeAdmin):
                 request.session['list_type'] = list_type
             else:
                 request.session['list_type'] = None
+                list_type = None
 
-        set_request_attr(request, 'list_type', request.session['list_type'])
-        context.update({'list_type': request.session['list_type']})
+        search = request.GET.get(SEARCH_VAR, None)
+        if search and search != '':
+            list_type = 'stream'
+
+        list_type = list_type or request.session.get('list_type', None)
+        set_request_attr(request, 'list_type', list_type)
+        context.update({'list_type': list_type})
 
         if 'thumbnail_size' in request.GET:
             request.GET = request.GET.copy()
