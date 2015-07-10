@@ -12,7 +12,6 @@ install_reqs = parse_requirements('requirements.txt', session=False)
 # e.g. ['django==1.5.1', 'mezzanine==1.4.6']
 REQS = [str(ir.req) for ir in install_reqs]
 
-
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 README = read('README.rst')
