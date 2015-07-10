@@ -3,11 +3,19 @@ import os
 import sys
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
+from pip.req import parse_requirements
+
+# parse_requirements() returns generator of pip.req.InstallRequirement objects
+install_reqs = parse_requirements('requirements.txt')
+
+# reqs is a list of requirement
+# e.g. ['django==1.5.1', 'mezzanine==1.4.6']
+REQS = [str(ir.req) for ir in install_reqs]
 
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
+README = read('README.rst')
 
 class Tox(TestCommand):
     user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
@@ -31,18 +39,19 @@ class Tox(TestCommand):
         sys.exit(errno)
 
 setup(
-    name='django-media-tree',
-    version='0.8.1',
-    url='http://github.com/samluescher/django-media-tree',
-    license='BSD',
+    name = "django-media-tree",
+    version = "0.9.0",
+    install_requires=REQS,
+    url = 'http://github.com/samluescher/django-media-tree',
+    license = 'BSD',
     description="Django Media Tree is a Django app for managing your website's "
                 "media files in a folder tree, and using them in your own applications.",
-    long_description=read('README.rst'),
+    long_description = README,
 
-    author=u'Samuel Luescher',
-    author_email='sam at luescher dot org',
+    author = u'Samuel Luescher',
+    author_email = 'sam at samluescher dot net',
 
-    packages=find_packages(),
+    packages = find_packages(),
     include_package_data=True,
 
     classifiers=[
