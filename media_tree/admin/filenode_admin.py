@@ -241,7 +241,7 @@ class FileNodeAdmin(TreeAdmin):
             target_folder = FileNode.objects.get(pk=target_folder_id)
         except FileNode.DoesNotExist:
             request.session['target_folder_id'] = None
-        upload_form = UploadForm(initial={'_ref_node_id': target_folder.pk if target_folder else None})
+        upload_form = UploadForm(initial={'_ref_node_id': request.session.get('target_folder_id', None)})
         del upload_form.fields['file']
         upload_form.fields['_ref_node_id'].label = _('To folder')
         return upload_form
