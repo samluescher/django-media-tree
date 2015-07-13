@@ -27,7 +27,7 @@ jQuery(function($) {
     $.makeChangelistRow = function(cols, row)
     {
         if ($('#changelist table').length == 0) {
-            var table = $('<table cellspacing="0"><thead><th>&nbsp;</th><th>'+gettext('Name')+'</th><th>'+gettext('Size')+'</th></table>')
+            var table = $('<table cellspacing="0"><thead><th>&nbsp;</th><th>'+gettext('Media object')+'</th><th>'+gettext('Size')+'</th></table>')
             var tbody = $('<tbody></tbody>');
             table.append(tbody);
             $('#changelist').append(table);

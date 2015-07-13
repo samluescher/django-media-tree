@@ -48,7 +48,6 @@ jQuery(function($) {
                 row.qqFileId = id;
 
                 $('.cancel', row).on('click', function() {
-                    console.log('cancel', id);
                     uploader.fineUploader('cancel', id);
                 });
 
