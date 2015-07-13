@@ -27,3 +27,10 @@ def result_tree_flat(context, cl, request):
         #'filtered': is_filtered_cl(cl, request),
         'results': (th_for_result(cl, res) for res in list(cl.result_list)),
     }
+
+
+@register.simple_tag(takes_context=True)
+def query_string(context, *args, **kwargs):
+    get = context['request'].GET.copy()
+    get.update(kwargs)
+    return '?' + '&'.join(["%s=%s" % (key, value) for key, value in get.items()])

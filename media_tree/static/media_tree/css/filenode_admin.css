@@ -125,7 +125,7 @@ background-color: #FF0;
 }
 
 .view-options a .icon {
-    border: 1px solid #bbb;
+    border: 1px solid #999;
     display: inline-block;
     border-radius: 2px;
     vertical-align: middle;
@@ -136,7 +136,7 @@ background-color: #FF0;
 }
 
 .view-options a .label {
-    color: #bbb;
+    color: #999;
 }
 
 .view-options a.active .label {
