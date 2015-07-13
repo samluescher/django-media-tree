@@ -54,6 +54,15 @@ class FileNodeForm(FormBase):
         return super(FileNodeForm, self).clean()
 
 
+if not hasattr(FileNodeForm, 'add_error'):
+    # Backporting form.add_error() to Django < 1.7
+    from django.forms.util import ErrorList
+    def _add_error(self, field_name, message):
+        errors = self._errors.setdefault(field_name, ErrorList())
+        errors.append(message)
+    FileNodeForm.add_error = _add_error
+
+
 class MoveForm(FileNodeForm):
     class Meta(FileNodeForm.Meta):
         fields = ('_ref_node_id', '_position', 'node_type')

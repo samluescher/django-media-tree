@@ -1,9 +1,7 @@
 # TODO: Files are not renumbered when name exists within parent.
 # TODO: Bring admin actions back
 # TODO: Switching view options must conserve other GET params
-# TODO: Backwards support, AttributeError at /admin/media_tree/filenode/upload/ 'UploadForm' object has no attribute 'add_error'
-# TODO: Only last upload success message is shown on page reload, they end up being cleared
-#   on upload_file_view()
+# TODO: Only last upload success message is shown on page reload, they end up being cleared on upload_file_view()
 
 
 # Medium priority:
