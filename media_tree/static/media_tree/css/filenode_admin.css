@@ -194,7 +194,8 @@ background-color: #FF0;
 }
 
 #changelist .filenode-flat .name {
-    max-width: 150px;
+    max-width: 100%;
     overflow: hidden;
     display: block;
+    margin-top: .5em;
 }

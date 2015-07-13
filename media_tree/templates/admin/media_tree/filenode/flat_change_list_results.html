@@ -1,11 +1,7 @@
-{% load cycle from future  %}
-
 <div class="results-flat clearfix">
     {% for result in results %}
-    {% with node=result preview_file=result.get_preview_file %}
-        <p class="filenode-flat">
-        {% include "admin/media_tree/filenode/includes/widget_preview.html" %}
-        </p>
-    {% endwith %}
+    <p class="filenode-flat">
+        {{ result|safe }}
+    </p>
     {% endfor %}
 </div>

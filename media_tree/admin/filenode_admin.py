@@ -1,6 +1,7 @@
+# TODO: Detect correct column on changelist to insert upload info
+# TODO: Switching view options must conserve other GET params, such as _popup
 # TODO: Files are not renumbered when name exists within parent.
 # TODO: Bring admin actions back
-# TODO: Switching view options must conserve other GET params
 # TODO: Only last upload success message is shown on page reload, they end up being cleared on upload_file_view()
 
 
