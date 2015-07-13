@@ -1,12 +1,21 @@
-
-# TODO: _ref_node_id -- use foreignkey widget that only displays folders (also for move and upload forms)
-# TODO: ghost can't be dropped properly if it contains a tall image
-# TODO: search results are falsely indented -- display as stream always?
-# TODO: how to present top-level folders in collapsed form initially?
-# TODO: restore breadcrumbs to show path
 # TODO: Files are not renumbered when name exists within parent.
 # TODO: Bring admin actions back
 # TODO: Switching view options must conserve other GET params
+# TODO: Backwards support, AttributeError at /admin/media_tree/filenode/upload/ 'UploadForm' object has no attribute 'add_error'
+# TODO: Only last upload success message is shown on page reload, they end up being cleared
+#   on upload_file_view()
+
+
+# Medium priority:
+#
+# TODO: _ref_node_id -- use foreignkey widget that only displays folders (also for move and upload forms)
+#   would be easier if MoveNodeForm used a ModelChoiceField
+# TODO: ghost can't be dropped properly if it contains a tall image. Needs a treebeard fix because
+#   treebeard expects all rows to be the same height
+# TODO: how to present top-level folders in collapsed form initially?
+# TODO: restore breadcrumbs to show path, and allow a subfolder to be opened via ?parent param
+# TODO: move several nodes at the same time
+# TODO: copy-drag nodes with alt key
 
 
 # Low priority:
@@ -295,8 +304,10 @@ class FileNodeAdmin(TreeAdmin):
                 else:
                     # invalid form data
                     if request.is_ajax():
-                        return HttpResponse(json.dumps({'error': ' '.join(
-                            [item for sublist in form.errors.values() for item in sublist])}),
+                        error_messages = ' '.join(
+                            [item for sublist in form.errors.values() for item in sublist])
+                        messages.error(request, error_messages)
+                        return HttpResponse(json.dumps({'error': error_messages}),
                             content_type="application/json", status=403)
 
             # Form is rendered for troubleshooting XHR upload.
