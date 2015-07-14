@@ -8,7 +8,7 @@
 #changelist td.drag-handler {
     padding: 0;
     text-align: center;
-    vertical-align: center;
+    vertical-align: middle;
 }
 
 #changelist .drag-handler span {
@@ -72,7 +72,7 @@
     left: 100px;
     text-align: center;
     border: 1px solid #000;
-    vertical-align: center;
+    vertical-align: middle;
 }
 
 /*tr:target { I'm handling the highlight with js to have more control
@@ -107,6 +107,10 @@ background-color: #FF0;
 
 /* Changelist action button additions */
 
+.object-tools li.view-options a:hover, .object-tools li.view-options:hover a {
+    background-color: transparent;
+}
+
 .object-tools li.view-options > a {
     height: 20px;
     line-height: 18px !important;
@@ -139,7 +143,7 @@ background-color: #FF0;
     color: #999;
 }
 
-.view-options a.active .label {
+.view-options a.active .label, .view-options a:hover .label {
     color: #444;
 }
 
@@ -198,4 +202,33 @@ background-color: #FF0;
     overflow: hidden;
     display: block;
     margin-top: .5em;
+}
+
+/* Clearfix via http://nicolasgallagher.com/micro-clearfix-hack/ */
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.clearfix {
+    *zoom: 1;
 }
