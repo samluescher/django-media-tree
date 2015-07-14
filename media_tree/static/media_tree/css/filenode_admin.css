@@ -182,13 +182,15 @@ background-color: #FF0;
     background: lightgray;
 }
 
+/* Stream view */
+
 #changelist .results-flat {
     max-width: 90%;
 }
 
 #changelist .filenode-flat {
     width: 150px;
-    height: 150px;
+    height: 170px;
     float: left;
     text-align: center;
 }
