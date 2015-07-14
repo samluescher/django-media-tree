@@ -1,8 +1,8 @@
+# TODO: Can't move as sibling due to valid_choices being restricted to folders
 # TODO: Detect correct column on changelist to insert upload info (e.g. in stream view)
 # TODO: Files are not renumbered when name exists within parent.
 # TODO: Bring admin actions back
 # TODO: Only last upload success message is shown on page reload, they end up being cleared on upload_file_view()
-
 
 # Medium priority:
 #
