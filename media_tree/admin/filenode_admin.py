@@ -210,7 +210,7 @@ class FileNodeAdmin(TreeAdmin):
             # Django 1.6
             from django.conf.urls import patterns, url
         urls = super(FileNodeAdmin, self).get_urls()
-        info = self.model._meta.app_label, self.model._meta.module_name
+        info = self.model._meta.app_label, self.model._meta.model_name
         url_patterns = patterns('',
             url(r'^jsi18n/', self.admin_site.admin_view(self.i18n_javascript), name='media_tree_jsi18n'),
             url(r'^upload/$',
