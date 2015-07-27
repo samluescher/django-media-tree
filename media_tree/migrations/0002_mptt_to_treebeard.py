@@ -29,4 +29,25 @@ class Migration(migrations.Migration):
             model_name='filenode',
             name='parent',
         ),
+
+        migrations.AlterField(
+            model_name='filenode',
+            name='depth',
+            field=models.PositiveIntegerField(db_index=True),
+        ),
+        migrations.AlterField(
+            model_name='filenode',
+            name='lft',
+            field=models.PositiveIntegerField(db_index=True),
+        ),
+        migrations.AlterField(
+            model_name='filenode',
+            name='rgt',
+            field=models.PositiveIntegerField(db_index=True),
+        ),
+        migrations.AlterField(
+            model_name='filenode',
+            name='tree_id',
+            field=models.PositiveIntegerField(db_index=True),
+        )
     ]
