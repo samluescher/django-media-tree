@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 class MediaTreeImagePluginForm(MediaTreePluginFormBase):
     class Meta:
         model = MediaTreeImage
+        fields = '__all__'
 
 
 class MediaTreeImagePlugin(CMSPluginBase, ImageNodeDetailMixin):
