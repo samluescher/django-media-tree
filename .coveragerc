@@ -1,0 +1,3 @@
+[run]
+source = media_tree
+omit = media_tree/tests/*

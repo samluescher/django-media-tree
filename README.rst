@@ -1,10 +1,28 @@
-Django Media Tree
-*****************
+Django Media Tree |latest-version|
+**********************************
+
+|travis-ci| |coveralls| |downloads| |license|
 
 Django Media Tree is a Django app for managing your website's media files in a
 folder tree, and using them in your own applications.
 
-Key features
+.. |latest-version| image:: https://img.shields.io/pypi/v/django-media-tree.svg
+   :alt: Latest version on PyPI
+   :target: https://pypi.python.org/pypi/django-media-tree
+.. |travis-ci| image:: https://travis-ci.org/samluescher/django-media-tree.svg
+   :alt: Build status
+   :target: https://travis-ci.org/samluescher/django-media-tree
+.. |coveralls| image:: https://coveralls.io/repos/samluescher/django-media-tree/badge.svg
+   :alt: Test coverage
+   :target: https://coveralls.io/r/samluescher/django-media-tree
+.. |downloads| image:: https://img.shields.io/pypi/dm/django-media-tree.svg
+   :alt: Monthly downloads from PyPI
+   :target: https://pypi.python.org/pypi/django-media-tree
+.. |license| image:: https://img.shields.io/pypi/l/django-media-tree.svg
+   :alt: Software license
+   :target: https://github.com/samluescher/django-media-tree/blob/master/LICENSE
+
+Key Features
 ============
 
 * Enables you to organize all of your site media in nested folders.
@@ -14,10 +32,12 @@ Key features
 * Speedy AJAX-enhanced admin interface with drag & drop and dynamic resizing.
 * Upload queue with progress indicators (using Fine Uploader).
 * Add metadata to all media to improve accessibility of your web sites.
-* Integration with `Django CMS <http://www.django-cms.org>`_. Plugins include:
-  image, slideshow, gallery, download list -- create your own! 
+* Integration with `Django CMS`_. Plugins include: image, slideshow, gallery,
+  download list -- create your own!
 
-Full documentation
-==================
+.. _Django CMS: http://www.django-cms.org/
 
-http://readthedocs.org/docs/django-media-tree/
+Documentation
+=============
+
+http://django-media-tree.readthedocs.org/
