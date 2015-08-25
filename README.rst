@@ -15,6 +15,9 @@ folder tree, and using them in your own applications.
 .. |coveralls| image:: https://coveralls.io/repos/samluescher/django-media-tree/badge.svg
    :alt: Test coverage
    :target: https://coveralls.io/r/samluescher/django-media-tree
+.. |health| image:: https://landscape.io/github/samluescher/django-media-tree/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/samluescher/django-media-tree/master
+   :alt: Code Health
 .. |downloads| image:: https://img.shields.io/pypi/dm/django-media-tree.svg
    :alt: Monthly downloads from PyPI
    :target: https://pypi.python.org/pypi/django-media-tree
