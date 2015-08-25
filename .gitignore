@@ -1,7 +1,7 @@
 /.coverage
 /.tox/
 /dist/
+/django-media-tree.egg/
 /django_media_tree.egg-info/
-/django-media-tree.komodoproject/
 /_thumbs/
 *.py[co]
