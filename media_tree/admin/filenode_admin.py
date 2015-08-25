@@ -49,6 +49,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.utils.html import escape
+from django.utils.encoding import force_text
 from django.template.defaultfilters import filesizeformat
 from django.db import models
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
@@ -334,7 +335,7 @@ class FileNodeAdmin(TreeAdmin):
                     # invalid form data
                     if request.is_ajax():
                         error_messages = ' '.join(
-                            [item for sublist in form.errors.values() for item in sublist])
+                            [force_text(item) for sublist in form.errors.values() for item in sublist])
                         messages.error(request, error_messages)
                         return HttpResponse(json.dumps({'error': error_messages}),
                             content_type="application/json", status=403)
