@@ -8,10 +8,10 @@ from django.contrib import admin
 
 
 class MediaTreeListingPluginForm(MediaTreePluginFormInlinePositioningBase):
-    
     class Meta:
         model = MediaTreeListing
-    
+        fields = '__all__'
+
 
 class MediaTreeListingItemInline(admin.StackedInline):
     model = MediaTreeListingItem

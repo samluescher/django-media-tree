@@ -13,6 +13,7 @@ from django.contrib import admin
 class MediaTreeSlideshowPluginForm(MediaTreePluginFormInlinePositioningBase):
     class Meta:
         model = MediaTreeSlideshow
+        fields = '__all__'
 
 
 class MediaTreeSlideshowItemInline(admin.StackedInline):

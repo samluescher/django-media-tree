@@ -14,6 +14,7 @@ from django.http import Http404
 class MediaTreeGalleryPluginForm(MediaTreePluginFormInlinePositioningBase):
     class Meta:
         model = MediaTreeGallery
+        fields = '__all__'
 
 
 class MediaTreeGalleryItemInline(admin.StackedInline):
