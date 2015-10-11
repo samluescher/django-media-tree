@@ -6,7 +6,11 @@ Form components for working with trees.
 from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
 from django.forms.util import ErrorList
-from django.utils.encoding import smart_unicode
+try:
+    from django.utils.encoding import smart_unicode
+except ImportError:
+    from django.utils.encoding import smart_text as smart_unicode
+
 from django.utils.html import conditional_escape, mark_safe
 from django.utils.translation import ugettext_lazy as _
 
@@ -41,12 +45,12 @@ class TreeNodeChoiceField(forms.ModelChoiceField):
 
 class TreeNodeMultipleChoiceField(TreeNodeChoiceField, forms.ModelMultipleChoiceField):
     """A ModelMultipleChoiceField for tree nodes."""
-    
+
     def __init__(self, *args, **kwargs):
         self.level_indicator = kwargs.pop('level_indicator', u'---')
         if kwargs.get('required', True) and not 'empty_label' in kwargs:
             kwargs['empty_label'] = None
-        
+
         # For some reason ModelMultipleChoiceField constructor passes kwargs
         # as args to its super(), which causes 'multiple values for keyword arg'
         # error sometimes. So we skip it (that constructor does nothing anyway!)
@@ -147,7 +151,7 @@ class MoveNodeForm(forms.Form):
             self.node.move_to(self.cleaned_data['target'],
                               self.cleaned_data['position'])
             return self.node
-        except InvalidMove, e:
+        except InvalidMove as e:
             self.errors[NON_FIELD_ERRORS] = ErrorList(e)
             raise
 
