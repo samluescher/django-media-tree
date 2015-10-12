@@ -111,3 +111,7 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
     # 'django.template.loaders.eggs.Loader',
 )
+
+FIXTURE_DIRS = (
+    os.path.join(BASE_DIR, 'fixtures'),
+)
