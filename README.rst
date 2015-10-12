@@ -1,7 +1,7 @@
 Django Media Tree |latest-version|
 **********************************
 
-|travis-ci| |coveralls| |downloads| |license|
+|travis-ci| |coveralls| |health| |downloads| |license|
 
 Django Media Tree is a Django app for managing your website's media files in a
 folder tree, and using them in your own applications.
@@ -44,3 +44,19 @@ Documentation
 =============
 
 http://django-media-tree.readthedocs.org/
+
+Development
+===========
+
+Contributors should make sure the demo project builds successfully with their
+changes before placing a pull request on GitHub.  This is best done by running
+the tests.
+
+* Either: ``python setup.py -q test`` (run ``tox`` against all supported versions)
+* Or: ``python setup.py test -a --skip-missing-interpreters`` (skip Python
+  interpreters that are not available)
+* Or: ``python setup.py test -a "-e py27-django16"`` (only test the Python 2.7
+  + Django 1.6 combination)
+
+It's also advisable to run ``flake8`` and address complaints before pushing
+changes to ensure code health increases.
