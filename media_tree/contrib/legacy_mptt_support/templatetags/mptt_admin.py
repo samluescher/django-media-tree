@@ -7,7 +7,11 @@ from django.utils.html import escape, conditional_escape
 from django.utils.text import capfirst
 from django.utils.safestring import mark_safe
 from django.utils.translation import get_date_formats
-from django.utils.encoding import smart_unicode, force_unicode
+try:
+    from django.utils.encoding import force_unicode, smart_unicode
+except ImportError:
+    from django.utils.encoding import force_text as force_unicode, smart_text as smart_unicode
+
 from django.template import Library
 
 from django.contrib.admin.templatetags.admin_list import _boolean_icon, result_headers
@@ -24,7 +28,7 @@ MPTT_ADMIN_LEVEL_INDENT = getattr(settings, 'MPTT_ADMIN_LEVEL_INDENT', 10)
 def mptt_items_for_result(cl, result, form):
     first = True
     pk = cl.lookup_opts.pk.attname
-    
+
     # figure out which field to indent
     mptt_indent_field = getattr(cl.model_admin, 'mptt_indent_field', None)
     if not mptt_indent_field:
@@ -41,10 +45,10 @@ def mptt_items_for_result(cl, result, form):
                 # first model field, use this one
                 mptt_indent_field = field_name
                 break
-    
+
     # figure out how much to indent
     mptt_level_indent = getattr(cl.model_admin, 'mptt_level_indent', MPTT_ADMIN_LEVEL_INDENT)
-    
+
     for field_name in cl.list_display:
         row_class = ''
         f = None
@@ -121,13 +125,13 @@ def mptt_items_for_result(cl, result, form):
                 result_repr = escape(field_val)
         if force_unicode(result_repr) == '':
             result_repr = mark_safe('&nbsp;')
-        
+
         if field_name == mptt_indent_field:
             level = getattr(result, result._mptt_meta.level_attr)
             padding_attr = ' style="padding-left:%spx"' % (5 + mptt_level_indent * level)
         else:
             padding_attr = ''
-        
+
         # If list_display_links not defined, add the link tag to the first field
         if (first and not cl.list_display_links) or field_name in cl.list_display_links:
             table_tag = {True:'th', False:'td'}[first]
@@ -173,6 +177,6 @@ def mptt_result_list(cl):
     return {'cl': cl,
             'result_headers': list(result_headers(cl)),
             'results': list(mptt_results(cl))}
-            
+
 # custom template is merely so we can strip out sortable-ness from the column headers
 mptt_result_list = register.inclusion_tag("admin/mptt_change_list_results.html")(mptt_result_list)

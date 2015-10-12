@@ -1,9 +1,9 @@
-# TODO: If in subfolder view, reset_expanded_folders_pk is called and expanded_folders are not stored 
+# TODO: If in subfolder view, reset_expanded_folders_pk is called and expanded_folders are not stored
 # TODO: Metadata tooltip is too narrow and text gets too wrapped
 # TODO: Make renaming of files possible.
 # TODO: When files are copied, they lose their human-readable name. Should actually create "File Copy 2.txt".
-# TODO: Bug: With child folder changelist view and child of child expanded -- after uploading a file, the child 
-#       of child has the expanded triangle, 
+# TODO: Bug: With child folder changelist view and child of child expanded -- after uploading a file, the child
+#       of child has the expanded triangle,
 #       but no child child child objects are visible.
 # TODO: after XHR upload, New Folder button does not work
 #
@@ -43,7 +43,10 @@ from mptt.forms import TreeNodeChoiceField
 import django
 from django.contrib.admin import actions
 from django.contrib.admin.options import csrf_protect_m
-from django.utils.encoding import force_unicode
+try:
+    from django.utils.encoding import force_unicode
+except ImportError:
+    from django.utils.encoding import force_text as force_unicode
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, render_to_response
 from django.contrib import admin
@@ -92,11 +95,11 @@ class FileNodeAdmin(MPTTModelAdmin):
       page reloads.
     * The file listing supports drag & drop. Drag files and folders to another
       folder to move them. Hold the Alt key to copy them.
-    * You can set up an upload queue, which enables you to upload large files 
-      and monitor the process via the corresponding progress bars. 
+    * You can set up an upload queue, which enables you to upload large files
+      and monitor the process via the corresponding progress bars.
     * Drag the slider above the file listing to dynamically resize thumbnails.
-    * You can select files and execute various special actions on them, for 
-      instance download the selection as a ZIP archive. 
+    * You can select files and execute various special actions on them, for
+      instance download the selection as a ZIP archive.
 
     """
 
@@ -141,7 +144,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         if db_field.name == 'parent' and issubclass(db_field.rel.to, FileNode):
             # overriding formfield_for_dbfield, thus bypassign both Django's and mptt's
             # formfield_for_foreignkey method, and also preventing Django from wrapping
-            # field with RelatedFieldWidgetWrapper ("add" button resulting in a file add form) 
+            # field with RelatedFieldWidgetWrapper ("add" button resulting in a file add form)
             valid_targets = FileNode.tree.filter(**db_field.rel.limit_choices_to)
             request = kwargs['request']
             node = get_request_attr(request, 'save_node', None)
@@ -464,7 +467,7 @@ class FileNodeAdmin(MPTTModelAdmin):
         set_request_attr(request, 'save_node_type', node_type)
         response = super(FileNodeAdmin, self).add_view(request, form_url, extra_context)
         if isinstance(response, HttpResponseRedirect) and not parent_folder.is_top_node():
-            return HttpResponseRedirect(reverse('admin:media_tree_filenode_folder_expand', 
+            return HttpResponseRedirect(reverse('admin:media_tree_filenode_folder_expand',
                 args=(parent_folder.pk,)))
         return response
 
@@ -535,7 +538,7 @@ class FileNodeAdmin(MPTTModelAdmin):
                             [item for sublist in form.errors.values() for item in sublist])}),
                             content_type="application/json", status=403)
 
-            # Form is rendered for troubleshooting XHR upload. 
+            # Form is rendered for troubleshooting XHR upload.
             # If this form works, the problem is not server-side.
             if not settings.DEBUG:
                 raise ViewDoesNotExist
@@ -546,7 +549,7 @@ class FileNodeAdmin(MPTTModelAdmin):
 
         except Exception as e:
             if not settings.DEBUG and request.is_ajax():
-                return HttpResponse(json.dumps({'error': ugettext('Server Error')}), 
+                return HttpResponse(json.dumps({'error': ugettext('Server Error')}),
                     content_type="application/json")
             else:
                 raise

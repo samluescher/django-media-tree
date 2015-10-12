@@ -22,7 +22,7 @@ class FileNodeActionsForm(forms.Form):
         super(FileNodeActionsForm, self).__init__(*args, **kwargs)
         valid_targets = FileNode._tree_manager.filter(node_type=FileNode.FOLDER)
         self.selected_nodes = queryset
-        
+
         selected_nodes_pk = []
         if queryset:
             for node in queryset:
@@ -69,17 +69,17 @@ class MoveSelectedForm(FileNodeActionsWithUserForm):
 
     def move_node(self, node, target):
         try:
-            # Reload object because tree attributes may be out of date 
+            # Reload object because tree attributes may be out of date
             node = node.__class__.objects.get(pk=node.pk)
             descendant_count = node.get_descendants().count()
-            
+
             if node.parent != target:
                 node.parent = target
                 node.attach_user(self.user, change=True)
                 node.save()
                 self.success_count += 1 + descendant_count
             return node
-        except InvalidMove, e:
+        except InvalidMove as e:
             self.errors[NON_FIELD_ERRORS] = ErrorList(e)
             raise
 
@@ -146,7 +146,7 @@ class ChangeMetadataForSelectedForm(FileNodeActionsWithUserForm):
     action_name = 'change_metadata_for_selected'
     enable_target_node_field = False
     confirm_fields = []
-    
+
     recursive = forms.BooleanField(label=_('Change metadata of all child objects'), required=False)
 
     def __init__(self, *args, **kwargs):
@@ -199,7 +199,7 @@ class DeleteStorageFilesForm(StorageFilesForm):
 
     def __init__(self, *args, **kwargs):
         super(DeleteStorageFilesForm, self).__init__(*args, **kwargs)
-        self.fields['confirm'] = confirm = forms.BooleanField(label=_('Yes, I am sure that I want to delete the selected files from storage:'))  
+        self.fields['confirm'] = confirm = forms.BooleanField(label=_('Yes, I am sure that I want to delete the selected files from storage:'))
 
     def save(self):
         """
