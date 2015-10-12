@@ -2,7 +2,10 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from media_tree import media_types
 from django.utils.datastructures import SortedDict
-from builtins import chr
+try:
+    from future.builtins import chr as unichr
+except ImportError:
+    pass
 
 
 MEDIA_TREE_STORAGE = getattr(settings, 'MEDIA_TREE_STORAGE', None)
@@ -219,7 +222,7 @@ MEDIA_TREE_CONTENT_TYPE_CHOICES = (
 
 MEDIA_TREE_CONTENT_TYPES = dict(MEDIA_TREE_CONTENT_TYPE_CHOICES)
 
-MEDIA_TREE_LEVEL_INDICATOR = chr(0x00A0) * 3;
+MEDIA_TREE_LEVEL_INDICATOR = unichr(0x00A0) * 3;
 
 MEDIA_TREE_NAME_UNIQUE_NUMBERED_FORMAT = '%(name)s_%(number)i%(ext)s'
 
