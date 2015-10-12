@@ -8,11 +8,9 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
-
-	(r'^$', TemplateView.as_view(
-		template_name="media_tree/base.html"
-	)),
+urlpatterns = patterns(
+    '',
+    (r'^$', TemplateView.as_view(template_name="media_tree/base.html")),
 
     url(r'^listing/$', FileNodeListingView.as_view(
         # notice that queryset can be any iterable, for instance a list:
@@ -34,4 +32,3 @@ urlpatterns = patterns('',
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

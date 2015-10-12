@@ -35,22 +35,28 @@ setup(
     version='0.8.1',
     url='http://github.com/samluescher/django-media-tree',
     license='BSD',
-    description="Django Media Tree is a Django app for managing your website's media files in a folder tree, and using them in your own applications.",
+    description="Django Media Tree is a Django app for managing your website's "
+                "media files in a folder tree, and using them in your own applications.",
     long_description=read('README.rst'),
 
     author=u'Samuel Luescher',
     author_email='sam at luescher dot org',
 
-    packages = find_packages(),
+    packages=find_packages(),
     include_package_data=True,
 
-    classifiers = [
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Topic :: Internet :: WWW/HTTP',
     ],
 
