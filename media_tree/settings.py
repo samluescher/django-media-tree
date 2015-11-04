@@ -6,6 +6,10 @@ try:
     from future.builtins import chr as unichr
 except ImportError:
     pass
+try:
+    from builtins import chr as unichr
+except ImportError:
+    pass
 
 
 MEDIA_TREE_STORAGE = getattr(settings, 'MEDIA_TREE_STORAGE', None)
