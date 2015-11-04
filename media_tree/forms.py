@@ -10,6 +10,7 @@ class FileNodeForm(forms.ModelForm):
 
     class Meta:
         model = FileNode
+        fields = '__all__'
 
     def clean(self):
         if self.cleaned_data['parent']:
