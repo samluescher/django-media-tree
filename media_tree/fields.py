@@ -28,7 +28,7 @@ class FileNodeForeignKey(models.ForeignKey):
         self.allowed_media_types = allowed_media_types
         self.allowed_extensions = allowed_extensions
         self.level_indicator = level_indicator
-        kwargs['to'] = FileNode
+        kwargs['to'] = 'media_tree.FileNode'
         super(FileNodeForeignKey, self).__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
