@@ -1,6 +1,10 @@
 from media_tree import settings as app_settings
 from django.conf import settings
-from django.utils.importlib import import_module
+try:
+    # Python 1.7
+    from importlib import import_module
+except ImportError:
+    from django.utils.importlib import import_module
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files.storage import get_storage_class
 from django.utils.html import conditional_escape
@@ -13,8 +17,8 @@ RE_SPLITEXT = re.compile('^(\.*.*?)((\.[^\.]+)*|\.)$')
 def get_media_storage():
     klass = get_storage_class(import_path=app_settings.MEDIA_TREE_STORAGE)
     return klass()
- 
-    
+
+
 # TODO: This function should probably cache all imported modules
 def get_module_attr(path):
     i = path.rfind('.')
@@ -35,12 +39,11 @@ def autodiscover_media_extensions():
     Auto-discover INSTALLED_APPS media_extensions.py modules and fail silently when
     not present. This forces an import on them to register any media extension bits
     they may want.
-    
+
     Rip of django.contrib.admin.autodiscover()
     """
     import copy
     from django.conf import settings
-    from django.utils.importlib import import_module
     from django.utils.module_loading import module_has_submodule
 
     for app in settings.INSTALLED_APPS:
@@ -57,11 +60,11 @@ def multi_splitext(basename):
     Similar to os.path.slittext(), but with special handling for files with multiple extensions,
     such as "archive.tar.gz": Returns a list containg three elements, the first being the
     name without any extensions (taking into account hidden files/leading periods),
-    the second being the "full" extension, the third being the extension as returned by 
+    the second being the "full" extension, the third being the extension as returned by
     os.path.splitext.
-    
+
     Examples:
-        
+
         os.path.join('foo.bar')        # => ('foo', '.bar')
         multi_splitext('foo.bar')      # => ['foo', '.bar', '.bar']
 
@@ -89,11 +92,11 @@ def join_formatted(text, new_text, glue_format_if_true = u'%s%s', glue_format_if
     Joins two strings, optionally escaping the second, and using one of two
     string formats for glueing them together, depending on whether a condition
     is True or False.
-    
+
     This function is a shorthand for complicated code blocks when you want to
     format some strings and link them together. A typical use case might be:
     Wrap string B with <strong> tags, but only if it is not empty, and join it
-    with A with a comma in between, but only if A is not empty, etc. 
+    with A with a comma in between, but only if A is not empty, etc.
     """
     if condition is None:
         condition = text and new_text
@@ -109,8 +112,7 @@ def join_formatted(text, new_text, glue_format_if_true = u'%s%s', glue_format_if
 # TODO: Factor out to image extension
 def widthratio(value, max_value, max_width):
     """
-    Does the same like Django's `widthratio` template tag (scales max_width to factor value/max_value) 
+    Does the same like Django's `widthratio` template tag (scales max_width to factor value/max_value)
     """
     ratio = float(value) / float(max_value)
     return int(round(ratio * max_width))
-
