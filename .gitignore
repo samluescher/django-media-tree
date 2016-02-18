@@ -1,5 +1,7 @@
+/.cache/
 /.coverage
 /.tox/
+/build/
 /dist/
 /django-media-tree.egg/
 /django_media_tree.egg-info/
