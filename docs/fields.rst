@@ -34,7 +34,7 @@ The following example form will allow the user to select files that are under a
 specific parent folder named “Projects”::
 
     from media_tree.models import FileNode
-    from media_tree.fields import FileNodeChoiceField
+    from media_tree.forms import FileNodeChoiceField
     from django import forms
 
     class MyForm(forms.Form):

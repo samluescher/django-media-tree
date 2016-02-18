@@ -1,5 +1,5 @@
 from media_tree.extension.base_extenders import MediaDefiningExtender
-from media_tree.forms import FileForm
+from media_tree.admin.forms import FileForm
 
 
 class FormExtender(MediaDefiningExtender):

@@ -1,7 +1,7 @@
 from media_tree.models import FileNode
 from media_tree.admin.actions.utils import get_actions_context
 from media_tree.admin.actions.forms import FileNodeActionsWithUserForm, MoveSelectedForm, CopySelectedForm, ChangeMetadataForSelectedForm
-from media_tree.forms import MetadataForm
+from media_tree.admin.forms import MetadataForm
 from media_tree.utils.filenode import get_nested_filenode_list
 from django import forms
 from django.contrib import messages

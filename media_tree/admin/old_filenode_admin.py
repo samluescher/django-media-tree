@@ -17,10 +17,10 @@
 # TODO: Upload view does not enforce parent's child node type permissions (or any other form validation)
 #   -- should completely rewrite how parent_folder etc. is passed around the course of fixing that
 
-from media_tree.fields import FileNodeChoiceField
+from media_tree.forms import FileNodeChoiceField
 from media_tree.models import FileNode
-from media_tree.forms import FolderForm, FileForm, UploadForm, FileNodeForm
-from media_tree.fields import FileNodeChoiceField
+from media_tree.admin.forms import FolderForm, FileForm, UploadForm, FileNodeForm
+from media_tree.forms import FileNodeChoiceField
 from media_tree.widgets import AdminThumbWidget
 from media_tree.admin.actions import core_actions
 from media_tree.admin.actions import maintenance_actions

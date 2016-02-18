@@ -1,5 +1,5 @@
 from django.forms.widgets import MediaDefiningClass
-from media_tree.forms import FileForm
+from media_tree.admin.forms import FileForm
 
 
 class MediaTreeExtender(object):
