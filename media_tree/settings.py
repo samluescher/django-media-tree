@@ -124,7 +124,7 @@ MEDIA_TREE_ALLOWED_FILE_TYPES = getattr(settings, 'MEDIA_TREE_ALLOWED_FILE_TYPES
     'mp4', 'mpc', 'mkv', 'mpg', 'mpeg', 'numbers', 'ogg', 'odg', 'odf', 'odp',
     'ods', 'odt', 'otf', 'pages', 'pdf', 'pls', 'png', 'pps', 'ppsx', 'ps',
     'psd', 'rar', 'rdf', 'rm', 'rss', 'rst', 'rtf', 'sit', 'svg', 'swf', 'tar', 
-    'tga', 'tif', 'tiff', 'ttf', 'txt', 'wav', 'wma', 'wmv', 'xls', 'xlsx', 
+    'tga', 'tif', 'tiff', 'ttf', 'txt', 'wav', 'webm', 'wma', 'wmv', 'xls', 'xlsx', 
     'xml', 'zip'
 ))
 """
