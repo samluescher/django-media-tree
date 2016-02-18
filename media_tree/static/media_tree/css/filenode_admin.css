@@ -1,0 +1,236 @@
+/* Treebeard Admin */
+
+.oder-grabber {
+    width: 1.5em;
+    text-align: center;
+}
+
+#changelist td.drag-handler {
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#changelist .drag-handler span {
+    width: 16px;
+    height: 16px;
+    background-size: 16px 16px;
+    margin: 0;
+    display: inline-block;
+}
+
+#changelist .drag-handler span.active {
+    background: transparent url(../img/icons/drag-handler.png) no-repeat left top;
+    cursor: move;
+}
+
+.spacer {
+    width: 10px;
+    margin: 0 10px;
+}
+
+#changelist .collapse {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    text-indent: -999px;
+}
+
+#changelist .collapsed {
+    background: transparent url(../img/icons/folder-toggle.png) no-repeat !important;
+    background-size: 32px 32px !important;
+    background-position: left top !important;
+}
+
+#changelist .collapsed:hover, #changelist .collapsed:active {
+    background-position: left bottom !important;
+}
+
+#changelist .expanded {
+    background: transparent url(../img/icons/folder-toggle.png) no-repeat !important;
+    background-size: 32px 32px !important;
+    background-position: right top !important;
+}
+
+#changelist .expanded:hover, #changelist .expanded:active {
+    background-position: right bottom !important;
+}
+
+#drag_line {
+    border-top: 5px solid #A0A;
+    background: #A0A;
+    display: block;
+    position: absolute;
+}
+
+#drag_line span {
+    position: relative;
+    display: block;
+    width: 100px;
+    background: #FFD;
+    color: #000;
+    left: 100px;
+    text-align: center;
+    border: 1px solid #000;
+    vertical-align: middle;
+}
+
+/*tr:target { I'm handling the highlight with js to have more control
+background-color: #FF0;
+}*/
+
+#ghost td, #ghost .collapse {
+    display: none; /* only show th */
+}
+
+#ghost {
+  padding: 1em;
+}
+
+
+/* Changelist general */
+
+#changelist .preview img, #ghost .preview img {
+    vertical-align: middle;
+    margin-top: .5em;
+    margin-bottom: .5em;
+    margin-right: 1em;
+}
+
+#changelist .hidden {
+    display: none;
+}
+
+#changelist th {
+    white-space: nowrap;
+}
+
+/* Changelist action button additions */
+
+.object-tools li.view-options a:hover, .object-tools li.view-options:hover a {
+    background-color: transparent;
+}
+
+.object-tools li.view-options > a {
+    height: 20px;
+    line-height: 18px !important;
+    text-align: center;
+    padding: 2px .5em 2px .5em !important;
+}
+
+.object-tools li.view-options.square > a {
+    width: 20px;
+    padding: 2px !important;
+}
+
+.view-options a:link, .view-options a:visited, .view-options:hover a:link, .view-options:hover a {
+    border-radius: 0;
+    background: white;
+}
+
+.view-options a .icon {
+    border: 1px solid #999;
+    display: inline-block;
+    border-radius: 2px;
+    vertical-align: middle;
+}
+
+.view-options a.active .icon, .view-options a:hover .icon {
+    border-color: #444;
+}
+
+.view-options a .label {
+    color: #999;
+}
+
+.view-options a.active .label, .view-options a:hover .label {
+    color: #444;
+}
+
+.view-options.thumbnail-sizes a .label {
+    display: none;
+}
+
+/* Changelist upload */
+
+.upload-error {
+    color: red !important;
+}
+
+.upload-success {
+    color: inherit !important;
+}
+
+.upload-progress-bar-container {
+    display: inline-block;
+    background: darkgray;
+    width: 80px;
+    margin: 0 1em 0 1em;
+}
+
+.upload-progress-bar {
+    display: inline-block;
+    background: #5B80B2;
+    width: 1px;
+    padding: 0;
+    font-size: .8em;
+    color: white;
+}
+
+.upload-progress-bar.complete {
+    /*display: none !important;*/
+    background: lightgray;
+}
+
+/* Stream view */
+
+#changelist .results-flat {
+    max-width: 90%;
+}
+
+#changelist .filenode-flat {
+    width: 150px;
+    height: 170px;
+    float: left;
+    text-align: center;
+}
+
+#changelist .filenode-flat .preview {
+    display: block;
+}
+
+#changelist .filenode-flat .name {
+    max-width: 100%;
+    overflow: hidden;
+    display: block;
+    margin-top: .5em;
+}
+
+/* Clearfix via http://nicolasgallagher.com/micro-clearfix-hack/ */
+
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.clearfix {
+    *zoom: 1;
+}

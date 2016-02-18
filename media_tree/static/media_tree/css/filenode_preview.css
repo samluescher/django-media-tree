@@ -1,0 +1,26 @@
+/* Thumbnails */
+
+#changelist .thumbnail img, #ghost .thumbnail img, .change-form .thumbnail img, .FileNodeForeignKeyRawIdWidget .thumbnail img {
+    display: inline-block;
+    border: 1px solid #ccc;
+    padding: 3px;
+    background: white;
+    border-radius: 3px;
+    line-height: 1px;
+    -moz-box-shadow: 0px 3px 7px rgba(0, 0, 0, .1);
+    -webkit-box-shadow: 0px 3px 7px rgba(0, 0, 0, .1);
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, .1);
+}
+
+.FileNodeForeignKeyRawIdWidget .preview {
+    display: inline-block;
+    margin: .5em 1em .5em 1em;
+}
+
+.FileNodeForeignKeyRawIdWidget .preview, .FileNodeForeignKeyRawIdWidget .name {
+    cursor: pointer;
+}
+
+.FileNodeForeignKeyRawIdWidget .clear-widget {
+    margin-left: .5em;
+}

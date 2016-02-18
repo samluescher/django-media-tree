@@ -1,1 +1,1 @@
-from media_tree.admin.filenode_admin import *
+from .filenode_admin import *

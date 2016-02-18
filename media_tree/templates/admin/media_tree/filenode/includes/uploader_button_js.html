@@ -1,0 +1,33 @@
+{% load i18n %}
+<script type="text/javascript">// <![CDATA[
+    jQuery(function($) {
+
+        var uploadUrl = '{% url "admin:media_tree_filenode_upload" %}',
+            uploader = $('#uploader-button').djangoAdminFileUploader({
+                request: {
+                    endpoint: uploadUrl,
+                    customHeaders: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    inputName: 'file'
+                },
+                uploaderType: 'basic',
+                multiple: true,
+                button: $('#uploader-button'),
+                validation: {
+                    //allowedExtensions: ['jpeg', 'jpg', 'txt'],
+                    //sizeLimit: 51200 // 50 kB = 50 * 1024 bytes
+                },
+                showMessage: function(message) {
+                },
+                beforeSubmit: function(event, id, name) {
+                    // Gather upload form values (such as target folder) and set as upload params
+                    var params = $('#upload-form').serializeArray().reduce(function(obj, item) {
+                        obj[item.name] = item.value;
+                        return obj;
+                    }, {});
+                    uploader.fineUploader('setParams', params);
+                }
+            });
+    });
+// ]]></script>

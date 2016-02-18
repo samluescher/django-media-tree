@@ -1,14 +1,38 @@
 jQuery(function($) {
 
+    $('a[onclick*=dismissRelatedLookupPopup]').each(function() {
+        var _onclick = this.onclick,
+            $trigger = $(this);
+        this.onclick = null;
+        $trigger.click(function(evt) {
+            evt.preventDefault();
+            var d = opener.document,
+                fieldName = windowname_to_id(window.name).substring('id_'.length),
+                $input = $('#' + windowname_to_id(window.name), d),
+                $widgetContainer = $input.closest('.FileNodeForeignKeyRawIdWidget');
+            if ($widgetContainer.length) {
+                var $preview = $trigger.find('.preview:visible').clone(),
+                    $name = $trigger.find('.name').clone(),
+                    $targetPreview = $widgetContainer.find('.preview'),
+                    $targetName = $widgetContainer.find('.name');
+                $targetPreview.replaceWith($preview);
+                $targetName.replaceWith($name);
+            }
+
+            window.selectedMeta = $trigger.find('link.meta')[0];
+            _onclick();
+        });
+    });
+
     $.makeChangelistRow = function(cols, row)
     {
         if ($('#changelist table').length == 0) {
-            var table = $('<table cellspacing="0"><thead><th>&nbsp;</th><th>'+gettext('Name')+'</th><th>'+gettext('Size')+'</th></table>')
+            var table = $('<table cellspacing="0"><thead><th>&nbsp;</th><th>'+gettext('Media object')+'</th><th>'+gettext('Size')+'</th></table>')
             var tbody = $('<tbody></tbody>');
             table.append(tbody);
             $('#changelist').append(table);
         }
-        
+
         var colCount = $('#changelist table').find('thead').find('th').length;
         if (row == null) {
             row = $('<tr class="row1"></tr>');
@@ -25,6 +49,32 @@ jQuery(function($) {
         return row;
     }
 
+    $.addUserMessage = function(messageText, messageId, messageClass) {
+        if (!messageClass) {
+            messageClass = 'info';
+        }
+        var defaultMessageId = 'default-message';
+        if (!messageId) {
+            messageId = defaultMessageId;
+        }
+        $('#' + defaultMessageId).remove();
+        var message = $('<li id="'+messageId+'" class="' + messageClass + '">'+messageText+'</li>')
+        var currentMessage = $('#'+messageId);
+        if (currentMessage.length > 0) {
+            currentMessage.replaceWith(message);
+        } else {
+            var messageList = $('ul.messagelist');
+            if (messageList.length == 0) {
+                $('#content').before('<ul class="messagelist"></ul>');
+                var messageList = $('ul.messagelist');
+            }
+            messageList.append(message);
+        }
+    }
+
+    return;
+
+
     var makeForm = function(action, hiddenFields) {
         if (!hiddenFields) {
             hiddenFields = {};
@@ -34,21 +84,21 @@ jQuery(function($) {
         for (key in hiddenFields) {
             hiddenHtml += '<input type="hidden" name="' + key + '" value="' + hiddenFields[key] + '" />';
         }
-        return $( 
+        return $(
             '<form action="' + action + '" method="POST">'
                 +'<div style="display: none">' + hiddenHtml + '</div>'
             +'</form>');
     };
-    
+
     $('#object-tool-add-folder').click(function(event) {
         event.preventDefault();
         if ($('#add-folder-row').length) {
             $('#add-folder-row').remove();
         }
-        
+
         var cols = [];
         var targetFolder = $('#changelist').data('targetFolder');
-        
+
         cols[1] = $(
             '<td></td>'
         );
@@ -64,16 +114,16 @@ jQuery(function($) {
         );
 
         cols[1].append(form);
-        
+
         if (targetFolder && targetFolder.row) {
             // TODO: Copy padding, but add indent
-            cols[1].css('padding-left', 
+            cols[1].css('padding-left',
                 $($('td', targetFolder.row)[1]).css('padding-left'));
         }
-        
+
         var row = $.makeChangelistRow(cols, null, targetFolder ? targetFolder.row : null);
         row.attr('id', 'add-folder-row');
-        
+
         if (targetFolder && targetFolder.row) {
             $(targetFolder.row).after(row);
         } else {
@@ -92,19 +142,21 @@ jQuery(function($) {
             }
         });
     });
-    
-    if (document.location.href.indexOf('pop=1') != -1) {
+
+/* TODO: remove. disfunct code for rawIdSelect stuff
+    if ($('.popup-select-button').length) {
         $('#changelist').delegate('input[name=_selected_action]', 'change', function() {
-            $('.popup-select-button')[0].disabled = 
+            $('.popup-select-button')[0].disabled =
                 $('#changelist input[name=_selected_action]:checked').length == 0;
         });
         $('.popup-select-button').click(function() {
             var selectedId = $('#changelist input[name=_selected_action]:checked').val();
             if (selectedId) {
-                opener.dismissRelatedLookupPopup(window, selectedId); 
+                opener.dismissRelatedLookupPopup(window, selectedId);
             }
             return false;
         });
+
         $('a[onclick^=opener]').each(function() {
             this.onclick = false;
             $(this).click(function() {
@@ -115,7 +167,7 @@ jQuery(function($) {
                 return false;
             });
         });
-    }
+    }*/
 
     /**
     Adds child rows after a row (which are actually just indented rows sitting
@@ -151,7 +203,7 @@ jQuery(function($) {
                     $(this).remove();
                 });*/
             }
-        }); 
+        });
     };
 
     $.fn.selectChangelistRow = function() {
@@ -159,7 +211,7 @@ jQuery(function($) {
         $(this).addClass('selected');
     };
 
-    $.fn.getFirstSelectedFolder = function() 
+    $.fn.getFirstSelectedFolder = function()
     {
         var checked = $('#changelist input[name=_selected_action]:checked');
         if (checked) {
@@ -177,7 +229,7 @@ jQuery(function($) {
     }
 
     var dragHelper, draggedItem;
-    
+
     $.fn.updateChangelist = function(html, restoreSelected) {
         if (draggedItem) {
             // TODO: This does not work. If the user is dragging while changelist is replaced,
@@ -210,7 +262,7 @@ jQuery(function($) {
             var id = $(this).find('input[name=_selected_action]').val();
             rows[parseInt(id)] = $(this);
         });
-        
+
         $('a[rel^=parent]', this).each(function() {
             var rel = $(this).attr('rel').split(':');
             if (rel.length == 2) {
@@ -221,7 +273,7 @@ jQuery(function($) {
                 }
             }
         });
-        
+
         $(this).trigger('update', [$('tr', this), true]);
     });
 
@@ -263,7 +315,7 @@ jQuery(function($) {
     $('#changelist').bind('update', function(e, updatedRows, isInitial) {
         var _changelist = this;
 
-        // Django calls actions() when document ready. Since the ChangeList  
+        // Django calls actions() when document ready. Since the ChangeList
         // was updated, actions() needs to be called again:
         django.jQuery("tr input.action-select").actions();
 
@@ -325,10 +377,10 @@ jQuery(function($) {
 
                     var form = makeForm('', fields);
                     var selected = getSelectedCheckboxes();
-                    form.append(selected.clone()); 
-                    
+                    form.append(selected.clone());
+
                     //form.submit();
-                    
+
                     //return;
                     // instead:
                     if (!loaderTarget) {
@@ -338,7 +390,7 @@ jQuery(function($) {
 
                     $(_changelist).setUpdateReq($.ajax({
                         type: 'post',
-                        data: form.serialize(),  
+                        data: form.serialize(),
                         success: function(data) {
                             loaderTarget.removeClass('loading');
                             var newChangelist = $(data).find('#changelist');
@@ -356,13 +408,13 @@ jQuery(function($) {
                                     $.addUserMessage($(this).text(), null, 'error');
                                 });
                             }
-                        }, 
+                        },
                         error: function() {
                             loaderTarget.removeClass('loading');
-                        }  
+                        }
                     }));
-                    
-                    return false;      
+
+                    return false;
                 },
                 scope: dragDropScope,
                 hoverClass: function() {
@@ -389,7 +441,7 @@ jQuery(function($) {
         };
 
         // Init dropping on root.
-        // TODO: We can not use the table itself as droppable, since that would 
+        // TODO: We can not use the table itself as droppable, since that would
         // accept a dragged row even when that row is dropped on itself (or actually
         // the table, since jQuery prevents dropping on self and then propagates the
         // event up the the table if the table is a droppable).
@@ -423,13 +475,13 @@ jQuery(function($) {
                     var nodeLink = $(this).closest('tr').find('.node-link');
                     $('td', helper).append(nodeLink.clone());
 
-                    
+
                     if (selectedCount > 1) {
                         var counter = '<span class="drag-counter">' + selectedCount
                             + '</span>';
                         $('td', helper).prepend(counter);
                     }
-                    
+
 
                     var handleOffset = nodeLink.position().left+'px';
                     $(helper).css('padding-left', handleOffset);
@@ -474,10 +526,10 @@ jQuery(function($) {
             });
         }
     });
-    
+
     $('#changelist').trigger('init');
-    
-    $('#changelist').delegate('.folder-toggle, .browse-controls a', 'click', function(event) 
+
+    $('#changelist').delegate('.folder-toggle, .browse-controls a', 'click', function(event)
     {
         var button = $(this).closest('tr').find('.folder-toggle');
         var controls = $(this).closest('tr').find('.browse-controls')
@@ -492,7 +544,7 @@ jQuery(function($) {
             //parentRow.data('isExpanded', true);
             controls.addClass('loading');
             $.ajax({
-                url: href, 
+                url: href,
                 success: function(data) {
                     //if (!parentRow.data('isExpanded')) return;
                     if (!controls.is('.loading')) return;
@@ -519,7 +571,7 @@ jQuery(function($) {
             controls.addClass('collapsed');
             parentRow.closeExpandedChildren();
             $('#changelist').trigger('update');
-            
+
             var closedFolderId = parseInt(href.split('=')[1]);
             var cookie = $.cookie('expanded_folders_pk');
             var newCookie = '';
@@ -549,5 +601,4 @@ jQuery(function($) {
         img.src = matchUrl[1];
     });
     bufferBackgroundElements.remove();
-
 });

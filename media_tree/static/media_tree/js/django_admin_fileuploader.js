@@ -19,7 +19,7 @@ jQuery(function($) {
 
                 $(row).find('.upload-progress-bar-container').css('display', 'inline-block');
                 var bar = $(row).find('.upload-progress-bar');
-                
+
                 if (percent != undefined) {
                     bar.css('width', percent+'%');
                 }
@@ -36,9 +36,9 @@ jQuery(function($) {
 
                 cols = [];
                 cols[1] = $(
-                    '<td class="nowrap"><span style="display: none;" class="upload-progress-bar-container">'
-                    + '<span class="upload-progress-bar"></span></span><span class="queue-status">' 
-                    + gettext('queued') + '</span>' 
+                    '<td></td><td class="nowrap"><span style="display: none;" class="upload-progress-bar-container">'
+                    + '<span class="upload-progress-bar"></span></span><span class="queue-status">'
+                    + gettext('queued') + '</span>'
                     + '&nbsp;<a href="#" class="name">' + fileName + '</a>'
                     + '&nbsp;<a href="#" class="cancel">'+gettext('cancel')+'</a>'
                     + '</td>');
@@ -48,7 +48,6 @@ jQuery(function($) {
                 row.qqFileId = id;
 
                 $('.cancel', row).on('click', function() {
-                    console.log('cancel', id);
                     uploader.fineUploader('cancel', id);
                 });
 
@@ -89,6 +88,9 @@ jQuery(function($) {
             _updateProgressBar(id, 'failed', 0, 'complete');
             _setQueueMessage();
         }).on('submit', function (event, id, name) {
+            if (opts.beforeSubmit) {
+                opts.beforeSubmit.call(this, event, id, name);
+            }
             _addToList(id, name);
             _setQueueMessage();
         }).on('progress', function (event, id, name, uploadedBytes, totalBytes) {
@@ -127,8 +129,9 @@ jQuery(function($) {
                 $.addUserMessage(message, 'upload-queue-message');
 
                 $('#changelist').addClass('loading');
-                $('#changelist').setUpdateReq($.ajax({
-                    url: window.location.href, 
+                location.reload()
+                /*$('#changelist').setUpdateReq($.ajax({
+                    url: window.location.href,
                     success: function(data, textStatus) {
                         if (!uploadsInProgress) {
                             // reload changelist contents
@@ -142,7 +145,7 @@ jQuery(function($) {
                     complete: function(jqXHR, textStatus) {
                         $('#changelist').removeClass('loading');
                     }
-                }));
+                }));*/
             } else {
                 var message = gettext('There were errors during upload.');
                 $.addUserMessage(message, 'upload-queue-message', 'error');
