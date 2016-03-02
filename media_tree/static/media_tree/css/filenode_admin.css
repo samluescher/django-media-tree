@@ -183,7 +183,8 @@ background-color: #FF0;
 /* Stream view */
 
 #changelist .results-flat {
-    max-width: 90%;
+    /* same as .change-list #toolbar */
+    margin-right: 280px;
 }
 
 #changelist .filenode-flat {
