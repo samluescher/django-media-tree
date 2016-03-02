@@ -205,6 +205,17 @@ background-color: #FF0;
     margin-top: .5em;
 }
 
+/* Popup optimizations */
+
+.popup #changelist input#searchbar {
+    max-width: 150px;
+}
+
+.popup #changelist .results-flat {
+    /* similar to .change-list #toolbar, but need to fit three in a row */
+    margin-right: 200px;
+}
+
 /* Clearfix via http://nicolasgallagher.com/micro-clearfix-hack/ */
 
 /**
