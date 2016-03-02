@@ -1,0 +1,3 @@
+{% load i18n media_tree_admin %}
+<li{% if not list_type %} class="selected"{% endif %}><a href="{% query_string list_type="" %}"><span class="label">{% trans "Tree" %}</span></a></li>
+<li{% if list_type == 'stream' %} class="selected"{% endif %}><a href="{% query_string list_type="stream" %}"><span class="label">{% trans "Stream" %}</span></a></li>

@@ -105,27 +105,15 @@ background-color: #FF0;
     white-space: nowrap;
 }
 
-/* Changelist action button additions */
-
-.object-tools li.view-options a:hover, .object-tools li.view-options:hover a {
-    background-color: transparent;
+.object-tools p {
+    margin: 0;
 }
 
-.object-tools li.view-options > a {
-    height: 20px;
-    line-height: 18px !important;
-    text-align: center;
-    padding: 2px .5em 2px .5em !important;
-}
-
-.object-tools li.view-options.square > a {
-    width: 20px;
-    padding: 2px !important;
-}
+/* View options in sidebar */
 
 .view-options a:link, .view-options a:visited, .view-options:hover a:link, .view-options:hover a {
     border-radius: 0;
-    background: white;
+    text-decoration: none;
 }
 
 .view-options a .icon {
@@ -135,20 +123,30 @@ background-color: #FF0;
     vertical-align: middle;
 }
 
-.view-options a.active .icon, .view-options a:hover .icon {
+.view-options li.selected a .icon, .view-options a:hover .icon {
     border-color: #444;
-}
-
-.view-options a .label {
-    color: #999;
-}
-
-.view-options a.active .label, .view-options a:hover .label {
-    color: #444;
+    background: white;
 }
 
 .view-options.thumbnail-sizes a .label {
     display: none;
+}
+
+#changelist-filter ul.view-options.thumbnail-sizes {
+    border: none;
+    padding: 0 15px;
+    margin-bottom: .5em;
+}
+
+#changelist-filter .view-options.thumbnail-sizes li {
+    float: left;
+    width: 20px;
+    padding: .25em !important;
+    margin: 0 !important;
+}
+
+#changelist-filter .view-options.thumbnail-sizes li.selected {
+    border: none;
 }
 
 /* Changelist upload */

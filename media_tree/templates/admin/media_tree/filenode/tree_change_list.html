@@ -1,5 +1,5 @@
 {% extends "admin/tree_change_list.html" %}
-{% load i18n media_tree_admin %}
+{% load i18n media_tree_admin admin_list %}
 
 {% block extrahead %}
 {{ block.super }}
@@ -42,11 +42,27 @@ it is embedded here.
             </a>
         </li>
     {% endif %}
-    {% if thumbnail_sizes %}
-        {% include "admin/media_tree/filenode/includes/thumbnail_size_controls.html" %}
-    {% endif %}
     </ul>
 {% endblock %}
+
+{% block filters %}
+    <div id="changelist-filter">
+      <h2>{% trans 'View' %}</h2>
+      <ul class="view-options list-type">
+          {% include "admin/media_tree/filenode/includes/list_type_controls.html" %}
+      </ul>
+      {% if thumbnail_sizes %}
+      <ul class="view-options thumbnail-sizes clearfix">
+          {% include "admin/media_tree/filenode/includes/thumbnail_size_controls.html" %}
+      </ul>
+      {% endif %}
+      {% if cl.has_filters %}
+      <h2>{% trans 'Filter' %}</h2>
+      {% for spec in cl.filter_specs %}{% admin_list_filter cl spec %}{% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}
+
 
 {% block result_list %}
 {% if list_type == 'stream' %}
