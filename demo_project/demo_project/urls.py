@@ -14,7 +14,7 @@ urlpatterns = patterns(
 
     url(r'^listing/$', FileNodeListingView.as_view(
         # notice that queryset can be any iterable, for instance a list:
-        queryset=FileNode.objects.filter(level=0),
+        queryset=FileNode.objects.filter(lvl=0),
     ), name="demo_listing"),
 
     url(r'^files/(?P<path>.+)/$', FileNodeDetailView.as_view(
