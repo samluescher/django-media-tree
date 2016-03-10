@@ -41,7 +41,6 @@ class FileNodeForeignKeyRawIdWidget(ForeignKeyRawIdWidget):
         # insert a placeholder for widget preview if value is None so that
         # the dismissRelatedLookupPopup hook in Javascript can populate it.
         output = super(FileNodeForeignKeyRawIdWidget, self).render(name, value, attrs)
-        return output
         extra = ''
         if value:
             extra = '<a href="#" class="clear-widget"><img src="%s" width="11" height="11" alt="%s" /></a>' % (
