@@ -1,4 +1,4 @@
 Django>=1.6
 South>=1.0
 Pillow>=2.3
-django-treebeard>=3.0
+django-treebeard>=4.0
