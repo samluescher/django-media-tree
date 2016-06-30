@@ -8,17 +8,30 @@ module.
 
 
 ``MEDIA_TREE_STORAGE``
-    File storage class to be used for any file-related operations when dealing 
-    with media files. 
+    File storage class to be used for any file-related operations when dealing
+    with media files.
 
-    This is not set by default, meaning that Django's ``DEFAULT_FILE_STORAGE`` 
-    will be used. If you need to implement your custom storage, please refer to the 
-    relevant Django `documentation on that setting 
-    <https://docs.djangoproject.com/en/dev/ref/settings/#default-file-storage>`_ and 
+    This is not set by default, meaning that Django's ``DEFAULT_FILE_STORAGE``
+    will be used. If you need to implement your custom storage, please refer to the
+    relevant Django `documentation on that setting
+    <https://docs.djangoproject.com/en/dev/ref/settings/#default-file-storage>`_ and
     on `file storage
     <https://docs.djangoproject.com/en/dev/ref/files/storage/#module-django.core.files.storage>`_
     in general.
 
+``MEDIA_TREE_DELETE_FROM_STORAGE_ON_OVERWRITE``
+
+    Determines whether existing files should be deleted from storage when the
+    corresponding object is overwritten with a new file. This prevents the creation
+    of orphaned files. As an added benefit in the case of Django's
+    `FileSystemStorage`, if this setting is `True` and a file is supposed to be
+    overwritten with a new file that has the same name, that name remains permanent
+    because the old file will be deleted before the object is saved. If `False`, a
+    random hash would be added to the new file's name due to the existing file
+    already occupying the desired name on disk.
+    """
+
+    Default: ``True``
 
 ``MEDIA_TREE_MEDIA_BACKENDS``
     A tuple of media backends for thumbnail generation and other media-related
@@ -29,13 +42,13 @@ module.
        Please refer to the :ref:`installation instructions
        <configuring-media-backends>` for information on how to configure
        supported media backends.
-    
+
     For general information on media backends, see :ref:`media-backends` for
     more information.
 
 
 ``MEDIA_TREE_MEDIA_BACKEND_DEBUG``
-    Specifies whether exceptions caused by media backends, such as ``ThumbnailError``, should be 
+    Specifies whether exceptions caused by media backends, such as ``ThumbnailError``, should be
     raised or silently ignored.
 
     Default: ``settings.DEBUG``
@@ -65,17 +78,17 @@ module.
 
 ``MEDIA_TREE_PREVIEW_SUBDIR``
     Default: ``'upload/_preview'``
-    
+
     The name of the folder under your ``MEDIA_ROOT`` where cached versions of
     media files, e.g. thumbnails, are stored.
 
 
 ``MEDIA_TREE_ICON_DIRS``
     Default::
-    
+
         (
             'media_tree/img/icons/mimetypes',
-        )    
+        )
 
     A tuple containing all icon directories. See :ref:`install-icon-sets`
     for more information.
@@ -86,7 +99,7 @@ module.
     the ``thumbnail`` templatetag instead of a numeric size.
 
     Default::
-    
+
         {
             'small': (80, 80),
             'default': (100, 100),
@@ -100,14 +113,14 @@ module.
     A whitelist of file extensions that can be uploaded. By default, this is a
     comprehensive list of many common media file extensions that generally
     shouldn't pose a security risk.
-    
+
     .. Warning::
        Just because a file extension may be considered “safe”, there is
        absolutely no guarantee that a skilled attacker couldn't find an exploit.
        You should only allow people you trust to upload files to your webserver.
        Be careful when adding potentially unsafe file extensions to this
        setting, such as executables or scripts, as this possibly opens a door to
-       attackers. 
+       attackers.
 
 
 ``MEDIA_TREE_THUMBNAIL_EXTENSIONS``
@@ -129,6 +142,5 @@ module.
     thumbnails. You might use this, for instance, to sharpen all thumbnails::
 
         MEDIA_TREE_GLOBAL_THUMBNAIL_OPTIONS = {
-            'sharpen': True 
+            'sharpen': True
         }
-

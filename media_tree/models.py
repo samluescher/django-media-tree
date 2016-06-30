@@ -585,6 +585,7 @@ class FileNode(ModelBase):
             # TODO: If file was not changed, this field will nevertheless be changed to
             # the name of the renamed file on disk. Do not do this unless a new file is being saved.
             file_changed = True
+            saved_instance = None
             if self.pk:
                 try:
                     saved_instance = FileNode.objects.get(pk=self.pk)
@@ -613,6 +614,10 @@ class FileNode(ModelBase):
                     pass
                 if not self.media_type:
                     self.media_type = FileNode.mimetype_to_media_type(self.name)
+
+                if app_settings.MEDIA_TREE_DELETE_FROM_STORAGE_ON_OVERWRITE:
+                    if saved_instance:
+                        saved_instance.file.delete(save=False)
 
         self.slug = slugify(self.name)
         self.has_metadata = self.check_minimal_metadata()

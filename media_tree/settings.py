@@ -15,6 +15,19 @@ will be used. Please refer to the relevant Django documentation on `file storage
 <https://docs.djangoproject.com/en/dev/ref/files/storage/#module-django.core.files.storage>`_.
 """
 
+MEDIA_TREE_DELETE_FROM_STORAGE_ON_OVERWRITE = getattr(settings,
+    'MEDIA_TREE_DELETE_FROM_STORAGE_ON_OVERWRITE', True)
+"""
+Determines whether existing files should be deleted from storage when the
+corresponding object is overwritten with a new file. This prevents the creation
+of orphaned files. As an added benefit in the case of Django's
+`FileSystemStorage`, if this setting is `True` and a file is supposed to be
+overwritten with a new file that has the same name, that name remains permanent
+because the old file will be deleted before the object is saved. If `False`, a
+random hash would be added to the new file's name due to the existing file
+already occupying the desired name on disk.
+"""
+
 MEDIA_TREE_MEDIA_BACKENDS = getattr(settings, 'MEDIA_TREE_MEDIA_BACKENDS', ())
 """
 A tuple of media backends for thumbnail generation and other media-related
