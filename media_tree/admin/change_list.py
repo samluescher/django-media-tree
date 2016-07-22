@@ -28,10 +28,18 @@ class MediaTreeChangeList(ChangeList):
         * The GET parameters may contain a `parent` ID if the response should
           only include descendants of that node. This is used when loading
           subtrees via XHR.
-        * If not specified otherwise, the range of depth of the change list's
-          results will be set to 1, i.e. only one relative level of depth will
-          be displayed for the request, since additional levels should be
-          expanded and loaded via XHR.
+
+        Special request attributes may be set that will have an effect on the
+        queryset displayed for a request:
+
+        * max_depth: Limits the maximum relative depth of results. For instance,
+          this will be set to 1 by the FileNodeAdmin class when displaying trees
+          that are expanded via XHR.
+
+        * decrease_depth: Temporarily decreases the `depth` attribute of all
+          results in order to prevent overly deep indendation when displaying
+          them.
+
         """
         # When filtering by `parent`, we replace the request's GET dictionary
         # with a copy that does not contain said parameter so as not to confuse
@@ -50,13 +58,6 @@ class MediaTreeChangeList(ChangeList):
         # Store the retrieved parent node as special request attribute
         set_special_request_attr(request, 'parent', parent)
 
-        # If depth limiting was not already specified, set it to 1 to only
-        # include one level of depth in the change list's queryset.
-        # To disable depth filtering, the request object can be modified by
-        # setting the special request attribute `max_depth` to 0 beforehand.
-        if get_special_request_attr(request, 'max_depth', None) is None:
-            set_special_request_attr(request, 'max_depth', 1)
-
     def get_queryset(self, request=None):
 
         # filter by parent folder is defined by the special request attribute
@@ -68,8 +69,9 @@ class MediaTreeChangeList(ChangeList):
 
         # filter by maximum relative depth as defined by the special request
         # attribute
-        max_depth = get_special_request_attr(request, 'max_depth')
-        if max_depth:
+        is_filtered = self.is_filtered(request)
+        max_depth = get_special_request_attr(request, 'max_depth', None)
+        if not is_filtered and max_depth:
             if parent_folder:
                 qs = qs.filter(depth=parent_folder.depth + max_depth)
             else:
@@ -114,10 +116,11 @@ class MediaTreeChangeList(ChangeList):
     def get_results(self, request):
         super(MediaTreeChangeList, self).get_results(request)
 
-        # Temporarily decreases the `depth` attribute of all search results in
+        # Temporarily decreases the `depth` attribute of all results in
         # order to prevent overly deep indendation when displaying them.
         try:
-            decrease_depth = abs(int(get_special_request_attr(request, 'decrease_depth', 0)))
+            decrease_depth = abs(int(get_special_request_attr(request,
+                'decrease_depth', 0)))
         except TypeError:
             decrease_depth = 0
         is_filtered = self.is_filtered(request)

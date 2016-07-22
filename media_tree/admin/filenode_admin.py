@@ -95,10 +95,6 @@ class FileNodeAdmin(TreeAdmin):
         else:
             return super(FileNodeAdmin, self).get_queryset(request)
 
-    def get_thumbnail_size(self, request):
-        thumb_size_key = get_special_request_attr(request, 'thumbnail_size') or 'default'
-        return app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_key]
-
     def node_preview(self, node, icons_only=False):
         request = get_current_request()
         template = 'admin/media_tree/filenode/includes/preview.html'
@@ -262,6 +258,12 @@ class FileNodeAdmin(TreeAdmin):
         set_special_request_attr(request, 'list_type', list_type)
         context.update({'list_type': list_type})
 
+        # If depth limiting was not already specified, set it to 1 to only
+        # include one level of depth in the change list's queryset, since we
+        # want to load additional levels via XHR.
+        if list_type != 'stream':
+            set_special_request_attr(request, 'max_depth', 1)
+
         if 'thumbnail_size' in request.GET:
             request.GET = request.GET.copy()
             thumb_size_key = request.GET.get('thumbnail_size')
@@ -281,6 +283,10 @@ class FileNodeAdmin(TreeAdmin):
 
         return context
 
+    def get_thumbnail_size(self, request):
+        thumb_size_key = get_special_request_attr(request, 'thumbnail_size') or 'default'
+        return app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_key]
+
     def get_upload_form(self, request):
         target_folder_id = request.session.get('target_folder_id', None)
         try:
@@ -294,14 +300,15 @@ class FileNodeAdmin(TreeAdmin):
 
     def changelist_view(self, request, extra_context=None):
         set_current_request(request)
+
+        cl = self.get_changelist(request)
+        cl.init_request(request)
+
         extra_context = extra_context or {}
         extra_context.update(self.init_changelist_view_options(request))
         extra_context.update({
             'upload_form': self.get_upload_form(request),
         })
-
-        cl = self.get_changelist(request)
-        cl.init_request(request)
 
         return super(FileNodeAdmin, self).changelist_view(request, extra_context)
 
