@@ -126,7 +126,7 @@ class MediaTreeChangeList(ChangeList):
                 item.prevent_save()
                 item.actual_depth = item.depth
                 if is_filtered:
-                    item.decrease_depth = item.level
+                    item.decrease_depth = item.depth
                     item.depth = 0
                 else:
                     item.decrease_depth = decrease_depth
