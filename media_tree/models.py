@@ -346,7 +346,7 @@ class FileNode(ModelBase):
         is not actually stored in the database, but used in the admin to link to
         the change list.
         """
-        return FileNode(name=('Media objects'), level=-1)
+        return FileNode(name=('Media objects'), depth=-1)
 
     def is_top_node(self):
         """Returns True if the model instance is the top node."""

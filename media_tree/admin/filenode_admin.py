@@ -35,6 +35,7 @@ from .utils import get_current_request, set_current_request,  \
     get_request_attr, set_request_attr, is_search_request
 from ..media_backends import get_media_backend
 from ..widgets import AdminThumbWidget
+from .change_list import MediaTreeChangeList
 
 from treebeard.admin import TreeAdmin
 
@@ -198,6 +199,12 @@ class FileNodeAdmin(TreeAdmin):
             return HttpResponseBadRequest('Malformed POST params')
         return super(FileNodeAdmin, self).try_to_move_node(as_child, node, pos, request, target)
 
+    def get_changelist(self, request, **kwargs):
+        """
+        Returns the ChangeList class for use on the changelist page.
+        """
+        return MediaTreeChangeList
+
     def get_fieldsets(self, request, obj=None):
         fieldsets = getattr(self._get_form_class(request, obj).Meta, 'fieldsets', None)
         if fieldsets:
@@ -292,6 +299,9 @@ class FileNodeAdmin(TreeAdmin):
         extra_context.update({
             'upload_form': self.get_upload_form(request),
         })
+
+        cl = self.get_changelist(request)
+        cl.init_request(request)
 
         return super(FileNodeAdmin, self).changelist_view(request, extra_context)
 
