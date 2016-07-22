@@ -1,5 +1,54 @@
 jQuery(function($) {
 
+    var ROW_SELECTOR = '#changelist tbody tr';
+
+    var initChangelistResults = function(rows) {
+        // TODO: initially, we remove the expanded attribute from all nodes with
+        // the following hack, and replace it with the collapsed attribute. This
+        // is necessary since treebeard's `admin_tree` template tags will assume
+        // that the tree is fully expanded, but media_tree's MediaTreeChangeList
+        // actually returns collapsed results. This hack should be replaced with
+        // proper solution that is contributed back to the treebeard project.
+        $(rows).find('a.collapse.expanded').each(function() {
+            $(this).removeClass('expanded').addClass('collapsed');
+        });
+    };
+
+    var collapseRecursively = function(parentId) {
+        var $childTrs = $(ROW_SELECTOR + '[parent=' + parentId + ']');
+        $childTrs.each(function() {
+            var $tr = $(this),
+                nodeId = $tr.attr('node');
+            collapseRecursively(nodeId);
+            $tr.remove();
+        });
+    };
+
+    initChangelistResults(ROW_SELECTOR);
+
+    $('#changelist').delegate('a.collapse.collapsed', 'click', function(event) {
+        event.preventDefault();
+        var $toggle = $(this),
+            $tr = $toggle.closest('tr'),
+            nodeId = $tr.attr('node');
+
+        $.get('?parent=' + nodeId, function(result) {
+            $toggle.removeClass('collapsed').addClass('expanded');
+            var $newTrs = $(result).find(ROW_SELECTOR);
+            initChangelistResults($newTrs);
+            $newTrs.insertAfter($tr);
+        });
+    });
+
+    $('#changelist').delegate('a.collapse.expanded', 'click', function(event) {
+        var $toggle = $(this),
+            $tr = $toggle.closest('tr'),
+            nodeId = $tr.attr('node');
+        collapseRecursively(nodeId);
+        $toggle.removeClass('expanded').addClass('collapsed');
+    });
+
+
     $('a[onclick*=dismissRelatedLookupPopup]').each(function() {
         var _onclick = this.onclick,
             $trigger = $(this);
@@ -73,6 +122,19 @@ jQuery(function($) {
     }
 
     return;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     var makeForm = function(action, hiddenFields) {
