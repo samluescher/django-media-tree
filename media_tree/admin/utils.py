@@ -18,12 +18,12 @@ def get_current_request():
 # and since the methods don't have these parameters, we are passing them through a
 # dictionary in the request object. This is hackish, but there currently is no
 # better solution. 
-def set_request_attr(request, attr, value):
+def set_special_request_attr(request, attr, value):
     if not hasattr(request, 'media_tree'):
         request.media_tree = {}
     request.media_tree[attr] = value
 
-def get_request_attr(request, attr, default=None):
+def get_special_request_attr(request, attr, default=None):
     if not hasattr(request, 'media_tree'):
         return default
     return request.media_tree.get(attr, default)

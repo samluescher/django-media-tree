@@ -32,7 +32,7 @@ from ..models import FileNode
 from .. import settings as app_settings
 from .forms import MoveForm, FileForm, FolderForm, UploadForm
 from .utils import get_current_request, set_current_request,  \
-    get_request_attr, set_request_attr, is_search_request
+    get_special_request_attr, set_special_request_attr, is_search_request
 from ..media_backends import get_media_backend
 from ..widgets import AdminThumbWidget
 from .change_list import MediaTreeChangeList
@@ -90,13 +90,13 @@ class FileNodeAdmin(TreeAdmin):
         }
 
     def get_queryset(self, request):
-        if get_request_attr(request, 'list_type', None) == 'stream':
+        if get_special_request_attr(request, 'list_type', None) == 'stream':
             return admin.ModelAdmin.get_queryset(self, request).exclude(node_type=FileNode.FOLDER).order_by('-modified')
         else:
             return super(FileNodeAdmin, self).get_queryset(request)
 
     def get_thumbnail_size(self, request):
-        thumb_size_key = get_request_attr(request, 'thumbnail_size') or 'default'
+        thumb_size_key = get_special_request_attr(request, 'thumbnail_size') or 'default'
         return app_settings.MEDIA_TREE_ADMIN_THUMBNAIL_SIZES[thumb_size_key]
 
     def node_preview(self, node, icons_only=False):
@@ -259,7 +259,7 @@ class FileNodeAdmin(TreeAdmin):
             list_type = 'stream'
 
         list_type = list_type or request.session.get('list_type', None)
-        set_request_attr(request, 'list_type', list_type)
+        set_special_request_attr(request, 'list_type', list_type)
         context.update({'list_type': list_type})
 
         if 'thumbnail_size' in request.GET:
@@ -270,7 +270,7 @@ class FileNodeAdmin(TreeAdmin):
                 thumb_size_key = None
             request.session['thumbnail_size'] = thumb_size_key
         thumb_size_key = request.session.get('thumbnail_size', None) or 'default'
-        set_request_attr(request, 'thumbnail_size', thumb_size_key)
+        set_special_request_attr(request, 'thumbnail_size', thumb_size_key)
         backend = get_media_backend()
         if backend and backend.supports_thumbnails():
             context.update({
