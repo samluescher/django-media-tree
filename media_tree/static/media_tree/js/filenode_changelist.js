@@ -8,6 +8,8 @@ jQuery(function($) {
         return $('.meta', row).attr('type') === 'folder';
     };
 
+    var pendingRequests = [];
+
     var initChangeListResults = function(rows) {
         $(rows).each(function() {
             var $this = $(this);
@@ -46,17 +48,12 @@ jQuery(function($) {
                 delay: 50
             });
 
-            $(document).ajaxSend(function (event, xhr, settings) {
-            });
-
             $this.droppable({
                 drop: function(event, ui) {
                     var droppedId = $(ui.draggable.context).attr('node'),
                         targetId = $(this).attr('node'),
                         targetIsFolder = isFolder(this);
-
-
-                    $.ajax({
+                    pendingRequests.push($.ajax({
                         url: window.MOVE_NODE_ENDPOINT,
                         type: 'post',
                         data: {
@@ -66,61 +63,14 @@ jQuery(function($) {
                         },
                         beforeSend: function(xhr) {
                             xhr.setRequestHeader("X-CSRFToken", $('input[name=csrfmiddlewaretoken]').val());
-                            console.log($('input[name=csrfmiddlewaretoken]').val());
                         },
-                    });
-
-                    /*dragHelper = null;
-                    draggedItem = null;
-                    var targetId = getDropTargetId(this);
-
-                    var action = $(ui.draggable).data('copyDrag') ? 'copy_selected' : 'move_selected';
-                    var fields = {
-                        action: action,
-                        target_node: targetId,
-                        execute: 1
-                    };
-
-                    var form = makeForm('', fields);
-                    var selected = getSelectedCheckboxes();
-                    form.append(selected.clone());
-
-                    //form.submit();
-
-                    //return;
-                    // instead:
-                    if (!loaderTarget) {
-                        loaderTarget = $('#node-'+targetId).closest('tr');
-                    }
-                    loaderTarget.addClass('loading');
-
-                    $(_changelist).setUpdateReq($.ajax({
-                        type: 'post',
-                        data: form.serialize(),
-                        success: function(data) {
-                            loaderTarget.removeClass('loading');
-                            var newChangelist = $(data).find('#changelist');
-                            if (newChangelist.length) {
-                                // update table
-                                $(_changelist).updateChangelist(newChangelist.html(), false);
-                                // display messages
-                                $('.messagelist li', data).each(function() {
-                                    $.addUserMessage($(this).text(), null, this.className);
-                                });
-                            } else {
-                                // if the result is no changelist, the form did not validate.
-                                // display error messages:
-                                $('fieldset .errorlist li', data).each(function() {
-                                    $.addUserMessage($(this).text(), null, 'error');
-                                });
+                        complete: function(xhr, textStatus) {
+                            pendingRequests.splice(pendingRequests.indexOf(xhr), 1);
+                            if (!pendingRequests.length) {
+                                window.location.reload();
                             }
-                        },
-                        error: function() {
-                            loaderTarget.removeClass('loading');
                         }
                     }));
-
-                    return false;*/
                 },
                 scope: DRAG_DROP_SCOPE,
                 hoverClass: function() {
@@ -128,20 +78,7 @@ jQuery(function($) {
                 },
                 greedy: true,
                 accept: function(draggable) {
-                    // TODO: currently when trying to drop on self the item will be
-                    // moved to root. This is only partially solved by setting the
-                    // draggables distance to half its height.
-                    /*var result = true,
-                        targetId = getDropTargetId(this);
-                    getSelectedCheckboxes().each(function(index, input) {
-                        var nodeId = $(input).val(),
-                            parentId = $('#node-' + nodeId).attr('data-parentid');
-                        if (parentId == targetId) {
-                            result = false;
-                        }
-                    });*/
-                    var result = true;
-                    return result;
+                    return true
                 }
             });
 
