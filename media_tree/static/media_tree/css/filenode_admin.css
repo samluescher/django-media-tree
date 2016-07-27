@@ -60,6 +60,12 @@
     background-position: right bottom !important;
 }
 
+#changelist .loading {
+    background: transparent url(../img/icons/folder-toggle-loading.gif) no-repeat !important;
+    background-size: 16px 16px !important;
+    background-position: left top !important;
+}
+
 /*#drag_line {
     border-top: 5px solid #A0A;
     background: #A0A;
