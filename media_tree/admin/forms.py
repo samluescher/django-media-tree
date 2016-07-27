@@ -16,13 +16,16 @@ class FileNodeForm(FormBase):
     # 'sorted-child' instead of user-entered value
     _position = forms.ChoiceField(required=True, label=_("Position"), initial='sorted-child', widget=forms.HiddenInput())
 
+    class Meta(FormBase.Meta):
+        _ref_node_id_folders_only = True
+
     def __init__(self, *args, **kwargs):
         super(FileNodeForm, self).__init__(*args, **kwargs)
         self.fields['_ref_node_id'].label = _('Containing folder')
 
     @classmethod
     def add_subtree(cls, for_node, node, options):
-        if node.is_folder():
+        if not cls.Meta._ref_node_id_folders_only or node.is_folder():
             return super(FileNodeForm, cls).add_subtree(for_node, node, options)
 
     def clean_node_type(self):
@@ -30,6 +33,7 @@ class FileNodeForm(FormBase):
 
     def clean(self):
         parent = None
+
         if self.cleaned_data.get('_ref_node_id', None) and '_position' in self.cleaned_data:
             try:
                 if self.cleaned_data['_position'] == 'sorted-child':
@@ -64,8 +68,14 @@ if not hasattr(FileNodeForm, 'add_error'):
 
 
 class MoveForm(FileNodeForm):
+
     class Meta(FileNodeForm.Meta):
         fields = ('_ref_node_id', '_position', 'node_type')
+        _ref_node_id_folders_only = False
+
+    def __init__(self, *args, **kwargs):
+        super(MoveForm, self).__init__(*args, **kwargs)
+        self.fields['_ref_node_id'].label = _('Target')
 
 
 class FolderForm(FileNodeForm):
