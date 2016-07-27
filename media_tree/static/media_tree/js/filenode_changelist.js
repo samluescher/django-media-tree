@@ -4,6 +4,10 @@ jQuery(function($) {
         DRAG_HANDLE_SELECTOR = '.drag-handler',
         DRAG_DROP_SCOPE = 'media_tree';
 
+    var isFolder = function(row) {
+        return $('.meta', row).attr('type') === 'folder';
+    };
+
     var initChangeListResults = function(rows) {
         $(rows).each(function() {
             var $this = $(this);
@@ -42,8 +46,30 @@ jQuery(function($) {
                 delay: 50
             });
 
+            $(document).ajaxSend(function (event, xhr, settings) {
+            });
+
             $this.droppable({
                 drop: function(event, ui) {
+                    var droppedId = $(ui.draggable.context).attr('node'),
+                        targetId = $(this).attr('node'),
+                        targetIsFolder = isFolder(this);
+
+
+                    $.ajax({
+                        url: window.MOVE_NODE_ENDPOINT,
+                        type: 'post',
+                        data: {
+                            node_id: droppedId,
+                            sibling_id: targetId,
+                            as_child: targetIsFolder ? 1 : 0
+                        },
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("X-CSRFToken", $('input[name=csrfmiddlewaretoken]').val());
+                            console.log($('input[name=csrfmiddlewaretoken]').val());
+                        },
+                    });
+
                     /*dragHelper = null;
                     draggedItem = null;
                     var targetId = getDropTargetId(this);
@@ -98,8 +124,7 @@ jQuery(function($) {
                 },
                 scope: DRAG_DROP_SCOPE,
                 hoverClass: function() {
-                    return $('.meta', this).attr('type') === 'folder' ?
-                        'drop-parent' : 'drop-sibling';
+                    return isFolder(this) ? 'drop-parent' : 'drop-sibling';
                 },
                 greedy: true,
                 accept: function(draggable) {
