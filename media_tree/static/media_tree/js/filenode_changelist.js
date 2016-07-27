@@ -1,16 +1,130 @@
 jQuery(function($) {
 
-    var ROW_SELECTOR = '#changelist tbody tr';
+    var ROW_SELECTOR = '#changelist tbody tr',
+        DRAG_HANDLE_SELECTOR = '.drag-handler',
+        DRAG_DROP_SCOPE = 'media_tree';
 
-    var initChangelistResults = function(rows) {
-        // TODO: initially, we remove the expanded attribute from all nodes with
-        // the following hack, and replace it with the collapsed attribute. This
-        // is necessary since treebeard's `admin_tree` template tags will assume
-        // that the tree is fully expanded, but media_tree's MediaTreeChangeList
-        // actually returns collapsed results. This hack should be replaced with
-        // proper solution that is contributed back to the treebeard project.
-        $(rows).find('a.collapse.expanded').each(function() {
-            $(this).removeClass('expanded').addClass('collapsed');
+    var initChangeListResults = function(rows) {
+        $(rows).each(function() {
+            var $this = $(this);
+
+            // TODO: initially, we remove the expanded attribute from all nodes with
+            // the following hack, and replace it with the collapsed attribute. This
+            // is necessary since treebeard's `admin_tree` template tags will assume
+            // that the tree is fully expanded, but media_tree's MediaTreeChangeList
+            // actually returns collapsed results. This hack should be replaced with
+            // proper solution that is contributed back to the treebeard project.
+            $this.find('a.collapse.expanded').each(function() {
+                $(this).removeClass('expanded').addClass('collapsed');
+            });
+
+            // Init draggable
+            $this.draggable({
+                distance: $(this).outerHeight() / 2,
+                stop: function(event, ui) {
+                    if ($(this).data('deselectAfterDrop')) {
+                        $(this).data('deselectAfterDrop', false);
+                        $(rowSelectInputSel, this).trigger('click');
+                    }
+                },
+                helper: function(event, ui) {
+                    var $helper = $(
+                        '<div class="drag-helper">'
+                        + '<table><tr><th></th></tr></table>'
+                        + '</div>');
+                    $('th', $helper).append($('.field-node_preview_and_name a', this).clone());
+                    return $helper;
+                },
+                scope: DRAG_DROP_SCOPE,
+                handle: DRAG_HANDLE_SELECTOR,
+                appendTo: 'body',
+                distance: 1,
+                delay: 50
+            });
+
+            $this.droppable({
+                drop: function(event, ui) {
+                    /*dragHelper = null;
+                    draggedItem = null;
+                    var targetId = getDropTargetId(this);
+
+                    var action = $(ui.draggable).data('copyDrag') ? 'copy_selected' : 'move_selected';
+                    var fields = {
+                        action: action,
+                        target_node: targetId,
+                        execute: 1
+                    };
+
+                    var form = makeForm('', fields);
+                    var selected = getSelectedCheckboxes();
+                    form.append(selected.clone());
+
+                    //form.submit();
+
+                    //return;
+                    // instead:
+                    if (!loaderTarget) {
+                        loaderTarget = $('#node-'+targetId).closest('tr');
+                    }
+                    loaderTarget.addClass('loading');
+
+                    $(_changelist).setUpdateReq($.ajax({
+                        type: 'post',
+                        data: form.serialize(),
+                        success: function(data) {
+                            loaderTarget.removeClass('loading');
+                            var newChangelist = $(data).find('#changelist');
+                            if (newChangelist.length) {
+                                // update table
+                                $(_changelist).updateChangelist(newChangelist.html(), false);
+                                // display messages
+                                $('.messagelist li', data).each(function() {
+                                    $.addUserMessage($(this).text(), null, this.className);
+                                });
+                            } else {
+                                // if the result is no changelist, the form did not validate.
+                                // display error messages:
+                                $('fieldset .errorlist li', data).each(function() {
+                                    $.addUserMessage($(this).text(), null, 'error');
+                                });
+                            }
+                        },
+                        error: function() {
+                            loaderTarget.removeClass('loading');
+                        }
+                    }));
+
+                    return false;*/
+                },
+                scope: DRAG_DROP_SCOPE,
+                hoverClass: function() {
+                    return $('.meta', this).attr('type') === 'folder' ?
+                        'drop-parent' : 'drop-sibling';
+                },
+                greedy: true,
+                accept: function(draggable) {
+                    // TODO: currently when trying to drop on self the item will be
+                    // moved to root. This is only partially solved by setting the
+                    // draggables distance to half its height.
+                    /*var result = true,
+                        targetId = getDropTargetId(this);
+                    getSelectedCheckboxes().each(function(index, input) {
+                        var nodeId = $(input).val(),
+                            parentId = $('#node-' + nodeId).attr('data-parentid');
+                        if (parentId == targetId) {
+                            result = false;
+                        }
+                    });*/
+                    var result = true;
+                    return result;
+                }
+            });
+
+            // Disable selection and dragging of thumbnail
+            $this.disableSelection().find('img').css({'pointer-events': 'none'})
+
+            // Display drag handle
+            $this.find(DRAG_HANDLE_SELECTOR).addClass('active');
         });
     };
 
@@ -24,7 +138,7 @@ jQuery(function($) {
         });
     };
 
-    initChangelistResults(ROW_SELECTOR);
+    initChangeListResults(ROW_SELECTOR);
 
     $('#changelist').delegate('a.collapse.collapsed', 'click', function(event) {
         event.preventDefault();
@@ -35,8 +149,8 @@ jQuery(function($) {
         $.get('?parent=' + nodeId, function(result) {
             $toggle.removeClass('collapsed').addClass('expanded');
             var $newTrs = $(result).find(ROW_SELECTOR);
-            initChangelistResults($newTrs);
-            $newTrs.insertAfter($tr);
+            initChangeListResults($newTrs);
+            var inserted = $newTrs.insertAfter($tr);
         });
     });
 
@@ -47,7 +161,6 @@ jQuery(function($) {
         collapseRecursively(nodeId);
         $toggle.removeClass('expanded').addClass('collapsed');
     });
-
 
     $('a[onclick*=dismissRelatedLookupPopup]').each(function() {
         var _onclick = this.onclick,

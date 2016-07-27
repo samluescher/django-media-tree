@@ -1,6 +1,6 @@
 /* Thumbnails */
 
-#changelist .thumbnail img, #ghost .thumbnail img, .change-form .thumbnail img, .FileNodeForeignKeyRawIdWidget .thumbnail img {
+#changelist .thumbnail img, .drag-helper .thumbnail img, .change-form .thumbnail img, .FileNodeForeignKeyRawIdWidget .thumbnail img {
     display: inline-block;
     border: 1px solid #ccc;
     padding: 3px;

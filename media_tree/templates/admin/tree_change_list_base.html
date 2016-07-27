@@ -4,8 +4,8 @@
     Below is an almost exact copy of django-treebeard's template
     admin/tree_change_list.html.
 
-    The difference is that treebeard's JS is commented out in block extrahead
-    since media_tree comes with its own admin JS.
+    The difference is that treebeard's JS and CSS is commented out in block
+    extrahead and extrastyle since media_tree comes with its own.
 
 {% endcomment %}
 {# Used for MP and NS trees #}
@@ -13,7 +13,7 @@
 
 {% block extrastyle %}
     {{ block.super }}
-    {% treebeard_css %}
+    {% comment %}{% treebeard_css %}{% endcomment %}
 {% endblock %}
 
 {% block extrahead %}

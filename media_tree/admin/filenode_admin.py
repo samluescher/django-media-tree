@@ -78,6 +78,7 @@ class FileNodeAdmin(TreeAdmin):
     class Media:
         js = [
             os.path.join(STATIC_SUBDIR, 'js', 'jquery.init.js').replace("\\","/"),
+            os.path.join(STATIC_SUBDIR, 'lib', 'jquery-ui.min.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'lib/jquery.fineuploader-4.4.0', 'jquery.fineuploader-4.4.0.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'js', 'filenode_changelist.js').replace("\\","/"),
             os.path.join(STATIC_SUBDIR, 'js', 'django_admin_fileuploader.js').replace("\\","/"),
@@ -124,7 +125,7 @@ class FileNodeAdmin(TreeAdmin):
             }).strip())
 
         meta = '<link class="meta" rel="alternate" data-id="%s" type="%s" href="%s" data-name="%s" data-alt="%s" data-caption="%s">' % (
-            node.pk, FileNode.get_mimetype(node.file.path) if node.file else '', escape(node.file.url) if node.file else '',
+            node.pk, FileNode.get_mimetype(node.file.path) if node.file else 'folder', escape(node.file.url) if node.file else '',
             escape(node), escape(node.alt), escape(node.get_caption_formatted()))
 
         return "%s%s" % (preview, meta)
