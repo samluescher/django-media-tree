@@ -1,4 +1,4 @@
-Django==1.6.2
+Django==1.11.29
 Pillow==2.3.1
 South==0.8.4
 django-mptt==0.6.0
