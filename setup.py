@@ -13,7 +13,7 @@ install_reqs = parse_requirements('requirements.txt', session=False)
 
 # reqs is a list of requirement
 # e.g. ['django==1.5.1', 'mezzanine==1.4.6']
-REQS = [str(ir.req) for ir in install_reqs]
+REQS = [str(ir.requirement) for ir in install_reqs]
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
